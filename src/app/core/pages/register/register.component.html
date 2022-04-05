@@ -1,0 +1,94 @@
+<div class="hold-transition login-page">
+    <div class="register-box">
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a href="/" class="h1">ALERCOM</a>
+            </div>
+            <div class="card-body">
+                <p class="login-box-msg">Register a new membership</p>
+
+                <form (ngSubmit)="onSubmit( f )" #f="ngForm">
+                    <div class="input-group mb-3">
+                        <span *ngIf="f.submitted && f.controls['name'].errors" class="text-danger animated fadeIn">El nombre es obligatorio</span>
+                        <input type="text" name="name" [(ngModel)]="user.name" minlength="2" class="form-control" placeholder="Name" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span *ngIf="f.submitted && f.controls['lastname'].errors" class="text-danger animated fadeIn">El apellido es obligatorio</span>
+                        <input type="text" name="lastname" [(ngModel)]="user.lastname" minlength="2" class="form-control" placeholder="Lastname" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span *ngIf="f.submitted && f.controls['username'].errors" class="text-danger animated fadeIn">El nombre de usuario es obligatorio</span>
+                        <input type="text" name="username" [(ngModel)]="user.username" class="form-control" placeholder="Username" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span *ngIf="f.submitted && f.controls['email'].errors" class="text-danger animated fadeIn">El email de usuario es obligatorio</span>
+                        <input type="email" name="email" [(ngModel)]="user.email" class="form-control" placeholder="Email" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span *ngIf="f.submitted && f.controls['password'].errors" class="text-danger animated fadeIn">Al menos 6 letras</span>
+                        <input type="password" name="password" [(ngModel)]="user.password" minlength="6" class="form-control" placeholder="Password" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" class="form-control" placeholder="Retype password">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="icheck-primary">
+                                <input type="checkbox" name="agreeTerms" id="agreeTerms" name="terms" value="true">
+                                <label for="agreeTerms">I agree to the <a href="#">terms</a></label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+
+                <div class="social-auth-links text-center">
+                    <a href="#" class="btn btn-block btn-primary">
+                        <i class="fab fa-facebook mr-2"></i> Sign up using Facebook
+                    </a>
+                    <a href="#" class="btn btn-block btn-danger">
+                        <i class="fab fa-google-plus mr-2"></i> Sign up using Google+
+                    </a>
+                </div>
+
+                <a routerLink="/login" class="text-center">I already have a membership</a>
+            </div>
+            <!-- /.form-box -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
