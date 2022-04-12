@@ -10,6 +10,8 @@ import { HomeComponent } from './core/pages/home/home.component';
 import { LoginComponent } from './core/pages/login/login.component';
 import { RegisterComponent } from './core/pages/register/register.component';
 import { ForgotComponent } from './core/pages/forgot/forgot.component';
+import { UserComponent } from './core/pages/user/user.component';
+import { AlertComponent } from './core/pages/alert/alert.component';
 
 
 @NgModule({
@@ -18,7 +20,9 @@ import { ForgotComponent } from './core/pages/forgot/forgot.component';
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    ForgotComponent
+    ForgotComponent,
+    UserComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,

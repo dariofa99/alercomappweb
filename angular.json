@@ -85,7 +85,8 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "src/styles.css"
+                            "src/styles.css",
+                            "src/assets/dist/css/adminlte.css"
                         ],
                         "scripts": []
                     }

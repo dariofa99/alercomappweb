@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class AuthService {
 
-  private url = 'http://18.222.218.76/api/v1'
+  private url = 'http://3.136.4.86/api/v1'
 
   userToken: string;
 
@@ -59,7 +59,6 @@ export class AuthService {
 
   }
 
-
   private saveToken( access_token: string ) {
 
     this.userToken = access_token;
@@ -84,7 +83,6 @@ export class AuthService {
     return this.userToken;
 
   }
-
 
   isAuthenticated(): boolean {
 

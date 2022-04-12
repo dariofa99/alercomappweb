@@ -48,11 +48,12 @@ export class RegisterComponent implements OnInit {
 
         this.router.navigateByUrl('/home');
     },(err)=>{
-      console.log(err.error.error.message);
+      console.log(err);
+      Swal.close();
         Swal.fire({
           icon: 'error',
           title: 'Error al autenticar',
-          text: err.error.error.message
+          text: err.error
         });
     });
   }

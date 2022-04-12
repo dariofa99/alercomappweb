@@ -2,8 +2,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-        <img src="./assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">ALERCOM</span>
+        <img src="./assets/logos/conectividad_ICONOS_Blanco.png" alt="Logo ALERCOM" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light"><strong>ALERCOM</strong></span>
     </a>
 
     <!-- Sidebar -->
@@ -14,14 +14,14 @@
                 <img src="./assets/dist/img/myAvatar.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Jonathan Venegas</a>
+                <a (click)="userShowingEvent()" class="d-block">Jonathan Venegas</a>
             </div>
         </div>
 
         <!-- SidebarSearch Form -->
         <div class="form-inline">
             <div class="input-group" data-widget="sidebar-search">
-                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Buscar" aria-label="Search">
                 <div class="input-group-append">
                     <button class="btn btn-sidebar">
               <i class="fas fa-search fa-fw"></i>
@@ -35,19 +35,11 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>
-                            Dashboard
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
+                <li class="nav-item menu-is-opening menu-open">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-user"></i>
                         <p>
-                            Users
+                            Usuarios
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -61,23 +53,23 @@
                         <li class="nav-item">
                             <a href="../../index2.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Profiles</p>
+                                <p>Perfiles</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="../../index3.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Permissions</p>
+                                <p>Permisos</p>
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item menu-is-opening menu-open">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-bell"></i>
                         <p>
-                            Alerts
+                            Alertas
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -85,19 +77,19 @@
                         <li class="nav-item">
                             <a href="../../index.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>My Alerts</p>
+                                <p>Mis Alertas</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../../index2.html" class="nav-link">
+                            <a (click)="alertShowingEvent()" class="nav-link" [ngClass]="status ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Create Alert</p>
+                                <p>Crear Alerta</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="../../index3.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Consult Alerts</p>
+                                <p>Consultar Alerta</p>
                             </a>
                         </li>
                     </ul>
@@ -107,8 +99,8 @@
                     <a href="" class="nav-link">
                         <i class="nav-icon fa fa-file-alt"></i>
                         <p>
-                            Reports
-                            <span class="right badge badge-danger">New</span>
+                            Reportes
+                            <span class="right badge badge-danger">Nuevo</span>
                         </p>
                     </a>
                 </li>
