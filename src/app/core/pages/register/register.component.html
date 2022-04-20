@@ -46,6 +46,22 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="input-group mb-3">
+                                <select (change)="onDepartmentSelected($event)" class="form-control select2" style="width: 100%;">
+                                    <option value="">Seleccione un departamento</option>
+                                    <option *ngFor="let department of departments" [value]="department.id">{{department.reference_name}}</option>
+                                </select>
+                            </div>
+
+                            <div *ngIf="isDeparmentSelected" class="input-group mb-3">
+                                <span *ngIf="f.submitted && f.controls['town_id'].errors" class="text-danger animated fadeIn">El municipio es obligatorio, por favor selecciona un departamento y su respectivo municipio</span>
+                                <select name="town_id" [(ngModel)]="user.town_id" class="form-control select2" style="width: 100%;">
+                                    <option value="">Seleccione un municipio</option>
+                                    <option *ngFor="let town of towns" [value]="town.id">{{town.town_name}}</option>
+                                </select>
+                            </div>
+
                             <div class="input-group mb-3">
                                 <span *ngIf="f.submitted && f.controls['email'].errors" class="text-danger animated fadeIn">El email de usuario es obligatorio</span>
                                 <input type="email" name="email" [(ngModel)]="user.email" class="form-control" placeholder="Email" required>
@@ -65,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-3">
-                                <input type="password" class="form-control" placeholder="Confirmar contraseña">
+                                <input type="password" name="password_confirmation" [(ngModel)]="user.password_confirmation" minlength="6" class="form-control" placeholder="Confirmar contraseña">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <span class="fas fa-lock"></span>

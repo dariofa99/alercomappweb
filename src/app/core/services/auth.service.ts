@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UserModel } from '../models/userModel';
+import { UserRegisterModel } from '../models/userRegisterModel';
+import { Router, ɵangular_packages_router_router_o } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 
@@ -11,17 +12,18 @@ export class AuthService {
 
   private url = 'http://3.136.4.86/api/v1'
 
-  userToken: string;
+  userToken: string = "";
 
-  constructor( private http: HttpClient ) {
+  constructor( private http: HttpClient, private route: Router ) {
     this.readToken();
   }
 
   logout() {
     localStorage.removeItem('token');
+    this.route.navigateByUrl("login");
   }
 
-  login( user: UserModel ) {
+  login( user: UserRegisterModel ) {
 
     const authData = {
       ...user,
@@ -40,7 +42,7 @@ export class AuthService {
 
   }
 
-  newUser( user: UserModel ) {
+  newUser( user: UserRegisterModel ) {
 
     const authData = {
       ...user,
@@ -52,7 +54,7 @@ export class AuthService {
       authData
     ).pipe(
       map( resp => {
-        this.saveToken( resp['acces_token'] );
+        //this.saveToken( resp['acces_token'] );
         return resp;
       })
     );

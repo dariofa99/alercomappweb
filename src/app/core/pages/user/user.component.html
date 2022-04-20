@@ -5,7 +5,7 @@
             <div class="card card-widget widget-user mt-5">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-info ">
-                    <h3 class="widget-user-username ">Jonathan Venegas</h3>
+                    <h3 class="widget-user-username ">{{item.name + " " + item.lastname}}</h3>
                     <h5 class="widget-user-desc ">Admin</h5>
                 </div>
                 <div class="widget-user-image">
@@ -26,22 +26,8 @@
             </div>
         </div>
         <div class="col-md-8 col-12">
-
-            <ul class="nav nav-tabs mt-5" id="custom-content-above-tab " role="tablist ">
-                <li class="nav-item ">
-                    <a class="nav-link active " id="custom-content-above-information-tab " data-toggle="pill " data-target="#exampleModalLong" href="#custom-content-above-information " role="tab " aria-controls="custom-content-above-information " aria-selected="true ">Información</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link " id="custom-content-above-password-tab " data-toggle="pill " href="#custom-content-above-password " role="tab " aria-controls="custom-content-above-password " aria-selected="false ">Contraseña</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link " id="custom-content-above-notes-tab " data-toggle="pill " href="#custom-content-above-notes " role="tab " aria-controls="custom-content-above-notes " aria-selected="false ">Notas</a>
-                </li>
-            </ul>
-            <div class="tab-custom-content ">
-            </div>
-            <div class="tab-content " id="custom-content-above-tabContent ">
-                <div class="tab-pane fade show active " id="custom-content-above-information " role="tabpanel " aria-labelledby="custom-content-above-information-tab ">
+            <mat-tab-group animationDuration="0ms" class="mt-5">
+                <mat-tab label="Información">
                     <form>
                         <div class="card-body">
                             <div class="form-group">
@@ -59,19 +45,19 @@
 
                             <div class="form-group">
                                 <label for="InputIdentificationNumber">Número de Identificación</label>
-                                <input type="text" class="form-control" id="inputIdentificationNumber" placeholder="" value="001" disabled>
+                                <input type="text" class="form-control" id="inputIdentificationNumber" placeholder="" value="{{item.id}}" disabled>
                             </div>
                             <div class="form-group">
                                 <label for="InputNames">Nombres</label>
-                                <input type="text" class="form-control" id="inputNames" placeholder="Nombres" value="Jonathan Venegas">
+                                <input type="text" class="form-control" id="inputNames" placeholder="Nombres" value="{{item.name + item.lastname}}">
                             </div>
                             <div class="form-group">
                                 <label for="InputEmail">Email</label>
-                                <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="jhvenegas@gmail.com">
+                                <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="{{item.email}}">
                             </div>
                             <div class="form-group">
                                 <label for="InputAddress">Dirección</label>
-                                <input type="text" class="form-control" id="inputAddress" placeholder="Dirección" value="Carrera 34 No. 18-25">
+                                <input type="text" class="form-control" id="inputAddress" placeholder="Dirección" value="{{item.address}}">
                             </div>
                             <div class="form-group">
                                 <label for="InputState">Municipio</label>
@@ -79,14 +65,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="InputPhone">Teléfono</label>
-                                <input type="text" class="form-control" id="inputPhone" placeholder="Teléfono" value="3189564210">
+                                <input type="text" class="form-control" id="inputPhone" placeholder="Teléfono" value="{{item.phone_number}}">
                             </div>
                             <button type="submit" class="btn btn-primary">Actualizar</button>
                         </div>
                         <!-- /.card-body -->
                     </form>
-                </div>
-                <div class="tab-pane fade " id="custom-content-above-password " role="tabpanel " aria-labelledby="custom-content-above-password-tab ">
+                </mat-tab>
+                <mat-tab label="Contraseña">
                     <form>
                         <div class="card-body">
                             <div class="form-group">
@@ -101,21 +87,17 @@
                                 <label for="InputRepeatPassword">Repetir Contraseña</label>
                                 <input type="password" class="form-control" id="inputRepeatPassword" placeholder="Repetir Contraseña">
                             </div>
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Actualizar</button>
                         </div>
+                        <!-- /.card-body -->
                     </form>
-                </div>
-                <div class="tab-pane fade " id="custom-content-above-notes " role="tabpanel " aria-labelledby="custom-content-above-notes-tab ">
-                    Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue
-                    ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed
-                    ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.
-                </div>
-            </div>
-
+                </mat-tab>
+                <mat-tab label="Notas">
+                    <div class="card-body">
+                        Notas
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
         </div>
     </div>
 </div>

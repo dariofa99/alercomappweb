@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 import Swal from 'sweetalert2';
-import { UserModel } from '../../models/userModel';
+import { UserRegisterModel } from '../../models/userRegisterModel';
 
 
 @Component({
@@ -16,7 +16,7 @@ import { UserModel } from '../../models/userModel';
 })
 export class LoginComponent implements OnInit {
 
-  user: UserModel = new UserModel();
+  user: UserRegisterModel = new UserRegisterModel();
   rememberme = false;
 
   constructor(private auth: AuthService,private router: Router) { }

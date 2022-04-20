@@ -1,9 +1,9 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/" class="brand-link">
-        <img src="./assets/logos/conectividad_ICONOS_Blanco.png" alt="Logo ALERCOM" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light"><strong>ALERCOM</strong></span>
+    <a href="/" class="brand-link" style="background-color: #fff;">
+        <img src="./assets/logos/conectividad_ICONOS.png" alt="Logo ALERCOM" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light"><strong style="color:#FF8000;">ALERCOM</strong></span>
     </a>
 
     <!-- Sidebar -->
@@ -14,7 +14,7 @@
                 <img src="./assets/dist/img/myAvatar.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a (click)="userShowingEvent()" class="d-block">Jonathan Venegas</a>
+                <a (click)="userShowingEvent()" class="d-block">{{item.name+ " " +item.lastname}}</a>
             </div>
         </div>
 
@@ -45,21 +45,21 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../../index.html" class="nav-link">
+                            <a (click)="rolespermissionsShowingEvent()" class="nav-link" [ngClass]="status_roles_permissions ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Roles</p>
+                                <p>Roles y Permisos</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../../index2.html" class="nav-link">
+                            <a (click)="usersadminShowingEvent()" class="nav-link" [ngClass]="status_users_admin ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Perfiles</p>
+                                <p>Administrar Usuarios</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../../index3.html" class="nav-link">
+                            <a (click)="institutionsShowingEvent()" class="nav-link" [ngClass]="status_institutions ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Permisos</p>
+                                <p>Crear Instituciones</p>
                             </a>
                         </li>
                     </ul>
@@ -75,21 +75,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../../index.html" class="nav-link">
+                            <a (click)="myalertsShowingEvent()" class="nav-link" [ngClass]="status_my_alerts ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Mis Alertas</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a (click)="alertShowingEvent()" class="nav-link" [ngClass]="status ? 'active' : ''">
+                            <a (click)="alertShowingEvent()" class="nav-link" [ngClass]="status_alert ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Crear Alerta</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../../index3.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Consultar Alerta</p>
                             </a>
                         </li>
                     </ul>

@@ -1,0 +1,58 @@
+<div class="container">
+    <form>
+        <div class="card-body">
+            <h3>Crear Institución</h3>
+            <div class="form-group">
+                <label for="InputIdentificationNumber">Nombre de la Institución</label>
+                <input type="text" class="form-control" id="inputInstitutionName" placeholder="" value="" placeholder="Nombre Institución">
+            </div>
+            <div class="form-group">
+                <label for="InputInstitutionAddress">Dirección</label>
+                <input type="text" class="form-control" id="inputInstitutionAddress" placeholder="Dirección" value="">
+            </div>
+            <div class="form-group">
+                <label for="InputPhone">Teléfono</label>
+                <input type="text" class="form-control" id="inputPhone" placeholder="Teléfono" value="">
+            </div>
+
+            <div class="input-group mb-3">
+                <select (change)="onDepartmentSelected($event)" class="form-control select2" style="width: 100%;">
+                    <option value="">Seleccione un departamento</option>
+                    <option *ngFor="let department of departments" [value]="department.id">{{department.reference_name}}</option>
+                </select>
+            </div>
+
+            <div *ngIf="isDeparmentSelected" class="input-group mb-3">
+                <select name="town_id" class="form-control select2" style="width: 100%;">
+                    <option value="">Seleccione un municipio</option>
+                    <option *ngFor="let town of towns" [value]="town.id">{{town.town_name}}</option>
+                </select>
+            </div>
+
+            <div *ngFor="let contactElement of contactElements" class="form-group">
+                <label for="InputContact">Información de Contacto</label>
+                <select (change)="onContactTypeSelected($event)" class="form-control select2" style="width: 100%;">
+                    <option value="">Seleccione un tipo de contacto</option>
+                    <option [value]="15">Correo Electrónico</option>
+                </select>
+                <br>
+                <input type="text" class="form-control" id="inputContact" placeholder="Ingrese datos" value="">
+            </div>
+
+            <div class="form-group">
+                <button (click)="onAddContact()" class="btn btn-primary">Añadir Nuevo Contacto</button>
+            </div>
+
+            <div class="input-group mb-3">
+                <label for="Tipo de Alerta">Tipo de Alerta</label>
+                <select (change)="onEventTypeSelected($event)" name="event_type_id" class="form-control select2" style="width: 100%;">
+                <option value="">Seleccione un tipo de alerta</option>
+                <option *ngFor="let eventType of eventTypes" [selected]="" [value]="eventType.id">{{eventType.event_type_name}}</option>
+            </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Crear</button>
+        </div>
+        <!-- /.card-body -->
+    </form>
+</div>
