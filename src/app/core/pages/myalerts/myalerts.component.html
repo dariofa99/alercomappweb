@@ -51,7 +51,7 @@
         </mat-card-content>
         <mat-divider inset></mat-divider>
         <mat-card-actions class="d-flex justify-content-end">
-            <button mat-button>Cambiar estado</button>
+            <button mat-button><label class="mb-0" for="changeState"><a href="" data-toggle="modal" data-target="#exampleModalLong" >Cambiar estado</a></label></button>
         </mat-card-actions>
         <mat-card-footer>
             <mat-progress-bar mode=""></mat-progress-bar>
@@ -64,3 +64,27 @@
         height: 300px;
     }
 </style>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Cambiar Estado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <select name="state_id" class="form-control select2" style="width: 100%;">
+                    <option value="">Seleccione un tipo de estado</option>
+                    <option seletected >Alertado</option>
+                    <option>Inactivo</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Declinar</button>
+                <button type="button" class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
