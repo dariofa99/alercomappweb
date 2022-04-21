@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DepartmentModel } from '../../models/departmentModel';
 import { EventTypeModel } from '../../models/eventTypeModel';
 import { TownModel } from '../../models/townModel';
@@ -14,11 +14,19 @@ import { ReferencesService } from '../../services/references.service';
 })
 export class InstitutionsComponent implements OnInit {
 
+
+  @ViewChild('contactType') contactType; 
+  @ViewChild('inputContact') inputContact;
+  @ViewChild('eventType') eventType; 
+
   departments: DepartmentModel[];
   towns: TownModel[];
   eventTypes: EventTypeModel[] = [];
   isDeparmentSelected = false;
-  public contactElements:Array<unknown> = [];
+  contacts = [];
+  contact_type_id = [];
+  event_types_names = [];
+  event_types = [];
 
   constructor(private auth: AuthService, private alertService: AlertsService, private references: ReferencesService) { }
 
@@ -43,7 +51,18 @@ export class InstitutionsComponent implements OnInit {
   }
 
   onAddContact(){
-    this.contactElements = [...this.contactElements, this.contactElements.length + 1];
+    if(this.contactType.nativeElement.value!="" && this.inputContact.nativeElement.value!=""){
+      this.contacts.push(this.inputContact.nativeElement.value)
+      this.contact_type_id.push(this.contactType.nativeElement.value)
+    }
+  }
+
+  onAddEventType(){
+    console.log(this.eventType.nativeElement.value)
+    if(this.eventType.nativeElement.value!=""){
+      this.event_types.push(this.eventType.nativeElement.value)
+      this.event_types_names.push(this.eventType.nativeElement.options[this.eventType.nativeElement.selectedIndex].innerText)
+    }
   }
 
   onEventTypeSelected(event: any){
@@ -52,6 +71,14 @@ export class InstitutionsComponent implements OnInit {
 
   onContactTypeSelected(event: any){
 
+  }
+
+  removeFromList(obj){
+    console.log("obj", obj);
+    let index: number = this.contacts.findIndex(item => item === obj);
+    if (index > -1) {
+      this.contacts.splice(index, 1);
+    }
   }
 
 }

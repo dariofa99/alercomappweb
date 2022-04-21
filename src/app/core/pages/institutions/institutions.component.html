@@ -3,15 +3,12 @@
         <div class="card-body">
             <h3>Crear Institución</h3>
             <div class="form-group">
-                <label for="InputIdentificationNumber">Nombre de la Institución</label>
                 <input type="text" class="form-control" id="inputInstitutionName" placeholder="" value="" placeholder="Nombre Institución">
             </div>
             <div class="form-group">
-                <label for="InputInstitutionAddress">Dirección</label>
                 <input type="text" class="form-control" id="inputInstitutionAddress" placeholder="Dirección" value="">
             </div>
             <div class="form-group">
-                <label for="InputPhone">Teléfono</label>
                 <input type="text" class="form-control" id="inputPhone" placeholder="Teléfono" value="">
             </div>
 
@@ -29,26 +26,51 @@
                 </select>
             </div>
 
-            <div *ngFor="let contactElement of contactElements" class="form-group">
-                <label for="InputContact">Información de Contacto</label>
-                <select (change)="onContactTypeSelected($event)" class="form-control select2" style="width: 100%;">
-                    <option value="">Seleccione un tipo de contacto</option>
-                    <option [value]="15">Correo Electrónico</option>
-                </select>
-                <br>
-                <input type="text" class="form-control" id="inputContact" placeholder="Ingrese datos" value="">
-            </div>
-
             <div class="form-group">
-                <button (click)="onAddContact()" class="btn btn-primary">Añadir Nuevo Contacto</button>
+                <label for="InputContact">Información de contacto</label>
+                <div class="row mb-3">
+                    <div class="col-5">
+                        <select #contactType (change)="onContactTypeSelected($event)" class="form-control select2" style="width: 100%;">
+                            <option value="">Tipo de contacto</option>
+                            <option [value]="15">Correo Electrónico</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" id="inputContact" #inputContact placeholder="Ingrese datos" value="">
+                    </div>
+                    <div class="col-1">
+                        <button (click)="onAddContact()" class="btn btn-primary">+</button>
+                    </div>
+                </div>
+
+                <mat-list class="pt-0">
+                    <mat-list-item *ngFor="let elements of contacts;">
+                        <h4 mat-line>{{elements}}</h4>
+                        <mat-icon (click)="removeFromList(elements)" style="cursor: hand">clear</mat-icon>
+                    </mat-list-item>
+                </mat-list>
             </div>
 
-            <div class="input-group mb-3">
-                <label for="Tipo de Alerta">Tipo de Alerta</label>
-                <select (change)="onEventTypeSelected($event)" name="event_type_id" class="form-control select2" style="width: 100%;">
-                <option value="">Seleccione un tipo de alerta</option>
-                <option *ngFor="let eventType of eventTypes" [selected]="" [value]="eventType.id">{{eventType.event_type_name}}</option>
-            </select>
+            <div class="form-group mb-3">
+                <label for="Tipo de Alerta">Tipos de alertas que atiende</label>
+                <div class="row mb-3">
+                    <div class="col-10">
+                        <select #eventType (change)="onEventTypeSelected($event)" name="event_type_id" class="form-control select2" style="width: 100%;">
+                            <option value="">Seleccione un tipo de alerta</option>
+                            <option *ngFor="let eventType of eventTypes" [selected]="" [value]="eventType.id">{{eventType.event_type_name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <button (click)="onAddEventType()" class="btn btn-primary">+</button>
+                    </div>
+                </div>
+
+                <mat-list class="pt-0">
+                    <mat-list-item *ngFor="let elements of event_types_names;">
+                        <h4 mat-line>{{elements}}</h4>
+                        <mat-icon (click)="removeFromList(elements)" style="cursor: hand">clear</mat-icon>
+                    </mat-list-item>
+                </mat-list>
             </div>
 
             <button type="submit" class="btn btn-primary">Crear</button>

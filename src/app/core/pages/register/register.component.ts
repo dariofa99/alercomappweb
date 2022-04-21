@@ -5,9 +5,6 @@ import { AuthService } from '../../services/auth.service';
 import { UserRegisterModel } from '../../models/userRegisterModel';
 
 import Swal from 'sweetalert2';
-import { ReferencesService } from '../../services/references.service';
-import { DepartmentModel } from '../../models/departmentModel';
-import { TownModel } from '../../models/townModel';
 
 @Component({
   selector: 'app-register',
@@ -19,25 +16,11 @@ export class RegisterComponent implements OnInit {
 
   user: UserRegisterModel;
   rememberme: false;
-  departments: DepartmentModel[];
-  towns: TownModel[];
-  isDeparmentSelected = false;
 
-  constructor(private auth: AuthService,private router: Router, private references: ReferencesService) { }
+  constructor(private auth: AuthService,private router: Router) { }
 
   ngOnInit(): void {
     this.user = new UserRegisterModel();
-    //TODO: Implement departments and towns services to get data from API
-    this.references.getDepartments(this.auth.readToken()).subscribe(resp=>{
-      this.departments = resp;
-    });
-  }
-
-  onDepartmentSelected(event: any){
-    this.references.getTowns(this.auth.readToken(),event.target.value).subscribe(resp=>{
-      this.towns = resp;
-      this.isDeparmentSelected = true;
-    });
   }
 
   onSubmit(form: NgForm){

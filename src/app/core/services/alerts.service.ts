@@ -23,7 +23,7 @@ export class AlertsService {
     return this.http.get(
       `${ this.url }/events`,{headers: headers}
     ).pipe(
-      map((data: any[])=> data['alerts'].map((item) => {
+      map((data: any[])=> data['events'].map((item) => {
         //console.log(data)
         return this.adapterAlert.adapt(item)
       })) 

@@ -15,6 +15,9 @@ import { ReferencesService } from '../../services/references.service';
 export class MyalertsComponent implements OnInit {
 
   alerts: AlertModel[] = [];
+  alertDetails: AlertModel;
+  isOnAlertDetails = false;
+  isOnAlert = true;
   eventTypes: EventTypeModel[] = [];
   affectRanges: AffectRangeModel[] = [];
   mapType = 'satellite';
@@ -24,21 +27,21 @@ export class MyalertsComponent implements OnInit {
   ngOnInit(): void {
     this.alertService.getAlerts(this.auth.readToken()).subscribe((
       resp=>{
-        console.log(resp);
+        //console.log(resp);
         this.alerts = resp;
       }
     ))
 
     this.alertService.getEventTypes(this.auth.readToken()).subscribe((
       resp=>{
-        console.log(resp);
+        //console.log(resp);
         this.eventTypes = resp;
       }
     ))
 
     this.references.getAffectsRanges(this.auth.readToken()).subscribe((
       resp=>{
-        console.log(resp);
+        //console.log(resp);
         this.affectRanges = resp;
       }
     ))
@@ -47,6 +50,26 @@ export class MyalertsComponent implements OnInit {
 
   onEventTypeSelected(event: any){
     
+  }
+
+  onSeeDetails(alert: AlertModel){
+    console.log(alert)
+    this.alertDetails = alert;
+    this.isOnAlertDetails = true;
+    this.isOnAlert = false;
+  }
+
+  checkboxChanged(event: any){
+
+  }
+
+  backToList(){
+    this.isOnAlertDetails = false;
+    this.isOnAlert = true;
+  }
+
+  toFloat(value: string){
+    return parseFloat(value);
   }
 
 }
