@@ -1,0 +1,62 @@
+<h1>{{actionBtn}} Usuario</h1>
+<div mat-dialog-content>
+    <form [formGroup]="userForm">
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre *</mat-label>
+            <input formControlName="name" matInput placeholder="Nombre *">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Apellido *</mat-label>
+            <input formControlName="lastname" matInput placeholder="Apellido *">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre de Usuario *</mat-label>
+            <input formControlName="username" matInput placeholder="Nombre de Usuario *">
+            <mat-hint>Solo números y letras</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Correo *</mat-label>
+            <input formControlName="email" matInput placeholder="Correo *">
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="actionBtn == 'Guardar'?true:false">
+            <mat-label>Contraseña *</mat-label>
+            <input formControlName="password" matInput placeholder="Contraseña *">
+            <mat-hint>Mínimo 6 carácteres</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="actionBtn == 'Guardar'?true:false">
+            <mat-label>Confirmar Contraseña *</mat-label>
+            <input formControlName="password_confirmation" matInput placeholder="Confirmar Contraseña *">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Departamento</mat-label>
+            <mat-select (selectionChange)="onDepartmentSelected($event)" [(value)]="selectedDepartment">
+                <mat-option *ngFor="let department of editData.departments" [value]="department.id">{{department.reference_name}}</mat-option>
+            </mat-select>
+            <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+        </mat-form-field>
+        <mat-form-field *ngIf="isOnDepartment" appearance="fill">
+            <mat-label>Municipio</mat-label>
+            <mat-select formControlName="town_id" [(value)]="selectedTown">
+                <mat-option *ngFor="let town of towns" [value]="town.id">{{town.town_name}}</mat-option>
+            </mat-select>
+            <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="role_id" [(value)]="selectedRole">
+                <mat-option *ngFor="let role of editData.roles" [value]="role.id">{{role.name}}</mat-option>
+            </mat-select>
+            <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-action [align]="'end'" class="mt-3">
+    <button mat-button color="warn" mat-dialog-close>Cerrar</button>
+    <button mat-button color="primary" (click)="actionBtn=='Guardar'?addUser():updateUser()">{{actionBtn}}</button>
+</div>
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

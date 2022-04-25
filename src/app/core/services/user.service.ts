@@ -45,5 +45,38 @@ export class UserService {
     );
   }
 
+  putUser(auth_token,id,userData){
+    var headers = new HttpHeaders({
+      'Authorization': `Bearer ${auth_token}`
+    });
+    return this.http.put(
+      `${ this.url }/users/`+id,userData,{headers: headers}
+    );
+  }
+
+  postUser(auth_token,userData){
+    const data = {
+      ...userData,
+      returnSecureToken: true
+    };
+
+    var headers = new HttpHeaders({
+      'Authorization': `Bearer ${auth_token}`,
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return this.http.post(
+      `${ this.url }/users`,data,{headers: headers}
+    );
+  }
+
+  deleteUser(auth_token,id){
+    var headers = new HttpHeaders({
+      'Authorization': `Bearer ${auth_token}`
+    });
+    return this.http.delete(
+      `${ this.url }/users/`+id,{headers: headers}
+    );
+  }
   
 }

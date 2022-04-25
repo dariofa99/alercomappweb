@@ -1,57 +1,21 @@
-import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
-import {AfterViewInit, Component, ViewChild, OnInit, QueryList, ViewChildren, Input} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {AfterViewInit, Component, ViewChild, OnInit, QueryList, ViewChildren, Input, Directive, ViewContainerRef, TemplateRef} from '@angular/core';
 import { PermissionsModel } from '../../models/permissionsModel';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RoleModel } from '../../models/roleModel';
-import {RolesPermissionsService} from '../../services/roles-permissions.service';
-import { MatTable } from "@angular/material/table";
-import { FormArray, FormControl, Validators } from '@angular/forms';
-import { ArrowDivDirective } from '../../directives/arrow-div.directive';
-import { KeyBoardService } from '../../services/keyboard.service';
+import { AuthService } from '../../services/auth.service';
+import { RolesPermissionsService } from '../../services/roles-permissions.service';
+import { DialogNewEditRoleComponent } from '../dialog-new-edit-role/dialog-new-edit-role.component';
+import { DialogNewEditPermissionComponent } from '../dialog-new-edit-permission/dialog-new-edit-permission.component';
+import Swal from 'sweetalert2';
 
-export const data = [["uno", "one"], ["dos", "two"], ["tres", "three"]];
-
-export interface RolesPermissions {
-
-  name_role: string;
-  name_permission: string;
-  
+export class PermissionsChecked{
+  constructor(
+    public id?: string,
+    public guard_name?: number,
+    public name?: string,
+    public checked?: boolean,
+  ){}
 }
-
-/** Constants used to fill up our data base. */
-const FRUITS: string[] = [
-  'blueberry',
-  'lychee',
-  'kiwi',
-  'mango',
-  'peach',
-  'lime',
-  'pomegranate',
-  'pineapple',
-];
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
 
 @Component({
   selector: 'app-roles-permissions',
@@ -60,163 +24,140 @@ const NAMES: string[] = [
   ]
 })
 export class RolesPermissionsComponent implements OnInit, AfterViewInit {
-
-  @ViewChild(MatTable, { static: true }) table: MatTable<any>; //used when add a row, see comment in function add()
-  displayedHeads: string[] = [];
-  displayedColumns: string[] = [];
-  myformArray: FormArray;
-
-  columns: number;
-
-  @ViewChildren(ArrowDivDirective) inputs: QueryList<ArrowDivDirective>;
-
-
-  //-------------------
-
+  header = [];
+  RowsData = []
+  permissionsAux: PermissionsModel[] = [];
+  permissionsAuxNew: PermissionsModel[] = [];
+  rolesDisplay: RoleModel[] = [];
   @Input() roles: RoleModel[];
   @Input() permissions: PermissionsModel[];
+  checked = false;
 
-  /*columnNames: string[] = [];*/
-  listRolesPermissions: any[] = [];
-  listRoles: any[] = [];
-
-  /*displayedColumns: string[];
-  dataSource: MatTableDataSource<RolesPermissions>;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort; */
-
-  constructor(private rolesPermissions: RolesPermissionsService, private keyboardService: KeyBoardService) {
-    // Assign the data to the data source for the table to render
-    //this.dataSource = new MatTableDataSource(this.roles);
-    //console.log(this.roles);
+  constructor(private auth: AuthService, private dialog: MatDialog, private rolesPermissionsService: RolesPermissionsService) {
   }
 
   ngOnInit(): void {
-    this.permissions.forEach(elementPermissions => {
-      this.roles.forEach(elementRoles => {
-        this.listRoles.push(elementRoles);
+    this.permissions.forEach(element => {
+      this.permissionsAux.push(element);
+    });
+    for(let i=0;i<this.permissions.length;i++){
+      this.permissionsAux.push(new PermissionsChecked('',0,this.permissions[i].name,false))
+    }
+    this.rolesDisplay.push(new RoleModel(0,'','', this.permissionsAux))
+    
+    this.header.push('');
+    this.roles.forEach(element => {
+      this.header.push(element.name);
+      element.permissions.sort(function(a,b){return parseInt(a.id) - parseInt(b.id)})
+      
+      this.permissionsAuxNew = [];
+
+      let i = 0;
+
+      this.permissionsAux.forEach(elementPermissionsAux => {
+        element.permissions.forEach(elementPermissions => {
+          if(elementPermissionsAux.id == elementPermissions.id){
+            this.permissionsAuxNew.push(new PermissionsChecked(elementPermissions.id,elementPermissions.guard_name,elementPermissions.name,true))
+          }
+        });
+        
       });
-      this.listRolesPermissions.push(this.listRoles);
-      this.listRoles = [];
+
+      let exists = false;
+      this.permissions.forEach(element => {
+        this.permissionsAuxNew.forEach(elementInside => {
+          if(element.id == elementInside.id){
+            exists = true;
+          }
+        });
+        if(!exists){
+          this.permissionsAuxNew.push(new PermissionsChecked(element.id,element.guard_name,element.name,false))
+        }
+        exists = false;
+      });
+
+      
+      this.permissionsAuxNew.sort(function(a,b){return parseInt(a.id) - parseInt(b.id)})
+      
+
+      this.rolesDisplay.push(new RoleModel(element.id,element.guard_name,element.name, this.permissionsAuxNew));
     });
-    console.log(this.listRolesPermissions);
-
-
-    this.displayedHeads = this.roles.map((x, index) => x.name);
-    this.displayedColumns = this.displayedHeads.concat("delete");
-    this.myformArray = new FormArray(
-      this.listRolesPermissions.map(row => new FormArray(row.map(x => new FormControl(x.name_permission,Validators.required))))
-    );
-    console.log(this.myformArray);
-
-    this.columns = data[0].length;
-    this.keyboardService.keyBoard.subscribe(res => {
-      this.move(res);
-    });
-
-
-    /* this.displayedHeads = data[0].map((x, index) => "col" + index);
-    this.displayedColumns = this.displayedHeads.concat("delete");
-    this.myformArray = new FormArray(
-      data.map(row => new FormArray(row.map(x => new FormControl(x,Validators.required))))
-    );
-
-    this.columns = data[0].length;
-    this.keyboardService.keyBoard.subscribe(res => {
-      this.move(res);
-    }); */
   }
 
   ngOnDestroy(): void {
   }
 
   ngAfterViewInit() {
-    //console.log(this.roles);
-    //this.columnNames.push('Roles / Permissions')
-    //this.columnNames.push('name_role');
-    //this.columnNames.push('name_permission');
-    /* this.roles.forEach(elementRoles => {
-      this.permissions.forEach(elementPermissions => {
-        this.listPermissions.push(elementPermissions);
+    
+  }
+
+  checkBoxChanged(event: any){
+    console.log(event.target.checked)
+    console.log(event.target.value.split(','));
+    const dataToUpdate = event.target.value.split(',')
+    console.log(dataToUpdate[2])
+    if(dataToUpdate[2]=="false" && event.target.checked==true){
+      this.rolesPermissionsService.sync_rol_permission(this.auth.readToken(),dataToUpdate[0],dataToUpdate[1],'insert').subscribe({
+        next: data => {
+          Swal.fire({
+            allowOutsideClick: false,
+            icon: 'success',
+            text: 'Permiso asociado con éxito'
+          });
+        },
+        error: error => {console.log('There was an error',error)}
       });
-      this.listRolesPermissions.push(this.listPermissions);
-      this.listPermissions = [];
-    });
-    console.log(this.listRolesPermissions);
-
-
-    this.displayedHeads = this.listRolesPermissions[0].map((x, index) => "col" + index);
-    this.displayedColumns = this.displayedHeads.concat("delete");
-    this.myformArray = new FormArray(
-      this.listRolesPermissions.map(row => new FormArray(row.map(x => new FormControl(x,Validators.required))))
-    );
-    console.log(this.myformArray);
-
-    this.columns = data[0].length;
-    this.keyboardService.keyBoard.subscribe(res => {
-      this.move(res);
-    }); */
-    //this.displayedColumns = this.columnNames;
-
-    /*this.dataSource = new MatTableDataSource(this.listRolesPermissions);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;*/
+    }
+    else{
+      this.rolesPermissionsService.sync_rol_permission(this.auth.readToken(),dataToUpdate[0],dataToUpdate[1],'delete').subscribe({
+        next: data => {
+          Swal.fire({
+            allowOutsideClick: false,
+            icon: 'success',
+            text: 'Permiso eliminado con éxito'
+          });
+        },
+        error: error => {console.log('There was an error',error)}
+      });
+    }
   }
 
-  /*applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  } */
-
-
-  delete(index: number) {
-    this.myformArray.removeAt(index);
-    this.table.renderRows();
+  addPermission(){
+    this.dialog.open(DialogNewEditPermissionComponent, {
+      data:{
+      },
+      width:'30%'
+    })
   }
-  add() {
-    const empty = [];
-    for (let i = 0; i < this.columns; i++) empty.push(true);
 
-    this.myformArray.push(new FormArray(empty.map(x => new FormControl("",Validators.required))));
-    console.log(this.myformArray.controls)
-    this.table.renderRows();
+  addRole(){
+    this.dialog.open(DialogNewEditRoleComponent, {
+      data:{
+      },
+      width:'30%'
+    })
   }
-  move(object) {
-    const inputToArray = this.inputs.toArray();
-    const rows = this.myformArray.length;
-    const cols = this.displayedColumns.length;
-    let index = inputToArray.findIndex(x => x.element === object.element);
-    switch (object.action) {
-      case "UP":
-        index--;
-        break;
-      case "DOWN":
-        index++;
-        break;
-      case "LEFT":
-        if (index - rows >= 0) index -= rows;
-        else {
-          let rowActual = index % rows;
-          if (rowActual > 0) index = rowActual - 1 + (cols - 1) * rows;
-        }
-        break;
-      case "RIGTH":
-        console.log(index + rows, inputToArray.length);
-        if (index + rows < inputToArray.length) index += rows;
-        else {
-          let rowActual = index % rows;
-          if (rowActual < rows - 1) index = rowActual + 1;
-        }
-        break;
-    }
-    if (index >= 0 && index < this.inputs.length) {
-      inputToArray[index].element.nativeElement.focus();
-    }
+
+  editRole(role: any){
+    this.dialog.open(DialogNewEditRoleComponent,{
+      data:{
+        userEdit: role,
+      },
+      width: '30%'
+    })
+  }
+
+  deleteRole(id:number){
+    this.rolesPermissionsService.deleteRole(this.auth.readToken(),id).subscribe({
+      next: data => {
+        Swal.fire({
+          allowOutsideClick: false,
+          icon: 'success',
+          text: 'Rol eliminado con éxito'
+        });
+      },
+      error: error => {console.log('There was an error',error)}
+    })
   }
 
 }

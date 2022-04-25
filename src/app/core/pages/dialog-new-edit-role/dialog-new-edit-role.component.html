@@ -1,0 +1,19 @@
+<h1>{{actionBtn}} Rol</h1>
+<div mat-dialog-content>
+    <form [formGroup]="roleForm">
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre *</mat-label>
+            <input formControlName="name" matInput placeholder="Nombre *">
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-action [align]="'end'" class="mt-3">
+    <button mat-button color="warn" mat-dialog-close>Cerrar</button>
+    <button mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
+</div>
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

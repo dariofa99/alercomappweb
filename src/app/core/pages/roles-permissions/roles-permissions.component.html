@@ -1,25 +1,25 @@
-<button mat-button (click)="add()">Add row</button>
-<table mat-table [dataSource]="myformArray.controls" class="mat-elevation-z8">
-    <!-- Name Column -->
-    <ng-container *ngFor="let head of displayedHeads;let j=index" [matColumnDef]="head">
-        <th mat-header-cell *matHeaderCellDef> {{head}} </th>
-        <td mat-cell *matCellDef="let element">
-            <input arrow-div [formControl]="element.at(j)">
-            <small style="color:red;font-size:.7rem" *ngIf="element.at(j).errors && element.at(j).touched">required</small>
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element;let i=index;">
-            <button arrow-div mat-button (click)="delete(i)">delete</button>
-        </td>
-    </ng-container>
-
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-<pre>
-{{myformArray?.value|json}}
-</pre>
+<div class="container p-4">
+    <button mat-button color="primary" (click)="addRole()">Añadir nuevo rol</button>
+    <button mat-button color="primary" (click)="addPermission()">Añadir nuevo permiso</button>
+    <div class="table-responsive mt-3">
+        <table class='table table-hover'>
+            <thead class="text-center">
+                <tr>
+                    <th scope="col" *ngFor="let column of header">
+                        {{column}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of permissions; let i = index;" class="text-center">
+                    <td *ngFor="let col of rolesDisplay; first as isFirst">
+                        <p *ngIf="isFirst">{{col.permissions[i].name}}</p>
+                        <div *ngIf="!isFirst">
+                            <input type="checkbox" (change)="checkBoxChanged($event)" [checked]="col.permissions[i].checked" [value]='col.id.toString()+","+row.id+","+col.permissions[i].checked.toString()'>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

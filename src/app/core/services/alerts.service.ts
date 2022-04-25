@@ -24,7 +24,7 @@ export class AlertsService {
       `${ this.url }/events`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['events'].map((item) => {
-        //console.log(data)
+        console.log(data)
         return this.adapterAlert.adapt(item)
       })) 
     );

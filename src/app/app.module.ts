@@ -22,6 +22,9 @@ import { KeyBoardService } from './core/services/keyboard.service';
 import { UserAdminComponent } from './core/pages/user-admin/user-admin.component';
 import { MyalertsComponent } from './core/pages/myalerts/myalerts.component';
 import { InstitutionsComponent } from './core/pages/institutions/institutions.component';
+import { DialogNewEditUserComponent } from './core/pages/dialog-new-edit-user/dialog-new-edit-user.component';
+import { DialogNewEditRoleComponent } from './core/pages/dialog-new-edit-role/dialog-new-edit-role.component';
+import { DialogNewEditPermissionComponent } from './core/pages/dialog-new-edit-permission/dialog-new-edit-permission.component';
 
 
 @NgModule({
@@ -37,7 +40,10 @@ import { InstitutionsComponent } from './core/pages/institutions/institutions.co
     ArrowDivDirective,
     UserAdminComponent,
     MyalertsComponent,
-    InstitutionsComponent
+    InstitutionsComponent,
+    DialogNewEditUserComponent,
+    DialogNewEditRoleComponent,
+    DialogNewEditPermissionComponent,
   ],
   imports: [
     BrowserModule,

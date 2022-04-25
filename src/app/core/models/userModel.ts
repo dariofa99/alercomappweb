@@ -1,6 +1,7 @@
 
 import { Injectable } from "@angular/core";
 import { Adapter } from "../interfaces/adapter";
+import { RoleModel } from "./roleModel";
 
 export class UserModel {
 
@@ -17,7 +18,7 @@ export class UserModel {
         public town_id?: number,
         public created_at?: string,
         public updated_at?: string,
-        public password?: string,
+        public roles?: RoleModel[],
     ){}
 
 }
@@ -29,6 +30,9 @@ export class UserModel {
     adapt(item: any): UserModel {
       return new UserModel(item.id,item.username, item.name,
         item.lastname, item.email, item.email_verified_at, item.phone_number,item.address,
-        item.status_id,item.town_id,item.created_at,item.updated_at);
+        item.status_id,item.town_id,item.created_at,item.updated_at,
+        item['roles'].map(item=>{
+          return new RoleModel(item.id,item.guard_name,item.name)
+        }));
     }
   }

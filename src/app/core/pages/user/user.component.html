@@ -28,49 +28,51 @@
         <div class="col-md-8 col-12">
             <mat-tab-group animationDuration="0ms" class="mt-5">
                 <mat-tab label="Información">
-                    <form>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="InputIdentification">Tipo de Identificación</label>
-                                <br>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="radio1" disabled>
-                                    <label class="form-check-label">NIT</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="radio1" checked disabled>
-                                    <label class="form-check-label">CC</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="InputIdentificationNumber">Número de Identificación</label>
-                                <input type="text" class="form-control" id="inputIdentificationNumber" placeholder="" value="{{item.id}}" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label for="InputNames">Nombres</label>
-                                <input type="text" class="form-control" id="inputNames" placeholder="Nombres" value="{{item.name + item.lastname}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="InputEmail">Email</label>
-                                <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="{{item.email}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="InputAddress">Dirección</label>
-                                <input type="text" class="form-control" id="inputAddress" placeholder="Dirección" value="{{item.address}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="InputState">Municipio</label>
-                                <input type="text" class="form-control" id="inputState" placeholder="Municipio" value="Pasto">
-                            </div>
-                            <div class="form-group">
-                                <label for="InputPhone">Teléfono</label>
-                                <input type="text" class="form-control" id="inputPhone" placeholder="Teléfono" value="{{item.phone_number}}">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                    <div class="container p-4">
+                        <form [formGroup]="userForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre *</mat-label>
+                                <input formControlName="name" matInput placeholder="Nombre *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Apellido *</mat-label>
+                                <input formControlName="lastname" matInput placeholder="Apellido *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre de Usuario *</mat-label>
+                                <input formControlName="username" matInput placeholder="Nombre de Usuario *">
+                                <mat-hint>Solo números y letras</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Correo *</mat-label>
+                                <input formControlName="email" matInput placeholder="Correo *">
+                            </mat-form-field>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Departamento</mat-label>
+                                <mat-select (selectionChange)="onDepartmentSelected($event)" [(value)]="selectedDepartment">
+                                    <mat-option *ngFor="let department of departments" [value]="department.id">{{department.reference_name}}</mat-option>
+                                </mat-select>
+                                <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field *ngIf="isOnDepartment" appearance="fill">
+                                <mat-label>Municipio</mat-label>
+                                <mat-select formControlName="town_id" [(value)]="selectedTown">
+                                    <mat-option *ngFor="let town of townsDisplay" [value]="town.id">{{town.town_name}}</mat-option>
+                                </mat-select>
+                                <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Rol</mat-label>
+                                <mat-select formControlName="role_id" [(value)]="selectedRole">
+                                    <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
+                                </mat-select>
+                                <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+                            </mat-form-field>
+                        </form>
+                        <div [align]="'end'" class="pt-3">
+                            <button mat-button color="primary" (click)="updateUser()">Actualizar</button>
                         </div>
-                        <!-- /.card-body -->
-                    </form>
+                    </div>
                 </mat-tab>
                 <mat-tab label="Contraseña">
                     <form>
@@ -101,3 +103,9 @@
         </div>
     </div>
 </div>
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

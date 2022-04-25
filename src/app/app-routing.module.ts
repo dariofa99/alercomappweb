@@ -5,9 +5,12 @@ import { ForgotComponent } from './core/pages/forgot/forgot.component';
 import { HomeComponent } from './core/pages/home/home.component';
 import { LoginComponent } from './core/pages/login/login.component';
 import { RegisterComponent } from './core/pages/register/register.component';
+import { UserAdminComponent } from './core/pages/user-admin/user-admin.component';
+import { UsersResolverService } from './core/resolvers/users-resolver.service';
 
 const routes: Routes = [
-  { path: 'home'    , component: HomeComponent, canActivate: [ AuthGuard ] },
+  { path: 'home'    , component: HomeComponent, canActivate: [ AuthGuard ],resolve: {users: UsersResolverService} },
+  { path: 'home/admin-users'    , component: UserAdminComponent, canActivate: [ AuthGuard ] },
   { path: 'register', component: RegisterComponent },
   { path: 'login'   , component: LoginComponent },
   { path: 'forgot'   , component: ForgotComponent },
