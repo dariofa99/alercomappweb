@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
           console.log(this.loading);
         }
         if (ev instanceof NavigationEnd || ev instanceof NavigationCancel || ev instanceof NavigationError) {
-          //this.loading = false;
+          this.loading = false;
           console.log(this.loading);
         }
       });
