@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AgmCoreModule } from '@agm/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -55,9 +54,6 @@ import { DialogNewEditPermissionComponent } from './core/pages/dialog-new-edit-p
     MaterialModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyB_YcsBPRa2i9bDIupg7wuCCRWlpEO1Ip8'
-    })
   ],
   providers: [RolesPermissionsComponent, KeyBoardService],
   bootstrap: [AppComponent]

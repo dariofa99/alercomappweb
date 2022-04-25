@@ -5,7 +5,7 @@ import { UserModel } from '../../models/userModel';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { RolesPermissionsService } from '../../services/roles-permissions.service';
-import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, ChildActivationEnd, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { DepartmentModel } from '../../models/departmentModel';
 import { TownModel } from '../../models/townModel';
 import { ReferencesService } from '../../services/references.service';
@@ -32,24 +32,11 @@ export class HomeComponent implements OnInit {
   departments: DepartmentModel[];
   towns: Array<TownModel[]> = [];
   
-  loading = true;
-
   constructor(private references: ReferencesService, private userService: UserService, private auth: AuthService,
     private rolesPermissions:RolesPermissionsService, private route: ActivatedRoute, public router: Router) {
 
-      this.router.events.subscribe(ev => {
-        if (ev instanceof NavigationStart) {
-          this.loading = true;
-          console.log(this.loading);
-        }
-        if (ev instanceof NavigationEnd || ev instanceof NavigationCancel || ev instanceof NavigationError) {
-          this.loading = false;
-          console.log(this.loading);
-        }
-      });
-
-
       this.users = this.route.snapshot.data['users'];
+      this.user = this.route.snapshot.data['user'];
       this.references.getDepartments(this.auth.readToken()).subscribe({
         next: data=>{this.departments = data;
           this.departments.forEach(element => {
@@ -62,13 +49,13 @@ export class HomeComponent implements OnInit {
       });
 
       
-      this.user = new UserModel();
-    this.userService.getUserMe(this.auth.readToken()).subscribe(
+//      this.user = new UserModel();
+    /* this.userService.getUserMe(this.auth.readToken()).subscribe(
        resp => {
          this.user = resp;
          //console.log(resp);
        }
-    );
+    ); */
     this.rolesPermissions.getRoles(this.auth.readToken()).subscribe(
       resp => {
         //console.log(resp);
@@ -154,6 +141,21 @@ export class HomeComponent implements OnInit {
     this.isOnRolesPermissions = false;
     this.isOnUsersAdmin = false;
     this.isOnInstitutions = false;
+  }
+
+  showComponent(value,component){
+    this.isOnAlert = false;
+    this.isOnUser = false;
+    this.isOnRolesPermissions = false;
+    this.isOnUsersAdmin = false;
+    this.isOnInstitutions = false;
+    this.isOnMyAlerts = false;
+    switch(component){
+      case "isOnAlert":
+        this.isOnAlert = value;
+        break;
+      case "isOnUser":
+    }
   }
 
 }

@@ -1,2 +1,21 @@
+<style>
+    .wrapperSpinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 20px);
+    }
+    
+    .innerSpinner {
+        padding: 12px;
+    }
+</style>
+
+<div class="wrapperSpinner" *ngIf='loading'>
+    <div class="innerSpinner">
+        <mat-progress-spinner color="accent" mode="indeterminate"></mat-progress-spinner>
+    </div>
+</div>
+
 <router-outlet>
 </router-outlet>

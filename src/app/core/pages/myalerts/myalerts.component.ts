@@ -1,4 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AffectRangeModel } from '../../models/affectRangeModel';
 import { AlertModel } from '../../models/alertModel';
 import { EventTypeModel } from '../../models/eventTypeModel';
@@ -22,7 +25,9 @@ export class MyalertsComponent implements OnInit {
   affectRanges: AffectRangeModel[] = [];
   mapType = 'satellite';
 
-  constructor(private auth: AuthService, private alertService: AlertsService, private references: ReferencesService) { }
+  constructor(private auth: AuthService, private alertService: AlertsService, private references: ReferencesService) {
+   
+  }
 
   ngOnInit(): void {
     this.alertService.getAlerts(this.auth.readToken()).subscribe((

@@ -9,10 +9,9 @@ import { AuthService } from "../services/auth.service";
 providedIn:'root'
 })
 
-export class UsersResolverService implements Resolve<UserModel[]>{
+export class UserResolverService implements Resolve<UserModel>{
     constructor(private userService: UserService, private auth: AuthService){}
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UserModel[] | Observable<UserModel[]> | Promise<UserModel[]> {
-        return this.userService.getUsers(this.auth.readToken());
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UserModel | Observable<UserModel> | Promise<UserModel> {
+        return this.userService.getUserMe(this.auth.readToken());
     }
 }
-
