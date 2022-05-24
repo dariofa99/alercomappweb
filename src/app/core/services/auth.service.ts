@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { UserRegisterModel } from '../models/userRegisterModel';
-import { Router, ɵangular_packages_router_router_o } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url = 'http://3.136.4.86/api/v1'
+  private url = environment.apiUrl;
 
   userToken: string = "";
 
@@ -20,19 +20,24 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('userID');
     this.route.navigateByUrl("login");
   }
 
-  login( user: UserRegisterModel ) {
+  login( userData ) {
 
     const authData = {
-      ...user,
+      ...userData,
       returnSecureToken: true
     };
 
+    var headers = new HttpHeaders({
+      'Access-Control-Allow-Origin': '*'
+    });
+
     return this.http.post(
       `${ this.url }/login`,
-      authData
+      authData,{headers: headers}
     ).pipe(
       map( resp => {
         this.saveToken( resp['access_token'] );
@@ -42,10 +47,10 @@ export class AuthService {
 
   }
 
-  newUser( user: UserRegisterModel ) {
+  newUser( userData ) {
 
     const authData = {
-      ...user,
+      ...userData,
       returnSecureToken: true
     };
 
@@ -101,6 +106,42 @@ export class AuthService {
     } else {
       return false;
     }
+
+  }
+
+  confirmAccount( token ) {
+
+    return this.http.post(
+      `${ this.url }/confirm/account`,token
+    ).pipe(
+      map( resp => {
+        return resp;
+      })
+    );
+
+  }
+
+  forgot( forgotData ) {
+
+    return this.http.post(
+      `${ this.url }/reset/password/mail`,forgotData
+    ).pipe(
+      map( resp => {
+        return resp;
+      })
+    );
+
+  }
+
+  recoveryPassword( recoveryPasswordData ) {
+
+    return this.http.post(
+      `${ this.url }/reset/password`,recoveryPasswordData
+    ).pipe(
+      map( resp => {
+        return resp;
+      })
+    );
 
   }
 

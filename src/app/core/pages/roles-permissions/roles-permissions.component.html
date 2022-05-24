@@ -1,25 +1,32 @@
-<div class="container p-4">
-    <button mat-button color="primary" (click)="addRole()">Añadir nuevo rol</button>
-    <button mat-button color="primary" (click)="addPermission()">Añadir nuevo permiso</button>
-    <div class="table-responsive mt-3">
-        <table class='table table-hover'>
-            <thead class="text-center">
-                <tr>
-                    <th scope="col" *ngFor="let column of header">
-                        {{column}}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of permissions; let i = index;" class="text-center">
-                    <td *ngFor="let col of rolesDisplay; first as isFirst">
-                        <p *ngIf="isFirst">{{col.permissions[i].name}}</p>
-                        <div *ngIf="!isFirst">
-                            <input type="checkbox" (change)="checkBoxChanged($event)" [checked]="col.permissions[i].checked" [value]='col.id.toString()+","+row.id+","+col.permissions[i].checked.toString()'>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container p-4">
+            <button mat-button color="primary" (click)="addRole()">Añadir nuevo rol</button>
+            <button mat-button color="primary" (click)="addPermission()">Añadir nuevo permiso</button>
+            <div class="table-responsive mt-3">
+                <table class='table table-hover'>
+                    <thead class="text-center">
+                        <tr>
+                            <th scope="col" *ngFor="let column of header">
+                                {{column}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of permissions; let i = index;" class="text-center">
+                            <td *ngFor="let col of rolesDisplay; first as isFirst">
+                                <p *ngIf="isFirst">{{col.permissions[i].name}}</p>
+                                <div *ngIf="!isFirst">
+                                    <input type="checkbox" (change)="checkBoxChanged($event)" [checked]="col.permissions[i].checked" [value]='col.id.toString()+","+row.id+","+col.permissions[i].checked.toString()'>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+<app-footer></app-footer>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { PermissionsAdapter, PermissionsModel } from '../models/permissionsModel';
 import { RoleModel, RoleAdapter } from '../models/roleModel';
 
@@ -11,7 +12,7 @@ import { RoleModel, RoleAdapter } from '../models/roleModel';
 })
 export class RolesPermissionsService {
 
-  private url = 'http://3.136.4.86/api/v1'
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient, private adapterRole: RoleAdapter, private adapterPermission: PermissionsAdapter) { }
 

@@ -1,80 +1,56 @@
-<div class="container">
-    <form>
-        <div class="card-body">
-            <h3>Crear Institución</h3>
-            <div class="form-group">
-                <input type="text" class="form-control" id="inputInstitutionName" placeholder="" value="" placeholder="Nombre Institución">
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="inputInstitutionAddress" placeholder="Dirección" value="">
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="inputPhone" placeholder="Teléfono" value="">
-            </div>
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container p-4">
+            <button mat-button color="primary" (click)="addInstitution()">Añadir nueva Institución</button>
 
-            <div class="input-group mb-3">
-                <select (change)="onDepartmentSelected($event)" class="form-control select2" style="width: 100%;">
-                    <option value="">Seleccione un departamento</option>
-                    <option *ngFor="let department of departments" [value]="department.id">{{department.reference_name}}</option>
-                </select>
+            <mat-form-field appearance="standard">
+                <mat-label>Filtro</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Ejemplo. Mia" #input>
+            </mat-form-field>
+
+            <div class="mat-elevation-z8">
+                <table class="table-responsive" mat-table [dataSource]="dataSource" matSort>
+
+                    <ng-container *ngFor="let displayedColumn of displayedColumns; index as i; let last = last;" matColumnDef="{{displayedColumn}}">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{displayedColumnsSpanish[i]}} </th>
+                        <td mat-cell *matCellDef="let row">{{row[displayedColumn]}}
+                            <div *ngIf="last" class="example-button-row">
+                                <button mat-button color="primary" (click)="editInstitution(row)"><mat-icon>edit</mat-icon></button>
+                                <button mat-button color="primary" (click)="deleteInstitution(row.id)"><mat-icon>delete</mat-icon></button>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <!-- Row shown when there is no matching data. -->
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                    </tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" aria-label="Select page of users"></mat-paginator>
             </div>
-
-            <div *ngIf="isDeparmentSelected" class="input-group mb-3">
-                <select name="town_id" class="form-control select2" style="width: 100%;">
-                    <option value="">Seleccione un municipio</option>
-                    <option *ngFor="let town of towns" [value]="town.id">{{town.town_name}}</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="InputContact">Información de contacto</label>
-                <div class="row mb-3">
-                    <div class="col-5">
-                        <select #contactType (change)="onContactTypeSelected($event)" class="form-control select2" style="width: 100%;">
-                            <option value="">Tipo de contacto</option>
-                            <option [value]="15">Correo Electrónico</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control" id="inputContact" #inputContact placeholder="Ingrese datos" value="">
-                    </div>
-                    <div class="col-1">
-                        <button (click)="onAddContact()" class="btn btn-primary">+</button>
-                    </div>
-                </div>
-
-                <mat-list class="pt-0">
-                    <mat-list-item *ngFor="let elements of contacts;">
-                        <h4 mat-line>{{elements}}</h4>
-                        <mat-icon (click)="removeFromList(elements)" style="cursor: hand">clear</mat-icon>
-                    </mat-list-item>
-                </mat-list>
-            </div>
-
-            <div class="form-group mb-3">
-                <label for="Tipo de Alerta">Tipos de alertas que atiende</label>
-                <div class="row mb-3">
-                    <div class="col-10">
-                        <select #eventType (change)="onEventTypeSelected($event)" name="event_type_id" class="form-control select2" style="width: 100%;">
-                            <option value="">Seleccione un tipo de alerta</option>
-                            <option *ngFor="let eventType of eventTypes" [selected]="" [value]="eventType.id">{{eventType.event_type_name}}</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <button (click)="onAddEventType()" class="btn btn-primary">+</button>
-                    </div>
-                </div>
-
-                <mat-list class="pt-0">
-                    <mat-list-item *ngFor="let elements of event_types_names;">
-                        <h4 mat-line>{{elements}}</h4>
-                        <mat-icon (click)="removeFromList(elements)" style="cursor: hand">clear</mat-icon>
-                    </mat-list-item>
-                </mat-list>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Crear</button>
         </div>
-        <!-- /.card-body -->
-    </form>
+    </div>
 </div>
+<app-footer></app-footer>
+
+<style>
+    table {
+        width: 100%;
+    }
+    
+    .mat-form-field {
+        font-size: 14px;
+        width: 100%;
+    }
+    
+    td,
+    th {
+        width: 25%;
+    }
+</style>

@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Cambiar Estado del Evento</h1>
+<div mat-dialog-content>
+    <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select (selectionChange)="onStatusSelected($event)" [(value)]="data.selectedStatus">
+            <mat-option *ngFor="let element of data.status" [value]="element.id">{{element.reference_name}}</mat-option>
+        </mat-select>
+        <mat-hint align="end">Selecciona un estado</mat-hint>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+    <button mat-button [mat-dialog-close]="statusSelected" cdkFocusInitial>Aceptar</button>
+</div>
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

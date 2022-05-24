@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, NgModule } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { UserModel } from 'src/app/core/models/userModel';
 
 @Component({
@@ -9,23 +10,20 @@ import { UserModel } from 'src/app/core/models/userModel';
 })
 
 export class SidebarComponent implements OnInit {
-  @Output() alertShowingUp: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() userShowingUp: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() rolespermissionsShowingUp: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() usersadminShowingUp: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() institutionsShowingUp: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() myalertsShowingUp: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() item: UserModel;
   status_alert: boolean = false;
   status_roles_permissions: boolean = false;
   status_users_admin: boolean = false;
   status_institutions: boolean = false;
+  status_eventTypes: boolean = false;
   status_my_alerts: boolean = false;
+  status_categories: boolean = false;
+  status_institutional_routes: boolean = false;
 
-  constructor() { }
+  constructor(public router: Router) { }
 
   ngOnInit(): void {
-    
+    //console.log(this.item);
   }
 
   alertShowingEvent(){
@@ -34,8 +32,8 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = false;
     this.status_institutions = false;
     this.status_my_alerts = false;
-    this.alertShowingUp.emit(true);
-    console.log(this.item)
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-alerts/add-alert']);
   }
 
   userShowingEvent(){
@@ -44,7 +42,8 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = false;
     this.status_institutions = false;
     this.status_my_alerts = false;
-    this.userShowingUp.emit(true);
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-users/edit-user',this.item.id]);
   }
 
   rolespermissionsShowingEvent(){
@@ -54,7 +53,8 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = false;
     this.status_institutions = false;
     this.status_my_alerts = false;
-    this.rolespermissionsShowingUp.emit(true);
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-roles']);
   }
 
   usersadminShowingEvent(){
@@ -64,7 +64,8 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = true;
     this.status_institutions = false;
     this.status_my_alerts = false;
-    this.usersadminShowingUp.emit(true);
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-users']);
   }
 
   institutionsShowingEvent(){
@@ -74,7 +75,30 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = false;
     this.status_institutions = true;
     this.status_my_alerts = false;
-    this.institutionsShowingUp.emit(true);
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-institutions']);
+  }
+
+  eventTypesShowingEvent(){
+    console.log("Click");
+    this.status_alert = false;
+    this.status_roles_permissions = false;
+    this.status_users_admin = false;
+    this.status_institutions = true;
+    this.status_my_alerts = false;
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-event-types']);
+  }
+
+  categoriesShowingEvent(){
+    console.log("Click");
+    this.status_alert = false;
+    this.status_roles_permissions = false;
+    this.status_users_admin = false;
+    this.status_institutions = true;
+    this.status_my_alerts = false;
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-categories']);
   }
 
   myalertsShowingEvent(){
@@ -84,7 +108,23 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = false;
     this.status_institutions = false;
     this.status_my_alerts = true;
-    this.myalertsShowingUp.emit(true);
+    this.status_institutional_routes = false;
+    this.router.navigate(['/home/admin-alerts']);
+  }
+
+  institutionalRoutesShowingEvent(){
+    console.log("Click");
+    this.status_alert = false;
+    this.status_roles_permissions = false;
+    this.status_users_admin = false;
+    this.status_institutions = false;
+    this.status_my_alerts = false;
+    this.status_institutional_routes = true;
+    this.router.navigate(['/home/admin-institutional-routes']);
+  }
+
+  backHome(){
+    this.router.navigate(['/home']);
   }
 
 }

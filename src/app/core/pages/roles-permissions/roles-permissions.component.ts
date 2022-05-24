@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, ViewChild, OnInit, QueryList, ViewChildren, Input, Directive, ViewContainerRef, TemplateRef} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import { PermissionsModel } from '../../models/permissionsModel';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RoleModel } from '../../models/roleModel';
 import { AuthService } from '../../services/auth.service';
 import { RolesPermissionsService } from '../../services/roles-permissions.service';
-import { DialogNewEditRoleComponent } from '../dialog-new-edit-role/dialog-new-edit-role.component';
-import { DialogNewEditPermissionComponent } from '../dialog-new-edit-permission/dialog-new-edit-permission.component';
 import Swal from 'sweetalert2';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserModel } from '../../models/userModel';
+import { ToastrService } from 'ngx-toastr';
 
 export class PermissionsChecked{
   constructor(
@@ -29,11 +29,16 @@ export class RolesPermissionsComponent implements OnInit, AfterViewInit {
   permissionsAux: PermissionsModel[] = [];
   permissionsAuxNew: PermissionsModel[] = [];
   rolesDisplay: RoleModel[] = [];
-  @Input() roles: RoleModel[];
-  @Input() permissions: PermissionsModel[];
+  roles: RoleModel[];
+  permissions: PermissionsModel[];
   checked = false;
+  user: UserModel;
 
-  constructor(private auth: AuthService, private dialog: MatDialog, private rolesPermissionsService: RolesPermissionsService) {
+  constructor(private auth: AuthService, private rolesPermissionsService: RolesPermissionsService,private route: ActivatedRoute, public router: Router,
+    private toastr: ToastrService) {
+    this.roles = this.route.snapshot.data['roles'];
+    this.permissions = this.route.snapshot.data['permissions'];
+    this.user = this.route.snapshot.data['user'];
   }
 
   ngOnInit(): void {
@@ -92,72 +97,94 @@ export class RolesPermissionsComponent implements OnInit, AfterViewInit {
   }
 
   checkBoxChanged(event: any){
-    console.log(event.target.checked)
-    console.log(event.target.value.split(','));
     const dataToUpdate = event.target.value.split(',')
-    console.log(dataToUpdate[2])
     if(dataToUpdate[2]=="false" && event.target.checked==true){
       this.rolesPermissionsService.sync_rol_permission(this.auth.readToken(),dataToUpdate[0],dataToUpdate[1],'insert').subscribe({
         next: data => {
-          Swal.fire({
-            allowOutsideClick: false,
-            icon: 'success',
-            text: 'Permiso asociado con éxito'
-          });
+          if(data['errors']!=undefined?data['errors'].length!=0:false){
+            data['errors'].map(res => {
+              this.toastr.error(res);
+            })
+          }
+          else{
+            Swal({
+              allowOutsideClick: false,
+              type: 'success',
+              text: 'Permiso asociado con éxito'
+            });
+          }
         },
-        error: error => {console.log('There was an error',error)}
+        error: error => {
+          Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
+          console.log('There was an error',error)
+        }
       });
     }
     else{
       this.rolesPermissionsService.sync_rol_permission(this.auth.readToken(),dataToUpdate[0],dataToUpdate[1],'delete').subscribe({
         next: data => {
-          Swal.fire({
-            allowOutsideClick: false,
-            icon: 'success',
-            text: 'Permiso eliminado con éxito'
-          });
+          if(data['errors']!=undefined?data['errors'].length!=0:false){
+            data['errors'].map(res => {
+              this.toastr.error(res);
+            })
+          }
+          else{
+            Swal({
+              allowOutsideClick: false,
+              type: 'success',
+              text: 'Permiso eliminado con éxito'
+            });
+          }
         },
-        error: error => {console.log('There was an error',error)}
+        error: error => {
+          Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
+          console.log('There was an error',error)
+        }
       });
     }
   }
 
   addPermission(){
-    this.dialog.open(DialogNewEditPermissionComponent, {
-      data:{
-      },
-      width:'30%'
-    })
+    this.router.navigate(["/home/admin-roles/add-edit-permission"]);
   }
 
   addRole(){
-    this.dialog.open(DialogNewEditRoleComponent, {
-      data:{
-      },
-      width:'30%'
-    })
-  }
-
-  editRole(role: any){
-    this.dialog.open(DialogNewEditRoleComponent,{
-      data:{
-        userEdit: role,
-      },
-      width: '30%'
-    })
+    this.router.navigate(["home/admin-roles/add-edit-rol"]);
   }
 
   deleteRole(id:number){
-    this.rolesPermissionsService.deleteRole(this.auth.readToken(),id).subscribe({
-      next: data => {
-        Swal.fire({
-          allowOutsideClick: false,
-          icon: 'success',
-          text: 'Rol eliminado con éxito'
-        });
-      },
-      error: error => {console.log('There was an error',error)}
-    })
+    Swal({  
+      title: 'Realmente deseas eliminar este rol?',  
+      showCancelButton: true,  
+      confirmButtonText: `Si`,  
+      cancelButtonText: `No`,
+    }).then((result) => {  
+        if (result.value) {    
+          this.rolesPermissionsService.deleteRole(this.auth.readToken(),id).subscribe({
+            next: data => {
+              if(data['errors']!=undefined?data['errors'].length!=0:false){
+                data['errors'].map(res => {
+                  this.toastr.error(res);
+                })
+              }
+              else{
+                Swal({
+                  allowOutsideClick: false,
+                  type: 'success',
+                  text: 'Rol eliminado con éxito'
+                });
+              }
+            },
+            error: error => {
+              Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
+              console.log('There was an error',error)
+            }
+          })
+        } else if (result) {    
+       }
+    });
+
+    
   }
 
 }

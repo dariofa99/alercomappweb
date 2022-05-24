@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 
 import { AuthService } from '../../services/auth.service';
 
 import Swal from 'sweetalert2';
-import { UserRegisterModel } from '../../models/userRegisterModel';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -16,48 +16,56 @@ import { UserRegisterModel } from '../../models/userRegisterModel';
 })
 export class LoginComponent implements OnInit {
 
-  user: UserRegisterModel = new UserRegisterModel();
+  loginForm !: FormGroup;
   rememberme = false;
 
-  constructor(private auth: AuthService,private router: Router) { }
+  constructor(private auth: AuthService,private router: Router, private toastr: ToastrService,
+    private formBuilder: FormBuilder) { 
+    this.loginForm = this.formBuilder.group({
+      username: ['',Validators.required,],
+      password: ['',Validators.required],
+   });
+  }
 
   ngOnInit(): void {
   }
 
-  login( form: NgForm ) {
+  login() {
 
-    if (  form.invalid ) { return; }
-
-    Swal.fire({
-      allowOutsideClick: false,
-      icon: 'info',
-      text: 'Espere por favor...'
-    });
-    Swal.showLoading();
-
-
-    this.auth.login( this.user )
-      .subscribe( resp => {
-
-        console.log(resp);
-        Swal.close();
-
-        if ( this.rememberme ) {
-          localStorage.setItem('email', this.user.username);
-        }
-
-        this.router.navigateByUrl('/home');
-
-      }, (err) => {
-
-        console.log(err.error.error.message);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error authenticating',
-          text: err.error.error.message
-        });
+    if (  this.loginForm.valid ) { 
+      Swal({
+        allowOutsideClick: false,
+        type: 'info',
+        text: 'Espere por favor...'
       });
+      Swal.showLoading();
+  
+  
+      this.auth.login( this.loginForm.value ).subscribe({
+        next: data => {
+          console.log(data)
+          if(data['errors']!=undefined?data['errors'].length!=0:false){
+            data['errors'].map(res => {
+              this.toastr.error(res);
+            })
+          }
+          else{
+            Swal.close();
+            if ( this.rememberme ) {
+              localStorage.setItem('username', data['user'].username);
+            }
+            localStorage.setItem('userID', data['user'].id);
+            localStorage.setItem('token', data['access_token']);
+            this.router.navigateByUrl('/home');
+          }
+          
+        },
+        error: error => {
+          Swal({text:error.error.error, type:'error'})  
+          console.log('There was an error',error)
+        }
+      });
+     }
 
   }
-
 }

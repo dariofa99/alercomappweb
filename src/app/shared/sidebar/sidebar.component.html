@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/" class="brand-link" style="background-color: #fff;">
+    <a (click)="backHome()" class="brand-link" style="background-color: #fff;">
         <img src="./assets/logos/conectividad_ICONOS.png" alt="Logo ALERCOM" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-bold" style="color:#FF8000;">ALERCOM</span>
     </a>
@@ -59,9 +59,10 @@
                         <li class="nav-item">
                             <a (click)="institutionsShowingEvent()" class="nav-link" [ngClass]="status_institutions ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Crear Instituciones</p>
+                                <p>Administrar Instituciones</p>
                             </a>
                         </li>
+
                     </ul>
                 </li>
 
@@ -86,6 +87,24 @@
                                 <p>Crear Alerta</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a (click)="eventTypesShowingEvent()" class="nav-link" [ngClass]="status_eventTypes ? 'active' : ''">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tipos de Alertas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a (click)="categoriesShowingEvent()" class="nav-link" [ngClass]="status_categories ? 'active' : ''">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categorías</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a (click)="institutionalRoutesShowingEvent()" class="nav-link" [ngClass]="status_institutional_routes ? 'active' : ''">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Rutas Institucionales</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -105,3 +124,4 @@
     </div>
     <!-- /.sidebar -->
 </aside>
+<router-outlet></router-outlet>

@@ -16,63 +16,44 @@
                         <a href="/" class="h1"><img class="card-img-top" style="width: 30%;" src="./assets/logos/conectividad_ICONOS.png" alt="Logo Alianza"></a>
                     </div>
                     <div class="card-body">
-                        <p class="login-box-msg font-weight-bold mb-0">Registrar un Nuevo Usuario</p>
+                        <p class="register-box-msg font-weight-bold mb-0">Registrarse en Alercom</p>
 
-                        <form (ngSubmit)="onSubmit( f )" #f="ngForm">
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['name'].errors" class="text-danger animated fadeIn">El nombre es obligatorio</span>
-                                <input type="text" name="name" [(ngModel)]="user.name" minlength="2" class="form-control" placeholder="Nombre" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-user"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['lastname'].errors" class="text-danger animated fadeIn">El apellido es obligatorio</span>
-                                <input type="text" name="lastname" [(ngModel)]="user.lastname" minlength="2" class="form-control" placeholder="Apellido" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-user"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['username'].errors" class="text-danger animated fadeIn">El nombre de usuario es obligatorio</span>
-                                <input type="text" name="username" [(ngModel)]="user.username" class="form-control" placeholder="Nombre de Usuario" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-envelope"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['email'].errors" class="text-danger animated fadeIn">El email de usuario es obligatorio</span>
-                                <input type="email" name="email" [(ngModel)]="user.email" class="form-control" placeholder="Email" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-envelope"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['password'].errors" class="text-danger animated fadeIn">Al menos 6 letras</span>
-                                <input type="password" name="password" [(ngModel)]="user.password" minlength="6" class="form-control" placeholder="Contraseña" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-lock"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="input-group mb-3">
-                                <input type="password" name="password_confirmation" [(ngModel)]="user.password_confirmation" minlength="6" class="form-control" placeholder="Confirmar contraseña">
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-lock"></span>
-                                    </div>
-                                </div>
-                            </div>
+                        <form [formGroup]="registerForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre *</mat-label>
+                                <mat-icon matSuffix>person</mat-icon>
+                                <input formControlName="name" matInput placeholder="Nombre *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Apellido *</mat-label>
+                                <mat-icon matSuffix>person</mat-icon>
+                                <input formControlName="lastname" matInput placeholder="Apellido *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre de Usuario *</mat-label>
+                                <mat-icon matSuffix>alternate_email</mat-icon>
+                                <input formControlName="username" matInput placeholder="Nombre de usuario *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Email *</mat-label>
+                                <mat-icon matSuffix>email</mat-icon>
+                                <input formControlName="email" matInput placeholder="Email *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Contraseña *</mat-label>
+                                <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                <input formControlName="password" [type]="hidePassword ? 'password' : 'text'" matInput placeholder="Contraseña *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Confirmar contraseña *</mat-label>
+                                <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                <input formControlName="password_confirmation" [type]="hidePassword ? 'password' : 'text'" matInput placeholder="Confirmar contraseña *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Télefono *</mat-label>
+                                <mat-icon matSuffix>phone</mat-icon>
+                                <input formControlName="phone_number" matInput placeholder="Télefono *">
+                            </mat-form-field>
                             <div class="row">
                                 <div class="col-12 mb-2">
                                     <div class="icheck-primary">
@@ -82,7 +63,7 @@
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+                                    <button type="submit" class="btn btn-primary btn-block" (click)="register()">Registrarse</button>
                                 </div>
                                 <!-- /.col -->
                             </div>
@@ -120,17 +101,11 @@
     </div>
 </footer>
 
-<style>
-    .content {
-        height: 100vh;
-    }
-</style>
-
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Terminos y Condiciones</h5>
+                <h3 class="modal-title mb-0" id="exampleModalLongTitle">Terminos y Condiciones</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -147,3 +122,17 @@
         </div>
     </div>
 </div>
+
+<style>
+    .content {
+        height: 100vh;
+    }
+    
+    mat-form-field {
+        width: 100%;
+    }
+    
+    .register-box {
+        width: 400px;
+    }
+</style>

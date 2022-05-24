@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UserRegisterModel } from '../../models/userRegisterModel';
 
 import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -14,49 +14,68 @@ import Swal from 'sweetalert2';
 })
 export class RegisterComponent implements OnInit {
 
-  user: UserRegisterModel;
   rememberme: false;
+  hidePassword: boolean = true;
+  registerForm: FormGroup;
 
-  constructor(private auth: AuthService,private router: Router) { }
+  constructor(private auth: AuthService,private router: Router, private toastr: ToastrService,
+    private formBuilder: FormBuilder) { 
+      this.registerForm = this.formBuilder.group({
+        name: ['',Validators.required,],
+        lastname: ['',Validators.required],
+        username: ['',Validators.required,],
+        email: ['',Validators.required],
+        password: ['',Validators.required,],
+        password_confirmation: ['',Validators.required],
+        phone_number: ['',Validators.required],
+     });
+    }
 
   ngOnInit(): void {
-    this.user = new UserRegisterModel();
   }
 
-  onSubmit(form: NgForm){
-    if(form.invalid){
-      return;
-    }
-    
-    Swal.fire({
-      allowOutsideClick: false,
-      icon: 'info',
-      text: 'Espere por favor...'
-    });
-    Swal.showLoading();
-
-    this.auth.newUser(this.user)
-    .subscribe(resp=>{
-      console.log(resp);
-        Swal.close();
-        Swal.fire({
-          icon: 'info',
-          title: 'Message Info',
-          text: resp['messages']
-        });
-        if ( this.rememberme ) {
-          localStorage.setItem('username', this.user.username);
+  register(){
+    if(this.registerForm.valid){
+      Swal({
+        allowOutsideClick: false,
+        type: 'info',
+        text: 'Espere por favor...'
+      });
+      Swal.showLoading();
+  
+      this.auth.newUser(this.registerForm.value).subscribe({
+        next: data => {
+          Swal.close();
+          if(data['errors']!=undefined?data['errors'].length!=0:false){
+            data['errors'].map(res => {
+              this.toastr.error(res);
+            })
+          }
+          else{
+            Swal({
+            type: 'info',
+            title: 'Message Info',
+            text: data['messages']
+            });
+            if ( this.rememberme ) {
+              localStorage.setItem('username', this.registerForm.controls['username'].value);
+            }
+            this.resetRegisterForm(this.registerForm);
+          }
+        },
+        error: error => {
+          Swal.close();
+          Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
+          console.log('There was an error',error)
         }
+      });
+    }
+  }
 
-        this.router.navigateByUrl('/home');
-    },(err)=>{
-      console.log(err);
-      Swal.close();
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al autenticar',
-          text: err.error
-        });
+  resetRegisterForm(form: FormGroup){
+    form.reset();
+    Object.keys(form.controls).forEach(key => {
+      form.get(key).setErrors(null) ;
     });
   }
 

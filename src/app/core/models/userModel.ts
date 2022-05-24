@@ -1,7 +1,10 @@
 
 import { Injectable } from "@angular/core";
 import { Adapter } from "../interfaces/adapter";
+import { DepartmentModel } from "./departmentModel";
 import { RoleModel } from "./roleModel";
+import { StatusModel } from "./statusModel";
+import { TownModel } from "./townModel";
 
 export class UserModel {
 
@@ -19,6 +22,8 @@ export class UserModel {
         public created_at?: string,
         public updated_at?: string,
         public roles?: RoleModel[],
+        public town?: TownModel,
+        public status?: StatusModel,
     ){}
 
 }
@@ -33,6 +38,11 @@ export class UserModel {
         item.status_id,item.town_id,item.created_at,item.updated_at,
         item['roles'].map(item=>{
           return new RoleModel(item.id,item.guard_name,item.name)
-        }));
+        }),
+        new TownModel(item['town'].id,item['town'].town_name,item['town'].department_id,
+        new DepartmentModel(item['town']['department'].id,item['town']['department'].reference_name,
+        item['town']['department'].category,item['town']['department'].section,item['town']['department'].is_active)),
+        new StatusModel(item['status'].id,item['status'].reference_name,item['status'].category,item['status'].section,
+        item['status'].is_active));
     }
   }

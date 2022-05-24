@@ -1,13 +1,6 @@
 <app-header></app-header>
-<app-sidebar (alertShowingUp)='onalertShowingUp($event)' (userShowingUp)='onuserShowingUp($event)' (rolespermissionsShowingUp)='onrolespermissionsShowingUp($event)' (rolespermissionsShowingUp)='onrolespermissionsShowingUp($event)' (usersadminShowingUp)='onusersadminShowingUp($event)'
-    (institutionsShowingUp)='oninstitutionsShowingUp($event)' (myalertsShowingUp)='onmyalertsShowingUp($event)' [item]="user"></app-sidebar>
+<app-sidebar [item]="user"></app-sidebar>
 <div class="content-wrapper">
-    <app-alert *ngIf="isOnAlert"></app-alert>
-    <app-user *ngIf="isOnUser" [item]="user" [roles]="roles" [towns]="towns" [departments]="departments"></app-user>
-    <app-roles-permissions *ngIf="isOnRolesPermissions" [roles]="roles" [permissions]="permissions"></app-roles-permissions>
-    <app-user-admin *ngIf="isOnUsersAdmin" [users]="users" [roles]="roles" [towns]="towns" [departments]="departments"></app-user-admin>
-    <app-myalerts *ngIf="isOnMyAlerts"></app-myalerts>
-    <app-institutions *ngIf="isOnInstitutions"></app-institutions>
 </div>
 <app-footer></app-footer>
 <router-outlet></router-outlet>

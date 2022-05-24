@@ -21,8 +21,8 @@ export class RoleModel {
     permissionAdapter: PermissionsAdapter = new PermissionsAdapter();
     adapt(item: any): RoleModel {
       return new RoleModel(item.id,item.guard_name,item.name,
-        item['permissions'].map((item)=>{
+        item['permissions'] != undefined? item['permissions'].map((item)=>{
           return this.permissionAdapter.adapt(item);
-        }));
+        }):null);
     }
   }

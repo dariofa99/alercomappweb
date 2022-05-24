@@ -1,0 +1,28 @@
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container p-4">
+            <h1>{{actionBtn}} Tipo de Categoría</h1>
+            <form [formGroup]="categoryForm">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre *</mat-label>
+                    <input formControlName="reference_name" matInput placeholder="Nombre *">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Descripción de la categoría *</mat-label>
+                    <input formControlName="reference_description" matInput placeholder="Descripción de la categoría *">
+                </mat-form-field>
+            </form>
+            <button mat-button color="primary" (click)="actionBtn=='Guardar'?addCategory():updateCategory()">{{actionBtn}}</button>
+            <button mat-button color="primary" [routerLink]="['/home/admin-categories']">Regresar</button>
+        </div>
+    </div>
+
+</div>
+<app-footer></app-footer>
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

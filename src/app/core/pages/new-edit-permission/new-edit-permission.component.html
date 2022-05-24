@@ -1,0 +1,55 @@
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container pt-4">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title font-weight-bold">Nuevo permiso</div>
+                            <div class="card-body mt-4">
+                                <form [formGroup]="permissionForm">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Nombre *</mat-label>
+                                        <input formControlName="name" matInput placeholder="Nombre *">
+                                    </mat-form-field>
+                                </form>
+                                <button mat-button color="primary" (click)="actionBtn=='Guardar'?addPermission():updatePermission()">{{actionBtn}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title font-weight-bold">Permisos activos</div>
+                            <div class="card-body mt-4">
+                                <div class="row" *ngFor="let permission of permissions">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="d-flex col-md-8 align-items-center">
+                                                {{permission.name}}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button mat-button color="primary" (click)="editPermission(permission)"><mat-icon>edit</mat-icon></button>
+                                                <button mat-button color="primary" (click)="deletePermission(permission.id)"><mat-icon>delete</mat-icon></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<app-footer></app-footer>
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

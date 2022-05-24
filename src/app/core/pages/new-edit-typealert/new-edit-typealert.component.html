@@ -1,0 +1,35 @@
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container p-4">
+            <h1>{{actionBtn}} Tipo de Alerta</h1>
+            <form [formGroup]="eventTypeForm">
+                <mat-form-field appearance="outline">
+                    <mat-label>Descripción *</mat-label>
+                    <input formControlName="event_type_description" matInput placeholder="Descripción de la alerta *">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre *</mat-label>
+                    <input formControlName="event_type_name" matInput placeholder="Nombre *">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select formControlName="category_id" (selectionChange)="onCategorySelected($event)" [(value)]="selectedCategory">
+                        <mat-option *ngFor="let category of categories" [value]="category.id">{{category.reference_name}}</mat-option>
+                    </mat-select>
+                    <mat-hint align="end">Selecciona una categoria</mat-hint>
+                </mat-form-field>
+            </form>
+            <button mat-button color="primary" (click)="actionBtn=='Guardar'?addEventType():updateEventType()">{{actionBtn}}</button>
+            <button mat-button color="primary" [routerLink]="['/home/admin-event-types']">Regresar</button>
+        </div>
+    </div>
+
+</div>
+<app-footer></app-footer>
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

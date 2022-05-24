@@ -14,28 +14,20 @@
                 <!-- /.login-logo -->
                 <div class="card card-outline card-primary">
                     <div class="card-header text-center">
-                        <a href="/" class="h1"><img class="card-img-top" style="width: 30%;" src="./assets/logos/conectividad_ICONOS.png" alt="Logo Alianza"></a>
+                        <a href="/" class="h1"><img class="card-img-top" style="width: 26%;" src="./assets/logos/conectividad_ICONOS.png" alt="Logo Alianza"></a>
                     </div>
                     <div class="card-body">
-                        <form (ngSubmit)="login(f)" #f="ngForm">
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['username'].errors" class="text-danger animated fadeIn">El nombre de usuario es obligatorio</span>
-                                <input type="text" name="username" [(ngModel)]="user.username" class="form-control" placeholder="Nombre de usuario" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-envelope"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span *ngIf="f.submitted && f.controls['password'].errors" class="text-danger animated fadeIn">Al menos 6 letras</span>
-                                <input type="password" name="password" [(ngModel)]="user.password" class="form-control" placeholder="Contraseña" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-lock"></span>
-                                    </div>
-                                </div>
-                            </div>
+                        <form [formGroup]="loginForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre de Usuario *</mat-label>
+                                <mat-icon matSuffix>alternate_email</mat-icon>
+                                <input formControlName="username" matInput placeholder="Nombre de usuario *">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Contraseña *</mat-label>
+                                <mat-icon matSuffix>password</mat-icon>
+                                <input formControlName="password" type="password" matInput placeholder="Contraseña *">
+                            </mat-form-field>
                             <div class="row">
                                 <div class="col-8">
                                     <div class="icheck-primary">
@@ -45,7 +37,7 @@
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-4 pl-0">
-                                    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                                    <button type="submit" class="btn btn-primary btn-block" (click)="login()">Ingresar</button>
                                 </div>
                                 <!-- /.col -->
                             </div>
@@ -66,8 +58,8 @@
                         <h2 class="mb-0 font-weight-bold">Registro</h2>
                     </div>
                     <div class=" card-body ">
-                        <p>
-                            Sigue estos pasos: <br><br>1. Llene el formulario de registro con sus datos.<br> 2. El usuario y contraseña no deben tener espacios y siempre se requeriran para ingresar a la oficina virtual. <br> 3. Los datos serán verificados
+                        <p class="lead">
+                            Sigue estos pasos: <br><br>1. Diligencie el formulario de registro con sus datos.<br> 2. El usuario y contraseña no deben tener espacios y siempre se requeriran para ingresar a la oficina virtual. <br> 3. Los datos serán verificados
                             para poder acceder a este servicio.<br><br>
                         </p>
                         <div class="col-12 pl-0 d-flex justify-content-end ">
@@ -105,5 +97,9 @@
 <style>
     .content {
         height: 100vh;
+    }
+    
+    mat-form-field {
+        width: 100%;
     }
 </style>

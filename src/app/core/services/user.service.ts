@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { UserModel, UserAdapter } from '../models/userModel';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { UserModel, UserAdapter } from '../models/userModel';
 })
 export class UserService {
 
-  private url = 'http://3.136.4.86/api/v1'
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient, private adapterUser: UserAdapter) { }
 
@@ -26,7 +27,23 @@ export class UserService {
         //console.log(item['user'])
         return this.adapterUser.adapt(item['user'])
       })
-    );
+    )
+  }
+
+  getUserById(auth_token,id): Observable<UserModel>{
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth_token}`
+    });
+    
+    return this.http.get(
+      `${ this.url }/users/`+id+`/edit`,{headers: headers}
+    ).pipe(
+      map((item) => {
+        //console.log(item['user'])
+        return this.adapterUser.adapt(item['user'])
+      })
+    )
   }
 
   getUsers(auth_token): Observable<UserModel[]>{
