@@ -43,14 +43,13 @@ export class LoginComponent implements OnInit {
   
       this.auth.login( this.loginForm.value ).subscribe({
         next: data => {
-          console.log(data)
+          Swal.close();
           if(data['errors']!=undefined?data['errors'].length!=0:false){
             data['errors'].map(res => {
               this.toastr.error(res);
             })
           }
           else{
-            Swal.close();
             if ( this.rememberme ) {
               localStorage.setItem('username', data['user'].username);
             }

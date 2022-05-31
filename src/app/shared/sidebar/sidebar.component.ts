@@ -15,6 +15,7 @@ export class SidebarComponent implements OnInit {
   status_roles_permissions: boolean = false;
   status_users_admin: boolean = false;
   status_institutions: boolean = false;
+  status_institutions_info: boolean = false;
   status_eventTypes: boolean = false;
   status_my_alerts: boolean = false;
   status_categories: boolean = false;
@@ -33,6 +34,7 @@ export class SidebarComponent implements OnInit {
     this.status_institutions = false;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-alerts/add-alert']);
   }
 
@@ -43,6 +45,7 @@ export class SidebarComponent implements OnInit {
     this.status_institutions = false;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-users/edit-user',this.item.id]);
   }
 
@@ -54,6 +57,7 @@ export class SidebarComponent implements OnInit {
     this.status_institutions = false;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-roles']);
   }
 
@@ -61,10 +65,11 @@ export class SidebarComponent implements OnInit {
     console.log("Click");
     this.status_alert = false;
     this.status_roles_permissions = false;
-    this.status_users_admin = true;
+    this.status_users_admin = false;
     this.status_institutions = false;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-users']);
   }
 
@@ -76,7 +81,20 @@ export class SidebarComponent implements OnInit {
     this.status_institutions = true;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-institutions']);
+  }
+
+  institutionsInfoShowingEvent(){
+    console.log("Click");
+    this.status_alert = false;
+    this.status_roles_permissions = false;
+    this.status_users_admin = false;
+    this.status_institutions = false;
+    this.status_my_alerts = false;
+    this.status_institutional_routes = false;
+    this.status_institutions_info = true;
+    this.router.navigate(['/home/admin-institutions-info']);
   }
 
   eventTypesShowingEvent(){
@@ -84,9 +102,10 @@ export class SidebarComponent implements OnInit {
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
-    this.status_institutions = true;
+    this.status_institutions = false;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-event-types']);
   }
 
@@ -95,9 +114,10 @@ export class SidebarComponent implements OnInit {
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
-    this.status_institutions = true;
+    this.status_institutions = false;
     this.status_my_alerts = false;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-categories']);
   }
 
@@ -109,6 +129,7 @@ export class SidebarComponent implements OnInit {
     this.status_institutions = false;
     this.status_my_alerts = true;
     this.status_institutional_routes = false;
+    this.status_institutions_info = false;
     this.router.navigate(['/home/admin-alerts']);
   }
 
@@ -119,6 +140,7 @@ export class SidebarComponent implements OnInit {
     this.status_users_admin = false;
     this.status_institutions = false;
     this.status_my_alerts = false;
+    this.status_institutions_info = false;
     this.status_institutional_routes = true;
     this.router.navigate(['/home/admin-institutional-routes']);
   }

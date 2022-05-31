@@ -37,6 +37,9 @@ import { NewEditInstitutionalRouteComponent } from './core/pages/new-edit-instit
 import { ChangeStatusDialogComponent } from './core/pages/change-status-dialog/change-status-dialog.component';
 import { ConfirmAccountComponent } from './core/pages/confirm-account/confirm-account.component';
 import { RecoveryPasswordComponent } from './core/pages/recovery-password/recovery-password.component';
+import { ViewAlertComponent } from './core/pages/view-alert/view-alert.component';
+import { NewEditInstitutionInfoComponent } from './core/pages/new-edit-institution-info/new-edit-institution-info.component';
+import { InstitutionsInfoComponent } from './core/pages/institutions-info/institutions-info.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +68,9 @@ import { RecoveryPasswordComponent } from './core/pages/recovery-password/recove
     ChangeStatusDialogComponent,
     ConfirmAccountComponent,
     RecoveryPasswordComponent,
+    ViewAlertComponent,
+    NewEditInstitutionInfoComponent,
+    InstitutionsInfoComponent,
   ],
   imports: [
     BrowserModule,

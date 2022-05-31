@@ -1,0 +1,138 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-3 col-md-2 d-flex align-items-center text-center justify-content-center flex-wrap">
+            <a href="/"><img class="card-img-top" style="width: 40%" src="./assets/logos/conectividad_ICONOS.png" alt="Logo Alianza" /></a>
+        </div>
+        <div class="col-12 col-sm-9 col-md-10 d-flex align-items-center text-center">
+            <h2 class="pt-3 pb-3 mb-0">
+                Sistema de Atención para detección temprana de Alertas en los departamentos de Nariño y Antioquia
+            </h2>
+        </div>
+    </div>
+
+    <div class="row pt-3 pb-3" style="background-color: #990099">
+        <div class="container d-flex flex-wrap justify-content-center align-items-center">
+            <div class="card m-4">
+                <div class="container p-4">
+                    <h1 class="font-weight-bold">
+                        Estado: {{ alertByToken.status.reference_name }}
+                    </h1>
+                    <h3>Fecha del Evento: {{ alertByToken.event_date }}</h3>
+                    <p>Descripción: {{ alertByToken.event_description }}</p>
+                    <p>Enviado desde {{ alertByToken.event_place }}</p>
+                    <p>{{ alertByToken.event_aditional_information }}</p>
+                    <google-map *ngIf="isOnGoogleMap" height="400px" width="100%" [zoom]="zoom" [center]="center" [options]="options">
+                        <map-marker *ngFor="let marker of markers" [position]="marker.position" [label]="marker.label" [title]="marker.title" [options]="marker.options"></map-marker>
+                    </google-map>
+                    <p class="text-danger" *ngIf="!isOnGoogleMap">
+                        No se encontró la ubicación de tu evento en Google Maps
+                    </p>
+                    <form class="mt-2" [formGroup]="eventForm">
+                        <fieldset [disabled]="true">
+                            <mat-checkbox formControlName="affected_people" class="example-margin" [checked]="alertByToken.affected_people" [color]="" (change)="checkboxChanged($event.checked)">
+                                Afectó a las Personas
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox formControlName="affected_family" class="example-margin" [checked]="alertByToken.affected_family" [color]="" (change)="checkboxChanged($event.checked)">
+                                Afectó a la Familia
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox formControlName="affected_animals" class="example-margin" [checked]="alertByToken.affected_animals" [color]="" (change)="checkboxChanged($event.checked)">
+                                Afectó a los Animales
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox formControlName="affected_infrastructure" class="example-margin" [checked]="alertByToken.affected_infrastructure" [color]="" (change)="checkboxChanged($event.checked)">
+                                Afectó a la Infraestructura
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox formControlName="affected_livelihoods" class="example-margin" [checked]="alertByToken.affected_livelihoods" [color]="" (change)="checkboxChanged($event.checked)">
+                                Afectó a los Medios de Subsistencia
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox formControlName="affected_environment" class="example-margin" [checked]="alertByToken.affected_environment" [color]="" (change)="checkboxChanged($event.checked)">
+                                Afectó al Medio
+                            </mat-checkbox>
+                            <br />
+                            <mat-form-field appearance="outline">
+                                <mat-label>Categorías</mat-label>
+                                <mat-select formControlName="category_id" (selectionChange)="onEventCategoryTypeSelected($event)" [(value)]="selectedCategory">
+                                    <mat-option *ngFor="let element of categories" [value]="element.id">{{ element.reference_name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Tipo de Alerta</mat-label>
+                                <mat-select formControlName="event_type_id" (change)="onEventTypeSelected($event)">
+                                    <mat-option *ngFor="let element of eventTypesToDisplay" [value]="element.id">{{ element.event_type_name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Departamento</mat-label>
+                                <mat-select formControlName="department_id" (selectionChange)="onDepartmentSelected($event)" [(value)]="selectedDepartment">
+                                    <mat-option *ngFor="let department of departments" [value]="department.id">{{ department.reference_name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field *ngIf="isOnDepartment" appearance="outline">
+                                <mat-label>Municipio</mat-label>
+                                <mat-select formControlName="town_id" [(value)]="selectedTown">
+                                    <mat-option *ngFor="let town of townsToDisplay" [value]="town.id">{{ town.town_name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Rango de Afectación</mat-label>
+                                <mat-select formControlName="afectations_range_id" (change)="onAffectRangeSelected($event)">
+                                    <mat-option *ngFor="let element of affectRanges" [value]="element.id">{{ element.reference_name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div *ngIf="imageEvent != '' ? true : false" class="row ml-1 mb-3">
+                                <div class="col-12 pl-0">
+                                    <h3 class="mb-2">Imagen Adjunta</h3>
+                                    <img [src]="imageEvent" [alt]="imageEventAltName" />
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <button mat-button color="primary" (click)="backToList()">
+                            Regresar
+                        </button>
+                        <button mat-button color="primary" *ngIf="statusBtn" (click)="verifyEvent()">
+                            Verificar
+                        </button>
+                        <button mat-button color="primary" *ngIf="statusBtn" (click)="denyEvent()">
+                            Denegar
+                        </button>
+                        <button mat-button color="primary" *ngIf="statusBtn" (click)="acceptEvent()">
+                            Aceptar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer py-2 bg-light d-flex flex-wrap align-items-center justify-content-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-12">
+                <div class="row d-flex align-items-center">
+                    <div class="col-2"></div>
+                    <div class="col-4 d-flex justify-content-end">
+                        <img class="img-thumbnail" style="width: 50%" src="./assets/logos/alianza.png " alt="Logo Alianza " />
+                    </div>
+                    <div class="col-4 flex justify-content-center">
+                        <img class="img-thumbnail" style="width: 20%" src="./assets/logos/PNUD_azul.png " alt="Logo Alianza " />
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

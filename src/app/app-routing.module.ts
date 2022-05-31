@@ -7,11 +7,13 @@ import { DetailAlertComponent } from './core/pages/detail-alert/detail-alert.com
 import { ForgotComponent } from './core/pages/forgot/forgot.component';
 import { HomeComponent } from './core/pages/home/home.component';
 import { InstitutionalRoutesComponent } from './core/pages/institutional-routes/institutional-routes.component';
+import { InstitutionsInfoComponent } from './core/pages/institutions-info/institutions-info.component';
 import { InstitutionsComponent } from './core/pages/institutions/institutions.component';
 import { LoginComponent } from './core/pages/login/login.component';
 import { MyalertsComponent } from './core/pages/myalerts/myalerts.component';
 import { NewEditAlertComponent } from './core/pages/new-edit-alert/new-edit-alert.component';
 import { NewEditCategoryComponent } from './core/pages/new-edit-category/new-edit-category.component';
+import { NewEditInstitutionInfoComponent } from './core/pages/new-edit-institution-info/new-edit-institution-info.component';
 import { NewEditInstitutionComponent } from './core/pages/new-edit-institution/new-edit-institution.component';
 import { NewEditInstitutionalRouteComponent } from './core/pages/new-edit-institutional-route/new-edit-institutional-route.component';
 import { NewEditPermissionComponent } from './core/pages/new-edit-permission/new-edit-permission.component';
@@ -23,8 +25,10 @@ import { RegisterComponent } from './core/pages/register/register.component';
 import { RolesPermissionsComponent } from './core/pages/roles-permissions/roles-permissions.component';
 import { TypealertsComponent } from './core/pages/typealerts/typealerts.component';
 import { UserAdminComponent } from './core/pages/user-admin/user-admin.component';
+import { ViewAlertComponent } from './core/pages/view-alert/view-alert.component';
 import { AffectsRangeResolverService } from './core/resolvers/affectsRanges-resolver.service';
 import { AlertByIDResolverService } from './core/resolvers/alert-byid-resolver.service';
+import { AlertByTokenResolverService } from './core/resolvers/alert-bytoken-resolver.service';
 import { AlertsResolverService } from './core/resolvers/alerts-resolver.service';
 import { CategoriesResolverService } from './core/resolvers/categories-resolver.service';
 import { CategoryByIDResolverService } from './core/resolvers/category-byid-resolver.service';
@@ -34,7 +38,9 @@ import { EventTypesResolverService } from './core/resolvers/eventTypes-resolver.
 import { InstitutionByIDResolverService } from './core/resolvers/institution-byid-resolver.service';
 import { InstitutionalRouteByIDResolverService } from './core/resolvers/institutional-route-byid-resolver.service';
 import { InstitutionalRoutesResolverService } from './core/resolvers/institutional-routes-resolver.service';
+import { InstitutionInfoByIDResolverService } from './core/resolvers/institutioninfo-byid-resolver.service';
 import { InstitutionsResolverService } from './core/resolvers/institutions-resolver.service';
+import { InstitutionsInfoResolverService } from './core/resolvers/institutionsinfo-resolver.service';
 import { PermissionsResolverService } from './core/resolvers/permissions-resolver.service';
 import { RolesResolverService } from './core/resolvers/roles-resolver.service';
 import { TownsResolverService } from './core/resolvers/towns-resolver.service';
@@ -108,6 +114,27 @@ const routes: Routes = [
     eventTypes: EventTypesResolverService,
     }
  },
+ { path: 'home/admin-institutions-info'    , component: InstitutionsInfoComponent, canActivate: [ AuthGuard ],
+  resolve: {
+    user: UserResolverService,
+    towns: TownsResolverService,
+    departments: DepartmentsResolverService,
+    institutionsinfo: InstitutionsInfoResolverService,
+    } },
+  { path: 'home/admin-institutions-info/add-institution-info'    , component: NewEditInstitutionInfoComponent, canActivate: [ AuthGuard ],
+  resolve: {
+    user: UserResolverService,
+    towns: TownsResolverService,
+    departments: DepartmentsResolverService,
+    } },
+  { path: 'home/admin-institutions-info/edit-institution-info/:id'    , component: NewEditInstitutionInfoComponent, canActivate: [ AuthGuard ],
+  resolve: {
+    user: UserResolverService,
+    towns: TownsResolverService,
+    departments: DepartmentsResolverService,
+    institutionInfoByID: InstitutionInfoByIDResolverService,
+    }
+ },
   { path: 'home/admin-alerts'    , component: MyalertsComponent, canActivate: [ AuthGuard ],
   resolve: {
     user: UserResolverService,
@@ -125,6 +152,10 @@ const routes: Routes = [
     towns: TownsResolverService,
     departments: DepartmentsResolverService,
     categories: CategoriesResolverService
+    }},
+    { path: 'view/alert/:token', component: ViewAlertComponent,
+  resolve: {
+    alertByToken: AlertByTokenResolverService,
     }},
   { path: 'home/admin-alerts/add-alert'    , component: NewEditAlertComponent, canActivate: [ AuthGuard ],
   resolve: {

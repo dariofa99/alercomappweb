@@ -1,14 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AffectRangeModel } from '../../models/affectRangeModel';
-import { AlertAdapter, AlertModel } from '../../models/alertModel';
+import { AlertAdapter } from '../../models/alertModel';
+import { CategoryModel } from '../../models/categoryModel';
 import { DepartmentModel } from '../../models/departmentModel';
 import { EventTypeModel } from '../../models/eventTypeModel';
 import { TownModel } from '../../models/townModel';
@@ -16,19 +12,17 @@ import { UserModel } from '../../models/userModel';
 import { AlertsService } from '../../services/alerts.service';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
-import { map } from 'rxjs';
-import { AlertEditModel } from '../../models/alertEditModel';
-import { CategoryModel } from '../../models/categoryModel';
-import { GoogleMap } from '@angular/google-maps';
+import {
+  AlertEditViewAdapter,
+  AlertEditViewModel,
+} from '../../models/alertEditViewModel';
 
 @Component({
-  selector: 'app-detail-alert',
-  templateUrl: './detail-alert.component.html',
+  selector: 'app-view-alert',
+  templateUrl: './view-alert.component.html',
   styles: [],
 })
-export class DetailAlertComponent implements OnInit {
-  @ViewChild('GoogleMap', { static: false }) map: GoogleMap;
-
+export class ViewAlertComponent implements OnInit {
   zoom = 15;
   markers = [];
   center: google.maps.LatLngLiteral;
@@ -37,12 +31,12 @@ export class DetailAlertComponent implements OnInit {
   isOnDepartment = false;
   isOnCategory = false;
   user: UserModel;
-  alertByID: AlertEditModel;
+  alertByToken: AlertEditViewModel;
   eventTypes: EventTypeModel[] = [];
   affectRanges: AffectRangeModel[] = [];
   towns: TownModel[] = [];
   categories: CategoryModel[] = [];
-  departments: DepartmentModel[];
+  departments: DepartmentModel[] = [];
   townsArray: Array<TownModel[]> = [];
   townsToDisplay: TownModel[] = [];
   eventTypesArray: Array<EventTypeModel[]> = [];
@@ -67,75 +61,36 @@ export class DetailAlertComponent implements OnInit {
     private eventService: AlertsService,
     private auth: AuthService,
     private toastr: ToastrService,
-    private adapterAlert: AlertAdapter
+    private adapterViewAlert: AlertEditViewAdapter
   ) {
-    this.user = this.route.snapshot.data['user'];
-    this.alertByID = this.route.snapshot.data['alertByID'];
-    this.eventTypes = this.route.snapshot.data['eventTypes'];
-    this.affectRanges = this.route.snapshot.data['affectRanges'];
-    this.categories = this.route.snapshot.data['categories'];
-    this.user = this.route.snapshot.data['user'];
-    this.towns = this.route.snapshot.data['towns'];
-    this.departments = this.route.snapshot.data['departments'];
-    this.departments.forEach((element) => {
-      let townsAux = [];
-      this.towns.forEach((elementInside) => {
-        if (element.id == elementInside.department_id) {
-          townsAux.push(elementInside);
-        }
-      });
-      this.townsArray.push(townsAux);
-    });
+    this.alertByToken = this.route.snapshot.data['alertByToken'];
+    console.log(this.alertByToken);
 
-    this.categories.forEach((element) => {
-      let eventTypesAux = [];
-      this.eventTypes.forEach((elementInside) => {
-        if (element.id == elementInside.category_id) {
-          eventTypesAux.push(elementInside);
-        }
-      });
-      this.eventTypesArray.push(eventTypesAux);
-    });
+    this.affectRanges.push(this.alertByToken.affectation_range);
+    this.eventTypesToDisplay.push(this.alertByToken.event_type);
+    this.townsToDisplay.push(this.alertByToken.town);
+    this.departments.push(this.alertByToken.department);
+    this.categories.push(this.alertByToken.event_type.category);
 
     if (
-      this.alertByID.latitude != undefined &&
-      this.alertByID.longitude != undefined
+      this.alertByToken.latitude != undefined &&
+      this.alertByToken.longitude != undefined
     ) {
-      if (this.alertByID.latitude != 0.0 && this.alertByID.longitude != 0.0) {
+      if (
+        this.alertByToken.latitude != 0.0 &&
+        this.alertByToken.longitude != 0.0
+      ) {
         this.center = {
-          lat: this.toFloat(this.alertByID.latitude),
-          lng: this.toFloat(this.alertByID.longitude),
+          lat: this.toFloat(this.alertByToken.latitude),
+          lng: this.toFloat(this.alertByToken.longitude),
         };
-        this.markers.push({
-          position: {
-            lat: this.center.lat,
-            lng: this.center.lng,
-          },
-          title: 'Ubicación Alerta',
-          options: {
-            animation: google.maps.Animation.DROP,
-            clickable: false,
-            draggable: true,
-          },
-        });
-    
-        this.options = {
-          mapTypeId: 'roadmap',
-          zoomControl: true,
-          scrollwheel: true,
-          disableDoubleClickZoom: true,
-          maxZoom: 15,
-          minZoom: 8,
-        };
-        this.isOnGoogleMap = true;
       }
+      this.isOnGoogleMap = true;
     }
     this.eventForm = this.formBuilder.group({
       event_description: ['', Validators.required],
       event_date: ['', Validators.required],
       event_place: ['', Validators.required],
-      latitude: ['', Validators.required],
-      longitude: ['', Validators.required],
       event_aditional_information: [''],
       affected_people: [false],
       affected_family: [false],
@@ -157,8 +112,6 @@ export class DetailAlertComponent implements OnInit {
       event_description: ['', Validators.required],
       event_date: ['', Validators.required],
       event_place: ['', Validators.required],
-      latitude: ['', Validators.required],
-      longitude: ['', Validators.required],
       event_aditional_information: [''],
       affected_people: [false],
       affected_family: [false],
@@ -173,122 +126,125 @@ export class DetailAlertComponent implements OnInit {
       afectations_range_id: ['', Validators.required],
     });
 
-    if (this.alertByID.status.id == 11) {
+    if (this.alertByToken.status.id == 11) {
       this.statusBtn = true;
     }
+
+    this.markers.push({
+      position: {
+        lat: this.center.lat,
+        lng: this.center.lng,
+      },
+      title: 'Ubicación Alerta',
+      options: {
+        animation: google.maps.Animation.DROP,
+        clickable: false,
+        draggable: false,
+      },
+    });
+
+    this.options = {
+      mapTypeId: 'roadmap',
+      zoomControl: true,
+      scrollwheel: true,
+      disableDoubleClickZoom: true,
+      maxZoom: 15,
+      minZoom: 8,
+    };
   }
 
   ngOnInit(): void {
-    if (this.alertByID != undefined) {
+    if (this.alertByToken != undefined) {
       this.eventForm.controls['event_description'].setValue(
-        this.alertByID.event_description
+        this.alertByToken.event_description
       );
-      this.eventForm.controls['event_date'].setValue(this.alertByID.event_date);
+      this.eventForm.controls['event_date'].setValue(
+        this.alertByToken.event_date
+      );
       this.eventForm.controls['event_place'].setValue(
-        this.alertByID.event_place
+        this.alertByToken.event_place
       );
-      this.eventForm.controls['latitude'].setValue(this.alertByID.latitude);
-      this.eventForm.controls['longitude'].setValue(this.alertByID.longitude);
       this.eventForm.controls['affected_people'].setValue(
-        this.alertByID.affected_people == 0 ? false : true
+        this.alertByToken.affected_people == 0 ? false : true
       );
       this.eventForm.controls['affected_family'].setValue(
-        this.alertByID.affected_family == 0 ? false : true
+        this.alertByToken.affected_family == 0 ? false : true
       );
       this.eventForm.controls['affected_animals'].setValue(
-        this.alertByID.affected_animals == 0 ? false : true
+        this.alertByToken.affected_animals == 0 ? false : true
       );
       this.eventForm.controls['affected_infrastructure'].setValue(
-        this.alertByID.affected_infrastructure == 0 ? false : true
+        this.alertByToken.affected_infrastructure == 0 ? false : true
       );
       this.eventForm.controls['affected_livelihoods'].setValue(
-        this.alertByID.affected_livelihoods == 0 ? false : true
+        this.alertByToken.affected_livelihoods == 0 ? false : true
       );
       this.eventForm.controls['affected_environment'].setValue(
-        this.alertByID.affected_environment == 0 ? false : true
+        this.alertByToken.affected_environment == 0 ? false : true
       );
-      this.eventForm.controls['user_id'].setValue(this.alertByID.user_id);
+      this.eventForm.controls['user_id'].setValue(this.alertByToken.user_id);
       this.eventForm.controls['event_type_id'].setValue(
-        this.alertByID.event_type_id
+        this.alertByToken.event_type_id
       );
-      this.eventForm.controls['town_id'].setValue(this.alertByID.town_id);
-      this.eventForm.controls['status_id'].setValue(this.alertByID.status_id);
+      this.eventForm.controls['town_id'].setValue(this.alertByToken.town_id);
+      this.eventForm.controls['status_id'].setValue(
+        this.alertByToken.status_id
+      );
       this.eventForm.controls['afectations_range_id'].setValue(
-        this.alertByID.afectations_range_id
+        this.alertByToken.afectations_range_id
       );
 
       this.eventFormToSend.controls['event_description'].setValue(
-        this.alertByID.event_description
+        this.alertByToken.event_description
       );
       this.eventFormToSend.controls['event_date'].setValue(
-        this.alertByID.event_date
+        this.alertByToken.event_date
       );
       this.eventFormToSend.controls['event_place'].setValue(
-        this.alertByID.event_place
-      );
-      this.eventFormToSend.controls['latitude'].setValue(
-        this.alertByID.latitude
-      );
-      this.eventFormToSend.controls['longitude'].setValue(
-        this.alertByID.longitude
+        this.alertByToken.event_place
       );
       this.eventFormToSend.controls['affected_people'].setValue(
-        this.alertByID.affected_people == 0 ? false : true
+        this.alertByToken.affected_people == 0 ? false : true
       );
       this.eventFormToSend.controls['affected_family'].setValue(
-        this.alertByID.affected_family == 0 ? false : true
+        this.alertByToken.affected_family == 0 ? false : true
       );
       this.eventFormToSend.controls['affected_animals'].setValue(
-        this.alertByID.affected_animals == 0 ? false : true
+        this.alertByToken.affected_animals == 0 ? false : true
       );
       this.eventFormToSend.controls['affected_infrastructure'].setValue(
-        this.alertByID.affected_infrastructure == 0 ? false : true
+        this.alertByToken.affected_infrastructure == 0 ? false : true
       );
       this.eventFormToSend.controls['affected_livelihoods'].setValue(
-        this.alertByID.affected_livelihoods == 0 ? false : true
+        this.alertByToken.affected_livelihoods == 0 ? false : true
       );
       this.eventFormToSend.controls['affected_environment'].setValue(
-        this.alertByID.affected_environment == 0 ? false : true
+        this.alertByToken.affected_environment == 0 ? false : true
       );
-      this.eventFormToSend.controls['user_id'].setValue(this.alertByID.user_id);
+      this.eventFormToSend.controls['user_id'].setValue(
+        this.alertByToken.user_id
+      );
       this.eventFormToSend.controls['event_type_id'].setValue(
-        this.alertByID.event_type_id
+        this.alertByToken.event_type_id
       );
-      this.eventFormToSend.controls['town_id'].setValue(this.alertByID.town_id);
+      this.eventFormToSend.controls['town_id'].setValue(
+        this.alertByToken.town_id
+      );
       this.eventFormToSend.controls['status_id'].setValue(
-        this.alertByID.status_id
+        this.alertByToken.status_id
       );
       this.eventFormToSend.controls['afectations_range_id'].setValue(
-        this.alertByID.afectations_range_id
+        this.alertByToken.afectations_range_id
       );
       this.isOnDepartment = true;
       this.isOnCategory = true;
 
-      this.townsArray.forEach((element) => {
-        element.forEach((elementInside) => {
-          if (elementInside.id == this.alertByID.town_id) {
-            this.selectedDepartment = elementInside.department_id;
-          }
-          if (elementInside.department_id == this.selectedDepartment) {
-            this.townsToDisplay = element;
-          }
-        });
-      });
+      this.selectedDepartment = this.alertByToken.department.id;
+      this.selectedCategory = this.alertByToken.event_type.category_id;
 
-      this.eventTypesArray.forEach((element) => {
-        element.forEach((elementInside) => {
-          if (elementInside.id == this.alertByID.event_type_id) {
-            this.selectedCategory = elementInside.category_id;
-          }
-          if (elementInside.category_id == this.selectedCategory) {
-            this.eventTypesToDisplay = element;
-          }
-        });
-      });
-
-      if (this.alertByID.files.length > 0) {
-        this.imageEvent = this.alertByID.files[0].real_path;
-        this.imageEventAltName = this.alertByID.files[0].original_name;
+      if (this.alertByToken.files.length > 0) {
+        this.imageEvent = this.alertByToken.files[0].real_path;
+        this.imageEventAltName = this.alertByToken.files[0].original_name;
       }
       this.eventForm.controls['category_id'].setValue(this.selectedCategory);
       this.eventForm.controls['department_id'].setValue(
@@ -326,11 +282,7 @@ export class DetailAlertComponent implements OnInit {
     this.eventFormToSend.controls['status_id'].setValue(13);
     if (this.eventFormToSend.valid) {
       this.eventService
-        .postUpdateEvent(
-          this.auth.readToken(),
-          this.alertByID.id,
-          this.eventFormToSend.value
-        )
+        .postUpdateByToken(this.alertByToken.token, this.eventFormToSend.value)
         .subscribe({
           next: (data) => {
             {
@@ -342,13 +294,14 @@ export class DetailAlertComponent implements OnInit {
                   this.toastr.error(res);
                 });
               } else {
-                this.alertByID = this.adapterAlert.adapt(data['event']);
                 this.statusBtn = false;
                 Swal({
                   allowOutsideClick: false,
                   type: 'success',
                   text: 'Alerta aceptada con éxito',
-                }).then((result) => {});
+                }).then((result) => {
+                  window.location.reload();
+                });
               }
             }
           },
@@ -367,11 +320,7 @@ export class DetailAlertComponent implements OnInit {
     this.eventFormToSend.controls['status_id'].setValue(23);
     if (this.eventFormToSend.valid) {
       this.eventService
-        .postUpdateEvent(
-          this.auth.readToken(),
-          this.alertByID.id,
-          this.eventFormToSend.value
-        )
+        .postUpdateByToken(this.alertByToken.token, this.eventFormToSend.value)
         .subscribe({
           next: (data) => {
             {
@@ -383,13 +332,14 @@ export class DetailAlertComponent implements OnInit {
                   this.toastr.error(res);
                 });
               } else {
-                this.alertByID = this.adapterAlert.adapt(data['event']);
                 this.statusBtn = false;
                 Swal({
                   allowOutsideClick: false,
                   type: 'success',
                   text: 'Alerta verificada con éxito',
-                }).then((result) => {});
+                }).then((result) => {
+                  window.location.reload();
+                });
               }
             }
           },
@@ -408,11 +358,7 @@ export class DetailAlertComponent implements OnInit {
     this.eventFormToSend.controls['status_id'].setValue(12);
     if (this.eventFormToSend.valid) {
       this.eventService
-        .postUpdateEvent(
-          this.auth.readToken(),
-          this.alertByID.id,
-          this.eventFormToSend.value
-        )
+        .postUpdateByToken(this.alertByToken.token, this.eventFormToSend.value)
         .subscribe({
           next: (data) => {
             {
@@ -423,13 +369,14 @@ export class DetailAlertComponent implements OnInit {
                   this.toastr.error(res);
                 });
               } else {
-                this.alertByID = this.adapterAlert.adapt(data['event']);
                 this.statusBtn = false;
                 Swal({
                   allowOutsideClick: false,
                   type: 'success',
                   text: 'Alerta denegada con éxito',
-                }).then((result) => {});
+                }).then((result) => {
+                  window.location.reload();
+                });
               }
             }
           },

@@ -12,6 +12,7 @@ export class InstitutionsEditModel {
         public institution_address?: string,
         public institution_phone?: string,
         public town_id?: number,
+        public category_id?: number,
         public contacts?: Array<any>,
         public event_types?: Array<any>,
     )
@@ -25,7 +26,7 @@ export class InstitutionsEditModel {
   export class InstitutionsEditAdapter implements Adapter<InstitutionsEditModel> {
     adapt(item: any): InstitutionsEditModel {
       return new InstitutionsEditModel(item['institution'].id,item['institution'].institution_name,item['institution'].institution_address,
-        item['institution'].institution_phone,item['institution'].town_id,item['institution']['contacts'].map(item=>{
+        item['institution'].institution_phone,item['institution'].town_id,item['institution'].category_id,item['institution']['contacts'].map(item=>{
           return new ContactModel(item.id,item.institution_contact,item.contact_type_id,item.institution_id)
         })
         ,item['institution']['event_types'].map(item=>{

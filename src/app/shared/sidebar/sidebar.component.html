@@ -36,7 +36,7 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item menu-is-opening menu-open">
-                    <a href="#" class="nav-link">
+                    <a class="nav-link">
                         <i class="nav-icon fa fa-user"></i>
                         <p>
                             Usuarios
@@ -63,11 +63,18 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a (click)="institutionsInfoShowingEvent()" class="nav-link" [ngClass]="status_institutions_info ? 'active' : ''">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Admin Instituciones Info</p>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 
                 <li class="nav-item menu-is-opening menu-open">
-                    <a href="#" class="nav-link">
+                    <a class="nav-link">
                         <i class="nav-icon fa fa-bell"></i>
                         <p>
                             Alertas
@@ -109,7 +116,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="" class="nav-link">
+                    <a class="nav-link">
                         <i class="nav-icon fa fa-file-alt"></i>
                         <p>
                             Reportes

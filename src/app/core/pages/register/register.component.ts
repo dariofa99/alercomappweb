@@ -54,7 +54,7 @@ export class RegisterComponent implements OnInit {
           else{
             Swal({
             type: 'info',
-            title: 'Message Info',
+            title: 'Importante',
             text: data['messages']
             });
             if ( this.rememberme ) {

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AlertEditAdapter, AlertEditModel } from '../models/alertEditModel';
+import { AlertEditViewAdapter } from '../models/alertEditViewModel';
 import { AlertAdapter, AlertModel } from '../models/alertModel';
 import { EventTypeAdapter, EventTypeModel } from '../models/eventTypeModel';
 
@@ -12,7 +13,7 @@ import { EventTypeAdapter, EventTypeModel } from '../models/eventTypeModel';
 })
 export class AlertsService {
 
-  constructor(private http: HttpClient, private adapterEditAlert: AlertEditAdapter, private adapterAlert: AlertAdapter, private adapterEventType: EventTypeAdapter) { }
+  constructor(private http: HttpClient, private adapterEditAlert: AlertEditAdapter, private adapterEditViewAlert: AlertEditViewAdapter, private adapterAlert: AlertAdapter, private adapterEventType: EventTypeAdapter) { }
 
   private url = environment.apiUrl;
 
@@ -28,6 +29,21 @@ export class AlertsService {
       map((item) => {
         console.log(item);
         return this.adapterEditAlert.adapt(item['event'])
+      })
+    )
+  }
+
+  getAlertByToken(token): Observable<AlertEditModel>{
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    
+    return this.http.get(
+      `${ this.url }/events/verify/`+token,{headers: headers}
+    ).pipe(
+      map((item) => {
+        console.log(item);
+        return this.adapterEditViewAlert.adapt(item['institution'])
       })
     )
   }
@@ -85,6 +101,20 @@ export class AlertsService {
     return this.http.post(
       `${ this.url }/events/`+id,eventData,{headers: headers}
     );
+  }
+
+  postUpdateByToken(token,eventData){
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    
+    return this.http.post(
+      `${ this.url }/events/verify/`+token,eventData,{headers: headers}
+    ).pipe(
+      map((item) => {
+        return item;
+      })
+    )
   }
 
 }

@@ -4,6 +4,8 @@ import { map, Observable } from 'rxjs';
 import { InstitutionsAdapter, InstitutionsModel } from '../models/institutionsModel';
 import { InstitutionsEditAdapter, InstitutionsEditModel } from '../models/institutionsEditModel';
 import { environment } from 'src/environments/environment';
+import { InstitutionsInfoAdapter, InstitutionsInfoModel } from '../models/institutionsInfoModel';
+import { InstitutionsInfoEditAdapter } from '../models/institutionsInfoEditModel';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,8 @@ export class InstitutionsService {
   private url = environment.apiUrl;
 
   constructor(private http: HttpClient, private adapterInstitution: InstitutionsAdapter,
-    private adapterEditInstitution: InstitutionsEditAdapter) { }
+    private adapterEditInstitution: InstitutionsEditAdapter, private adapterInstitutionsInfo: InstitutionsInfoAdapter,
+    private adapterEditInstitutionInfo: InstitutionsInfoEditAdapter) { }
 
   getInstitutionById(auth_token,id): Observable<InstitutionsEditModel>{
     var headers = new HttpHeaders({
@@ -31,6 +34,22 @@ export class InstitutionsService {
     )
   }
 
+  getInstitutionInfoById(auth_token,id): Observable<InstitutionsInfoModel>{
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth_token}`
+    });
+    
+    return this.http.get(
+      `${ this.url }/institutions/information/`+id+`/edit`,{headers: headers}
+    ).pipe(
+      map((item) => {
+        //console.log(item['institution'])
+        return this.adapterEditInstitutionInfo.adapt(item)
+      })
+    )
+  }
+
   getInstitutions(auth_token): Observable<InstitutionsModel[]>{
     var headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -43,6 +62,22 @@ export class InstitutionsService {
       map((data: any[])=> data['institutions'].map((item) => {
         //console.log(data)
         return this.adapterInstitution.adapt(item)
+      })) 
+    );
+  }
+
+  getInstitutionsInfo(auth_token): Observable<InstitutionsInfoModel[]>{
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth_token}`,
+      'Access-Control-Allow-Origin': '*'
+    });
+    
+    return this.http.get(
+      `${ this.url }/institutions/information`,{headers: headers}
+    ).pipe(
+      map((data: any[])=> data['institutions'].map((item) => {
+        return this.adapterInstitutionsInfo.adapt(item)
       })) 
     );
   }

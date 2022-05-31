@@ -62,6 +62,7 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
       institution_address: ['',Validators.required],
       institution_phone: ['',Validators.required],
       town_id: ['',Validators.required],
+      category_id: ['',Validators.required],
       contacts:['',Validators.required],
       contact_id:['',Validators.required],
       contact_type_id: ['',Validators.required],
@@ -92,6 +93,7 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
       this.institutionForm.controls['institution_address'].setValue(this.institutionByID.institution_address);
       this.institutionForm.controls['institution_phone'].setValue(this.institutionByID.institution_phone);
       this.institutionForm.controls['town_id'].setValue(this.institutionByID.town_id);
+      this.institutionForm.controls['category_id'].setValue(this.institutionByID.category_id);
       this.institutionByID.contacts.forEach(element => {
         this.contacts_name.push(element.institution_contact)
         this.contacts.push(element);
@@ -304,6 +306,7 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
   }
 
   addInstitution(){
+    this.institutionForm.controls['category_id'].setValue('24');
     if(this.institutionForm.valid){
       console.log(this.eventTypes)
       this.institutionsService.postInstitution(this.auth.readToken(),this.institutionForm.value).subscribe({

@@ -52,7 +52,7 @@ export class RecoveryPasswordComponent implements OnInit {
           else{
             Swal({
             type: 'info',
-            title: 'Message Info',
+            title: 'Importante',
             text: data['messages']
             }).then((result)=>{
               this.router.navigate(['/login']);

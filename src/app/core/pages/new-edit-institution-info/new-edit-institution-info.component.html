@@ -1,0 +1,52 @@
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container p-4">
+            <h1>{{actionBtn}} Institución</h1>
+            <form [formGroup]="institutionForm">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre Institución *</mat-label>
+                    <input formControlName="institution_name" matInput placeholder="Nombre Institución *">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Dirección *</mat-label>
+                    <input formControlName="institution_address" matInput placeholder="Dirección *">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Teléfono *</mat-label>
+                    <input formControlName="institution_phone" matInput placeholder="Teléfono *">
+                    <mat-hint>Incluye el indicativo</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Departamento</mat-label>
+                    <mat-select (selectionChange)="onDepartmentSelected($event)" [(value)]="selectedDepartment">
+                        <mat-option *ngFor="let department of departments" [value]="department.id">{{department.reference_name}}</mat-option>
+                    </mat-select>
+                    <mat-hint align="end">Selecciona un departamento</mat-hint>
+                </mat-form-field>
+                <mat-form-field *ngIf="isOnDepartment" appearance="outline">
+                    <mat-label>Municipio</mat-label>
+                    <mat-select formControlName="town_id" [(value)]="selectedTown">
+                        <mat-option *ngFor="let town of townsToDisplay" [value]="town.id">{{town.town_name}}</mat-option>
+                    </mat-select>
+                    <mat-hint align="end">Selecciona un municipio</mat-hint>
+                </mat-form-field>
+            </form>
+            <button mat-button color="primary" (click)="actionBtn=='Guardar'?addInstitution():updateInstitution()">{{actionBtn}}</button>
+            <button mat-button color="primary" [routerLink]="['/home/admin-institutions-info']">Regresar</button>
+
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
+<router-outlet></router-outlet>
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+    
+    .mat-form-field-appearance-outline .mat-form-field-wrapper {
+        padding-bottom: 0px !important;
+    }
+</style>

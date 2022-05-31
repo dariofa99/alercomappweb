@@ -47,7 +47,7 @@ export class ForgotComponent implements OnInit {
           else{
             Swal({
             type: 'info',
-            title: 'Message Info',
+            title: 'Importante',
             text: data['messages']
             });
             this.resetForgotForm(this.forgotForm);
