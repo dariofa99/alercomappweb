@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,11 +21,9 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-myalerts',
   templateUrl: './myalerts.component.html',
-  styles: [
-  ]
+  styles: [],
 })
 export class MyalertsComponent implements OnInit {
-
   user: UserModel;
   users: UserModel[];
   alerts: AlertModel[] = [];
@@ -38,133 +36,178 @@ export class MyalertsComponent implements OnInit {
   affectRanges: AffectRangeModel[] = [];
   mapType = 'satellite';
   status: StatusModel[];
-  selectedStatus = "Todos";
-  init_date = "";
-  end_date = "";
+  selectedStatus = 'Todos';
+  init_date = '';
+  end_date = '';
 
-  constructor(private auth: AuthService, private alertService: AlertsService, private references: ReferencesService,
-    private route: ActivatedRoute, public router: Router, public dialog: MatDialog,private toastr: ToastrService) {
-   this.user = this.route.snapshot.data['user'];
-   this.users = this.route.snapshot.data['users'];
-   this.alerts = this.route.snapshot.data['alerts'];
-   this.eventTypes = this.route.snapshot.data['eventTypes'];
-   this.affectRanges = this.route.snapshot.data['affectRanges'];
-   this.alertsOriginal = this.alerts;
-   this.status = [new StatusModel(11,"Alertado","status_type",null,1),
-   new StatusModel(12,"Denegado","status_type",null,1),
-   new StatusModel(13,"Aceptado","status_type",null,1),
-   new StatusModel(23,"Verificado","status_type",null,1)];
+  pageData = 1;
+  alertsData: any;
+  itemsPerPage = 6;
+  totalItems: any;
+
+  constructor(
+    private auth: AuthService,
+    private alertService: AlertsService,
+    private references: ReferencesService,
+    private route: ActivatedRoute,
+    public router: Router,
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private http: HttpClient
+  ) {
+    this.user = this.route.snapshot.data['user'];
+    this.users = this.route.snapshot.data['users'];
+    this.alerts = this.route.snapshot.data['alerts'];
+    this.eventTypes = this.route.snapshot.data['eventTypes'];
+    this.affectRanges = this.route.snapshot.data['affectRanges'];
+    this.alertsOriginal = this.alerts;
+    this.status = [
+      new StatusModel(11, 'Alertado', 'status_type', null, 1),
+      new StatusModel(12, 'Denegado', 'status_type', null, 1),
+      new StatusModel(13, 'Aceptado', 'status_type', null, 1),
+      new StatusModel(23, 'Verificado', 'status_type', null, 1),
+    ];
   }
 
   ngOnInit(): void {
+    this.getAllData();
+  }
+
+  getAllData() {
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.auth.readToken()}`,
+    });
+
+    this.http
+      .get(`http://18.220.203.127/api/v1/events?page=${this.pageData}`, {
+        headers: headers,
+      })
+      .subscribe((data: any) => {
+        this.alertsData = data.data;
+        this.totalItems = data.total;
+      });
+  }
+
+  gty(page: any) {
+    this.pageData = page;
+    console.log(this.pageData);
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.auth.readToken()}`,
+    });
+
+
+    this.http
+      .get(
+        `http://18.220.203.127/api/v1/events?page=${this.pageData}`,{headers:headers}
+      )
+      .subscribe((data: any) => {
+        this.alertsData = data.data;
+        this.totalItems = data.total;
+      });
   }
 
   resetFilters() {
     this.init_date = undefined;
     this.end_date = undefined;
-    this.selectedStatus = "Todos";
+    this.selectedStatus = 'Todos';
   }
 
-  dateChanged(event: any){
+  dateChanged(event: any) {
     //console.log(event.value);
     console.log(this.init_date);
-    console.log(this.end_date);   
+    console.log(this.end_date);
   }
 
   changeStatusDialog(event: any): void {
-    Swal({  
-      title: 'Realmente deseas cambiar el estado?',  
-      showCancelButton: true,  
-      confirmButtonText: `Si`,  
+    Swal({
+      title: 'Realmente deseas cambiar el estado?',
+      showCancelButton: true,
+      confirmButtonText: `Si`,
       cancelButtonText: `No`,
-    }).then((result) => {  
-        if (result.value) {
-          const dialogRef = this.dialog.open(ChangeStatusDialogComponent, {
-            width: '350px',
-            data: {selectedStatus: event.status_id,status: this.status},
-          });
-      
-          dialogRef.afterClosed().subscribe(result => {
-            if(result != undefined){
-              event.status_id = result;
-              this.alertService.postUpdateEvent(this.auth.readToken(),event.id,event).subscribe({
-                next: data => {
-                  if(data['errors']!=undefined?data['errors'].length!=0:false){
-                    data['errors'].map(res => {
+    }).then((result) => {
+      if (result.value) {
+        const dialogRef = this.dialog.open(ChangeStatusDialogComponent, {
+          width: '350px',
+          data: { selectedStatus: event.status_id, status: this.status },
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result != undefined) {
+            event.status_id = result;
+            this.alertService
+              .postUpdateEvent(this.auth.readToken(), event.id, event)
+              .subscribe({
+                next: (data) => {
+                  if (
+                    data['errors'] != undefined
+                      ? data['errors'].length != 0
+                      : false
+                  ) {
+                    data['errors'].map((res) => {
                       this.toastr.error(res);
-                    })
-                  }
-                  else{
+                    });
+                  } else {
                     Swal({
                       allowOutsideClick: false,
                       type: 'success',
-                      text: 'Estado del evento cambiado con éxito'
+                      text: 'Estado del evento cambiado con éxito',
                     });
-                    this.alertService.getAlerts(this.auth.readToken()).subscribe({
-                      next: data => {{
-                        if(data==undefined){
-                          this.toastr.error("Error al actualizar los datos");
-                        }
-                        else{
-                          this.alerts = data;
-                        }
-                      }},
-                      error: error => {
-                        Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
-                        console.log('There was an error',error)
-                      }
-                    })
+                    this.getAllData();
                   }
                 },
-                error: error => {
-                  Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
-                  console.log('There was an error',error)
-                }
+                error: (error) => {
+                  Swal({
+                    text: 'Ha ocurrido un error contacta a soporte@alercom.org',
+                    type: 'error',
+                  });
+                  console.log('There was an error', error);
+                },
               });
-            }
-          });
-        } else if (result) {    
-       }
+          }
+        });
+      } else if (result) {
+      }
     });
-
-    
   }
 
-  onSeeDetails(alert: any){
+  onSeeDetails(alert: any) {
     console.log(alert);
-    this.router.navigate(["home/admin-alerts/alert-detail/"+alert.id]);
+    this.router.navigate(['home/admin-alerts/alert-detail/' + alert.id]);
   }
 
-  onStatusSelected(event: any){
+  onStatusSelected(event: any) {
     this.applyStatusFilter(event);
   }
 
-  onUserSelected(event: any){
+  onUserSelected(event: any) {
     this.applyUserFilter(event);
   }
 
-  applyUserFilter(event: any){
+  applyUserFilter(event: any) {
     this.isOnUsersFilter = true;
     const filterValue = event.value;
-    if(this.isOnStatusFilter){
-      if(filterValue == undefined){
+    if (this.isOnStatusFilter) {
+      if (filterValue == undefined) {
         this.alerts = this.alertsStatusFilter;
         this.isOnUsersFilter = false;
-      }
-      else{
+      } else {
         this.alerts = this.alertsStatusFilter;
-        this.alerts = this.alerts.filter(element=>element.user.id == filterValue);
+        this.alerts = this.alerts.filter(
+          (element) => element.user.id == filterValue
+        );
         this.alertsUsersFilter = this.alerts;
       }
-    }
-    else{
-      if(filterValue == undefined){
+    } else {
+      if (filterValue == undefined) {
         this.alerts = this.alertsOriginal;
         this.isOnUsersFilter = false;
-      }
-      else{
+      } else {
         this.alerts = this.alertsOriginal;
-        this.alerts = this.alerts.filter(element=>element.user.id == filterValue);
+        this.alerts = this.alerts.filter(
+          (element) => element.user.id == filterValue
+        );
         this.alertsUsersFilter = this.alerts;
       }
     }
@@ -173,33 +216,32 @@ export class MyalertsComponent implements OnInit {
   applyStatusFilter(event: any) {
     this.isOnStatusFilter = true;
     const filterValue = event.value;
-    if(this.isOnUsersFilter){
-      if(filterValue == "Todos"){
+    if (this.isOnUsersFilter) {
+      if (filterValue == 'Todos') {
         this.alerts = this.alertsUsersFilter;
         this.isOnStatusFilter = false;
-      }
-      else{
+      } else {
         this.alerts = this.alertsUsersFilter;
-        this.alerts = this.alerts.filter(element=>element.status.reference_name == filterValue);
+        this.alerts = this.alerts.filter(
+          (element) => element.status.reference_name == filterValue
+        );
+        this.alertsStatusFilter = this.alerts;
+      }
+    } else {
+      if (filterValue == 'Todos') {
+        this.alerts = this.alertsOriginal;
+        this.isOnStatusFilter = false;
+      } else {
+        this.alerts = this.alertsOriginal;
+        this.alerts = this.alerts.filter(
+          (element) => element.status.reference_name == filterValue
+        );
         this.alertsStatusFilter = this.alerts;
       }
     }
-    else{
-      if(filterValue == "Todos"){
-        this.alerts = this.alertsOriginal;
-        this.isOnStatusFilter = false;
-      }
-      else{
-        this.alerts = this.alertsOriginal;
-        this.alerts = this.alerts.filter(element=>element.status.reference_name == filterValue);
-        this.alertsStatusFilter = this.alerts;
-      }
-    }
-    
   }
 
-  editEvent(event: any){
-    this.router.navigate(["/home/admin-alerts/edit-alert/"+event.id]);
+  editEvent(event: any) {
+    this.router.navigate(['/home/admin-alerts/edit-alert/' + event.id]);
   }
-
 }

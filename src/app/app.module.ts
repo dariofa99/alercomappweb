@@ -47,6 +47,8 @@ import { MarkerGoogleMaps } from './core/const/markerGoogleMaps';
 import { PermissionsList } from './core/const/permissionsList';
 import { ForbiddenComponent } from './core/pages/forbidden/forbidden.component';
 import { TermsConditionsComponent } from './core/pages/terms-conditions/terms-conditions.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { ChangeRolDialogComponent } from './core/pages/change-rol-dialog/change-rol-dialog.component';
 
 export function permissionsFactory(
   loadPermissionsService: LoadPermissionsService,
@@ -98,6 +100,7 @@ export function permissionsFactory(
     InstitutionsInfoComponent,
     ForbiddenComponent,
     TermsConditionsComponent,
+    ChangeRolDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -113,6 +116,7 @@ export function permissionsFactory(
     ToastrModule.forRoot(),
     GoogleMapsModule,
     NgxPermissionsModule.forRoot(),
+    NgxPaginationModule
   ],
   providers: [
     RolesPermissionsComponent,

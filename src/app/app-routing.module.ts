@@ -2,14 +2,24 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthGuard } from './core/guards/auth.guard';
+import { CustomAddCategoryGuard } from './core/guards/custom-add-category.guard';
 import { CustomAddInstitutionInfoGuard } from './core/guards/custom-add-institution-info.guard';
 import { CustomAddInstitutionGuard } from './core/guards/custom-add-institution.guard';
+import { CustomAddInstitutionalRouteGuard } from './core/guards/custom-add-institutional-route.guard';
+import { CustomAddTypeAlertGuard } from './core/guards/custom-add-type-alert.guard';
 import { CustomAddUserGuard } from './core/guards/custom-add-user.guard';
+import { CustomAdminCategoriesGuard } from './core/guards/custom-admin-categories.guard';
+import { CustomAdminInstitutionalRoutesGuard } from './core/guards/custom-admin-institutional-routes.guard';
 import { CustomAdminInstitutionsInfoGuard } from './core/guards/custom-admin-institutions-info.guard';
 import { CustomAdminInstitutionsGuard } from './core/guards/custom-admin-institutions.guard';
+import { CustomAdminTypeAlertsGuard } from './core/guards/custom-admin-type-alerts.guard';
 import { CustomAdminUsersGuard } from './core/guards/custom-admin-users.guard';
+import { CustomEditCategoryGuard } from './core/guards/custom-edit-category.guard';
 import { CustomEditInstitutionInfoGuard } from './core/guards/custom-edit-institution-info.guard';
 import { CustomEditInstitutionGuard } from './core/guards/custom-edit-institution.guard';
+import { CustomEditInstitutionalRouteGuard } from './core/guards/custom-edit-institutional-route.guard';
+import { CustomEditTypeAlertGuard } from './core/guards/custom-edit-type-alert.guard';
+import { CustomEditUserGuard } from './core/guards/custom-edit-user.guard';
 import { CategoriesComponent } from './core/pages/categories/categories.component';
 import { ConfirmAccountComponent } from './core/pages/confirm-account/confirm-account.component';
 import { DetailAlertComponent } from './core/pages/detail-alert/detail-alert.component';
@@ -117,7 +127,7 @@ const routes: Routes = [
   {
     path: 'home/admin-users/edit-user/:id',
     component: NewEditUserComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomEditUserGuard],
     resolve: {
       users: UsersResolverService,
       departments: DepartmentsResolverService,
@@ -280,7 +290,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       user: UserResolverService,
-      alerts: AlertsResolverService,
+      //alerts: AlertsResolverService,
       eventTypes: EventTypesResolverService,
       affectRanges: AffectsRangeResolverService,
       users: UsersResolverService,
@@ -337,7 +347,7 @@ const routes: Routes = [
   {
     path: 'home/admin-event-types',
     component: TypealertsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAdminTypeAlertsGuard],
     resolve: {
       user: UserResolverService,
       eventTypes: EventTypesResolverService,
@@ -354,7 +364,7 @@ const routes: Routes = [
   {
     path: 'home/admin-event-types/add-event-type',
     component: NewEditTypealertComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAddTypeAlertGuard],
     resolve: {
       user: UserResolverService,
       categories: CategoriesResolverService,
@@ -368,7 +378,7 @@ const routes: Routes = [
   {
     path: 'home/admin-event-types/edit-event-type/:id',
     component: NewEditTypealertComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomEditTypeAlertGuard],
     resolve: {
       user: UserResolverService,
       categories: CategoriesResolverService,
@@ -383,7 +393,7 @@ const routes: Routes = [
   {
     path: 'home/admin-categories',
     component: CategoriesComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAdminCategoriesGuard],
     resolve: {
       user: UserResolverService,
       categories: CategoriesResolverService,
@@ -400,7 +410,7 @@ const routes: Routes = [
   {
     path: 'home/admin-categories/add-category',
     component: NewEditCategoryComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAddCategoryGuard],
     resolve: {
       user: UserResolverService,
     },
@@ -413,7 +423,7 @@ const routes: Routes = [
   {
     path: 'home/admin-categories/edit-category/:id',
     component: NewEditCategoryComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomEditCategoryGuard],
     resolve: {
       user: UserResolverService,
       categoryByID: CategoryByIDResolverService,
@@ -427,7 +437,7 @@ const routes: Routes = [
   {
     path: 'home/admin-institutional-routes',
     component: InstitutionalRoutesComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAdminInstitutionalRoutesGuard],
     resolve: {
       user: UserResolverService,
       institutionalRoutes: InstitutionalRoutesResolverService,
@@ -444,7 +454,7 @@ const routes: Routes = [
   {
     path: 'home/admin-institutional-routes/add-institutional-route',
     component: NewEditInstitutionalRouteComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAddInstitutionalRouteGuard],
     resolve: {
       user: UserResolverService,
     },
@@ -457,7 +467,7 @@ const routes: Routes = [
   {
     path: 'home/admin-institutiona-routes/edit-institutional-route/:id',
     component: NewEditInstitutionalRouteComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomEditInstitutionalRouteGuard],
     resolve: {
       user: UserResolverService,
       institutionalRouteByID: InstitutionalRouteByIDResolverService,

@@ -7,64 +7,65 @@ import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styles: [
-  ]
+  styles: [],
 })
 export class LoginComponent implements OnInit {
-
-  loginForm !: FormGroup;
+  loginForm!: FormGroup;
   rememberme = false;
 
-  constructor(private auth: AuthService,private router: Router, private toastr: ToastrService,
-    private formBuilder: FormBuilder) { 
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private toastr: ToastrService,
+    private formBuilder: FormBuilder
+  ) {
     this.loginForm = this.formBuilder.group({
-      username: ['',Validators.required,],
-      password: ['',Validators.required],
-   });
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+    });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   login() {
-
-    if (  this.loginForm.valid ) { 
+    if (this.loginForm.valid) {
       Swal({
         allowOutsideClick: false,
         type: 'info',
-        text: 'Espere por favor...'
+        text: 'Espere por favor...',
       });
       Swal.showLoading();
-  
-  
-      this.auth.login( this.loginForm.value ).subscribe({
-        next: data => {
+
+      this.auth.login(this.loginForm.value).subscribe({
+        next: (data) => {
           Swal.close();
-          if(data['errors']!=undefined?data['errors'].length!=0:false){
-            data['errors'].map(res => {
+          if (
+            data['errors'] != undefined ? data['errors'].length != 0 : false
+          ) {
+            data['errors'].map((res) => {
               this.toastr.error(res);
-            })
-          }
-          else{
-            if ( this.rememberme ) {
+            });
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('permissions');
+          } else {
+            if (this.rememberme) {
               localStorage.setItem('username', data['user'].username);
             }
             localStorage.setItem('userID', data['user'].id);
             localStorage.setItem('token', data['access_token']);
             this.router.navigateByUrl('/home');
           }
-          
         },
-        error: error => {
-          Swal({text:error.error.error, type:'error'})  
-          console.log('There was an error',error)
-        }
+        error: (error) => {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('permissions');
+          //Swal({text:error.error.error, type:'error'})
+          console.log('There was an error', error);
+        },
       });
-     }
-
+    }
   }
 }

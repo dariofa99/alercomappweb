@@ -43,7 +43,6 @@ export class AuthService {
       map( resp => {
         this.saveToken( resp['access_token'] );
         this.savePermissions(resp['permissions']);
-        console.log(JSON.parse(localStorage.getItem('permissions')));
         return resp;
       })
     );
@@ -62,7 +61,6 @@ export class AuthService {
       authData
     ).pipe(
       map( resp => {
-        //this.saveToken( resp['acces_token'] );
         return resp;
       })
     );

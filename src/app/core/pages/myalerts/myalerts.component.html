@@ -24,7 +24,8 @@
             </mat-form-field>
             <button mat-button appearance="outline" (click)="resetFilters()">Limpiar Filtros</button>
         </div>
-        <mat-card *ngFor="let alert of alerts;let j=index" class="example-card mb-3">
+        <pagination-controls class="pagi" previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="gty(($event))"></pagination-controls>
+        <mat-card *ngFor="let alert of alertsData | paginate : { itemsPerPage: itemsPerPage, currentPage: pageData, totalItems: totalItems }" class="example-card mb-3">
             <mat-card-title class="pb-2">Estado: {{alert.status.reference_name}}</mat-card-title>
             <mat-card-subtitle>Fecha de Creación: {{alert.event_date}}</mat-card-subtitle>
             <mat-card-subtitle>
