@@ -3,8 +3,26 @@
 <div class="content-wrapper">
     <div class="card m-4">
         <div class="container p-4">
-            <button mat-button color="primary" (click)="addRole()">Añadir nuevo rol</button>
-            <button mat-button color="primary" (click)="addPermission()">Añadir nuevo permiso</button>
+            <div *ngxPermissionsOnly="createEditRolePermission; else elseBlockCreateRole; then thenBlockCreateRole">
+            </div>
+            <ng-template #elseBlockCreateRole>
+                <button disabled mat-button color="primary" (click)="addRole()">Añadir nuevo rol</button>
+            </ng-template>
+            <ng-template #thenBlockCreateRole>
+                <button mat-button color="primary" (click)="addRole()">Añadir nuevo rol</button>
+            </ng-template>
+
+            <div *ngxPermissionsOnly="createPermissionPermission; else elseBlockCreatePermission; then thenBlockCreatePermission">
+            </div>
+            <ng-template #elseBlockCreatePermission>
+                <button disabled mat-button color="primary" (click)="addPermission()">Añadir nuevo permiso</button>
+            </ng-template>
+            <ng-template #thenBlockCreatePermission>
+                <button mat-button color="primary" (click)="addPermission()">Añadir nuevo permiso</button>
+            </ng-template>
+
+
+
             <div class="table-responsive mt-3">
                 <table class='table table-hover'>
                     <thead class="text-center">
@@ -19,7 +37,14 @@
                             <td *ngFor="let col of rolesDisplay; first as isFirst">
                                 <p *ngIf="isFirst">{{col.permissions[i].name}}</p>
                                 <div *ngIf="!isFirst">
-                                    <input type="checkbox" (change)="checkBoxChanged($event)" [checked]="col.permissions[i].checked" [value]='col.id.toString()+","+row.id+","+col.permissions[i].checked.toString()'>
+                                    <div *ngxPermissionsOnly="assign_role; else elseBlock; then thenBlock">
+                                    </div>
+                                    <ng-template #elseBlock>
+                                        <input disabled type="checkbox" (change)="checkBoxChanged($event)" [checked]="col.permissions[i].checked" [value]='col.id.toString()+","+row.id+","+col.permissions[i].checked.toString()'>
+                                    </ng-template>
+                                    <ng-template #thenBlock>
+                                        <input type="checkbox" (change)="checkBoxChanged($event)" [checked]="col.permissions[i].checked" [value]='col.id.toString()+","+row.id+","+col.permissions[i].checked.toString()'>
+                                    </ng-template>
                                 </div>
                             </td>
                         </tr>

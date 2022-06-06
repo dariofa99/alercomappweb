@@ -25,6 +25,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertEditModel } from '../../models/alertEditModel';
 import { CategoryModel } from '../../models/categoryModel';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
+import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
 
 export class ImageFiles {
   constructor(public filePath?: string, public file?: File) {}
@@ -32,8 +33,9 @@ export class ImageFiles {
 
 export const DAYS_IN_MILISECONDS = 1000 * 60 * 60 * 24 * 8;
 export const DEFAULT_MARKER_OPTIONS = {
-  position: {lat: 1.2146697051829685, lng: -77.27854949154947},
+  position: { lat: 1.2146697051829685, lng: -77.27854949154947 },
 };
+
 
 @Component({
   selector: 'app--new-edit-alert',
@@ -82,7 +84,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private eventService: AlertsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private markerGoogleMaps: MarkerGoogleMaps
   ) {
     this.user = this.route.snapshot.data['user'];
     this.eventTypes = this.route.snapshot.data['eventTypes'];
@@ -134,12 +137,23 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     if (this.alertByID == undefined) {
       this.minDate = new Date(Date.now() - DAYS_IN_MILISECONDS);
       this.maxDate = new Date();
+    } else {
+      let auxSplit = this.alertByID.event_date.split('-');
+      this.event_date = new Date(
+        parseInt(auxSplit[0]),
+        parseInt(auxSplit[1]) - 1,
+        parseInt(auxSplit[2])
+      );
+      this.minDate = new Date(this.event_date - DAYS_IN_MILISECONDS);
+      this.maxDate = this.event_date;
     }
   }
 
-  googleMapDragEnd(event: any){
+  googleMapDragEnd(event: any) {
     this.eventForm.controls['latitude'].setValue(event.latLng.lat().toFixed(6));
-    this.eventForm.controls['longitude'].setValue(event.latLng.lng().toFixed(6));
+    this.eventForm.controls['longitude'].setValue(
+      event.latLng.lng().toFixed(6)
+    );
     console.log(event.latLng.lng().toFixed(6));
     console.log(event.latLng.lat().toFixed(6));
   }
@@ -150,12 +164,6 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       this.actionBtn = 'Actualizar';
       this.eventForm.controls['event_description'].setValue(
         this.alertByID.event_description
-      );
-      let auxSplit = this.alertByID.event_date.split('-');
-      this.event_date = new Date(
-        parseInt(auxSplit[0]),
-        parseInt(auxSplit[1]) - 1,
-        parseInt(auxSplit[2])
       );
       this.eventForm.controls['event_date'].setValue(this.event_date);
       this.eventForm.controls['event_place'].setValue(
@@ -214,13 +222,27 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
 
       this.isOnDepartment = true;
       this.isOnCategory = true;
-    }
-    else{
+
+      this.markers.push({
+        position: {
+          lat: this.center.lat,
+          lng: this.center.lng,
+        },
+        label: this.markerGoogleMaps.LABEL,
+        title: 'Ubicación Alerta',
+        options: {
+          animation: google.maps.Animation.DROP,
+          clickable: false,
+          draggable: true,
+          icon: this.markerGoogleMaps.MARKERIMAGE,
+        },
+      });
+    } else {
       this.center = {
         lat: this.toFloat(DEFAULT_MARKER_OPTIONS.position.lat),
         lng: this.toFloat(DEFAULT_MARKER_OPTIONS.position.lng),
       };
-  
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position: GeolocationPosition) => {
@@ -228,7 +250,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
             };
-  
+
             this.center = {
               lat: this.toFloat(pos.lat),
               lng: this.toFloat(pos.lng),
@@ -243,20 +265,22 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       }
       this.eventForm.controls['latitude'].setValue(this.center.lat);
       this.eventForm.controls['longitude'].setValue(this.center.lng);
-    }
-    this.markers.push({
-      position: {
-        lat: this.center.lat,
-        lng: this.center.lng,
-      },
-      title: 'Ubicación Alerta',
-      options: {
-        animation: google.maps.Animation.DROP,
-        clickable: false,
-        draggable: true,
-      },
-    });
 
+      this.markers.push({
+        position: {
+          lat: this.center.lat,
+          lng: this.center.lng,
+        },
+        label: this.markerGoogleMaps.LABEL,
+        title: 'Ubicación Alerta',
+        options: {
+          animation: google.maps.Animation.DROP,
+          clickable: false,
+          draggable: true,
+          icon: this.markerGoogleMaps.MARKERIMAGE,
+        },
+      });
+    }
     this.options = {
       mapTypeId: 'roadmap',
       zoomControl: true,

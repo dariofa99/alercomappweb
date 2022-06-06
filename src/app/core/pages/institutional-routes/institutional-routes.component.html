@@ -3,7 +3,15 @@
 <div class="content-wrapper">
     <div class="card m-4">
         <div class="container p-4">
-            <button mat-button color="primary" (click)="addInstitutionalRoute()">Añadir nueva Ruta Institucional</button>
+            <div *ngxPermissionsOnly="createInstitutionalRoutePermission; else elseBlockCreateInstitutionalRoute; then thenBlockCreateInstitutionalRoute">
+            </div>
+            <ng-template #elseBlockCreateInstitutionalRoute>
+                <button disabled mat-button color="primary" (click)="addInstitutionalRoute()">Añadir nueva Ruta Institucional</button>
+            </ng-template>
+            <ng-template #thenBlockCreateInstitutionalRoute>
+                <button mat-button color="primary" (click)="addInstitutionalRoute()">Añadir nueva Ruta Institucional</button>
+            </ng-template>
+
 
             <mat-form-field appearance="standard">
                 <mat-label>Filtro</mat-label>
@@ -17,8 +25,26 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> {{displayedColumnsSpanish[i]}} </th>
                         <td mat-cell *matCellDef="let row">{{row[displayedColumn]}}
                             <div *ngIf="last" class="example-button-row">
-                                <button mat-button color="primary" (click)="editInstitutionalRoute(row)"><mat-icon>edit</mat-icon></button>
-                                <button mat-button color="primary" (click)="deleteInstitutionalRoute(row.id)"><mat-icon>delete</mat-icon></button>
+                                <div *ngxPermissionsOnly="editInstitutionalRoutePermission; else elseBlockEditInstitutionalRoute; then thenBlockEditInstitutionalRoute">
+                                </div>
+                                <ng-template #elseBlockEditInstitutionalRoute>
+                                    <button disabled mat-button color="primary" (click)="editInstitutionalRoute(row)"><mat-icon>edit</mat-icon></button>
+                                </ng-template>
+                                <ng-template #thenBlockEditInstitutionalRoute>
+                                    <button mat-button color="primary" (click)="editInstitutionalRoute(row)"><mat-icon>edit</mat-icon></button>
+                                </ng-template>
+
+                                <div *ngxPermissionsOnly="deleteInstitutionalRoutePermission; else elseBlockDeleteInstitutionalRoute; then thenBlockDeleteInstitutionalRoute">
+                                </div>
+                                <ng-template #elseBlockDeleteInstitutionalRoute>
+                                    <button disabled mat-button color="primary" (click)="deleteInstitutionalRoute(row.id)"><mat-icon>delete</mat-icon></button>
+                                </ng-template>
+                                <ng-template #thenBlockDeleteInstitutionalRoute>
+                                    <button mat-button color="primary" (click)="deleteInstitutionalRoute(row.id)"><mat-icon>delete</mat-icon></button>
+                                </ng-template>
+
+
+
                             </div>
                         </td>
                     </ng-container>

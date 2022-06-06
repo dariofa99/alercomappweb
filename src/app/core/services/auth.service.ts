@@ -21,6 +21,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('userID');
+    localStorage.removeItem('permissions');
     this.route.navigateByUrl("login");
   }
 
@@ -41,6 +42,8 @@ export class AuthService {
     ).pipe(
       map( resp => {
         this.saveToken( resp['access_token'] );
+        this.savePermissions(resp['permissions']);
+        console.log(JSON.parse(localStorage.getItem('permissions')));
         return resp;
       })
     );
@@ -76,6 +79,11 @@ export class AuthService {
 
     localStorage.setItem('expire', now.getTime().toString() );
 
+
+  }
+
+  private savePermissions( permissions: [] ) {
+    localStorage.setItem('permissions', JSON.stringify(permissions));
 
   }
 

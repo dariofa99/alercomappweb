@@ -15,7 +15,15 @@
                                         <input formControlName="name" matInput placeholder="Nombre *">
                                     </mat-form-field>
                                 </form>
-                                <button mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
+                                <div *ngxPermissionsOnly="createEditRolePermission; else elseBlockCreateEdit; then thenBlockCreateEdit">
+                                </div>
+                                <ng-template #elseBlockCreateEdit>
+                                    <button disabled mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
+                                </ng-template>
+                                <ng-template #thenBlockCreateEdit>
+                                    <button mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
+                                </ng-template>
+
                             </div>
                         </div>
                     </div>
@@ -32,8 +40,23 @@
                                                 {{rol.name}}
                                             </div>
                                             <div class="col-md-4">
-                                                <button mat-button color="primary" (click)="editRole(rol)"><mat-icon>edit</mat-icon></button>
-                                                <button mat-button color="primary" (click)="deleteRole(rol.id)"><mat-icon>delete</mat-icon></button>
+                                                <div *ngxPermissionsOnly="editRolePermission; else elseBlockEdit; then thenBlockEdit">
+                                                </div>
+                                                <ng-template #elseBlockEdit>
+                                                    <button disabled mat-button color="primary" (click)="editRole(rol)"><mat-icon>edit</mat-icon></button>
+                                                </ng-template>
+                                                <ng-template #thenBlockEdit>
+                                                    <button mat-button color="primary" (click)="editRole(rol)"><mat-icon>edit</mat-icon></button>
+                                                </ng-template>
+
+                                                <div *ngxPermissionsOnly="deleteRolePermission; else elseBlockDelete; then thenBlockDelete">
+                                                </div>
+                                                <ng-template #elseBlockDelete>
+                                                    <button disabled mat-button color="primary" (click)="deleteRole(rol.id)"><mat-icon>delete</mat-icon></button>
+                                                </ng-template>
+                                                <ng-template #thenBlockDelete>
+                                                    <button mat-button color="primary" (click)="deleteRole(rol.id)"><mat-icon>delete</mat-icon></button>
+                                                </ng-template>
                                             </div>
                                         </div>
                                     </div>

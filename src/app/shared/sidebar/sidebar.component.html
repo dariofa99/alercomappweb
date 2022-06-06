@@ -35,7 +35,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                <li class="nav-item menu-is-opening menu-open">
+                <li class="nav-item menu-is-opening menu-open" *ngxPermissionsOnly="permissionsGroupUsers">
                     <a class="nav-link">
                         <i class="nav-icon fa fa-user"></i>
                         <p>
@@ -44,26 +44,26 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsRoles">
                             <a (click)="rolespermissionsShowingEvent()" class="nav-link" [ngClass]="status_roles_permissions ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Roles y Permisos</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsUsers">
                             <a (click)="usersadminShowingEvent()" class="nav-link" [ngClass]="status_users_admin ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Administrar Usuarios</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsInstitutions">
                             <a (click)="institutionsShowingEvent()" class="nav-link" [ngClass]="status_institutions ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Administrar Instituciones</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsInstitutionsInfo">
                             <a (click)="institutionsInfoShowingEvent()" class="nav-link" [ngClass]="status_institutions_info ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Admin Instituciones Info</p>
@@ -94,19 +94,19 @@
                                 <p>Crear Alerta</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsEventTypes">
                             <a (click)="eventTypesShowingEvent()" class="nav-link" [ngClass]="status_eventTypes ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tipos de Alertas</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsCategories">
                             <a (click)="categoriesShowingEvent()" class="nav-link" [ngClass]="status_categories ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Categorías</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionsInstitutionalRoutes">
                             <a (click)="institutionalRoutesShowingEvent()" class="nav-link" [ngClass]="status_institutional_routes ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Rutas Institucionales</p>

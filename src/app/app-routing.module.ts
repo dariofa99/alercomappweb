@@ -1,9 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthGuard } from './core/guards/auth.guard';
+import { CustomAddInstitutionInfoGuard } from './core/guards/custom-add-institution-info.guard';
+import { CustomAddInstitutionGuard } from './core/guards/custom-add-institution.guard';
+import { CustomAddUserGuard } from './core/guards/custom-add-user.guard';
+import { CustomAdminInstitutionsInfoGuard } from './core/guards/custom-admin-institutions-info.guard';
+import { CustomAdminInstitutionsGuard } from './core/guards/custom-admin-institutions.guard';
+import { CustomAdminUsersGuard } from './core/guards/custom-admin-users.guard';
+import { CustomEditInstitutionInfoGuard } from './core/guards/custom-edit-institution-info.guard';
+import { CustomEditInstitutionGuard } from './core/guards/custom-edit-institution.guard';
 import { CategoriesComponent } from './core/pages/categories/categories.component';
 import { ConfirmAccountComponent } from './core/pages/confirm-account/confirm-account.component';
 import { DetailAlertComponent } from './core/pages/detail-alert/detail-alert.component';
+import { ForbiddenComponent } from './core/pages/forbidden/forbidden.component';
 import { ForgotComponent } from './core/pages/forgot/forgot.component';
 import { HomeComponent } from './core/pages/home/home.component';
 import { InstitutionalRoutesComponent } from './core/pages/institutional-routes/institutional-routes.component';
@@ -23,6 +33,7 @@ import { NewEditUserComponent } from './core/pages/new-edit-user/new-edit-user.c
 import { RecoveryPasswordComponent } from './core/pages/recovery-password/recovery-password.component';
 import { RegisterComponent } from './core/pages/register/register.component';
 import { RolesPermissionsComponent } from './core/pages/roles-permissions/roles-permissions.component';
+import { TermsConditionsComponent } from './core/pages/terms-conditions/terms-conditions.component';
 import { TypealertsComponent } from './core/pages/typealerts/typealerts.component';
 import { UserAdminComponent } from './core/pages/user-admin/user-admin.component';
 import { ViewAlertComponent } from './core/pages/view-alert/view-alert.component';
@@ -49,192 +60,433 @@ import { UserResolverService } from './core/resolvers/user-resolver.service';
 import { UsersResolverService } from './core/resolvers/users-resolver.service';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent, canActivate: [ AuthGuard ],resolve: {users: UsersResolverService,
-  user: UserResolverService, departments: DepartmentsResolverService} },
-  
-  { path: 'home/admin-users'    , component: UserAdminComponent, canActivate: [ AuthGuard ], 
-  resolve: {
-    departments: DepartmentsResolverService,
-    roles: RolesResolverService,
-    users: UsersResolverService,
-    user: UserResolverService,
-    towns: TownsResolverService} },
-  
-  { path: 'home/admin-users/add-user'    , component: NewEditUserComponent, canActivate: [ AuthGuard ],
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
     resolve: {
-    departments: DepartmentsResolverService,
-    roles: RolesResolverService,
-    user: UserResolverService,
-    towns: TownsResolverService} },
-    
-  { path: 'home/admin-users/edit-user/:id'    , component: NewEditUserComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    users: UsersResolverService, 
-    departments: DepartmentsResolverService,
-    roles: RolesResolverService,
-    user: UserResolverService,
-    userByID: UserByIDResolverService,
-    towns: TownsResolverService} },
-  { path: 'home/admin-roles'    , component: RolesPermissionsComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    permissions: PermissionsResolverService,
-    roles: RolesResolverService,
-    user: UserResolverService
-    } },
-  { path: 'home/admin-roles/add-edit-rol'    , component: NewEditRoleComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    roles: RolesResolverService,
-    } },
-  { path: 'home/admin-roles/add-edit-permission'    , component: NewEditPermissionComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    permissions: PermissionsResolverService,
-    } },
-  { path: 'home/admin-institutions'    , component: InstitutionsComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    institutions: InstitutionsResolverService,
-    } },
-  { path: 'home/admin-institutions/add-institution'    , component: NewEditInstitutionComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    eventTypes: EventTypesResolverService,
-    } },
-  { path: 'home/admin-institutions/edit-institution/:id'    , component: NewEditInstitutionComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    institutionByID: InstitutionByIDResolverService,
-    eventTypes: EventTypesResolverService,
-    }
- },
- { path: 'home/admin-institutions-info'    , component: InstitutionsInfoComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    institutionsinfo: InstitutionsInfoResolverService,
-    } },
-  { path: 'home/admin-institutions-info/add-institution-info'    , component: NewEditInstitutionInfoComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    } },
-  { path: 'home/admin-institutions-info/edit-institution-info/:id'    , component: NewEditInstitutionInfoComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    institutionInfoByID: InstitutionInfoByIDResolverService,
-    }
- },
-  { path: 'home/admin-alerts'    , component: MyalertsComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    alerts: AlertsResolverService,
-    eventTypes: EventTypesResolverService,
-    affectRanges: AffectsRangeResolverService,
-    users: UsersResolverService
-    }},
-    { path: 'home/admin-alerts/alert-detail/:id'    , component: DetailAlertComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    eventTypes: EventTypesResolverService,
-    affectRanges: AffectsRangeResolverService,
-    alertByID: AlertByIDResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    categories: CategoriesResolverService
-    }},
-    { path: 'view/alert/:token', component: ViewAlertComponent,
-  resolve: {
-    alertByToken: AlertByTokenResolverService,
-    }},
-  { path: 'home/admin-alerts/add-alert'    , component: NewEditAlertComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    eventTypes: EventTypesResolverService,
-    affectRanges: AffectsRangeResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    categories: CategoriesResolverService
-    } },
-  { path: 'home/admin-alerts/edit-alert/:id'    , component: NewEditAlertComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    eventTypes: EventTypesResolverService,
-    affectRanges: AffectsRangeResolverService,
-    towns: TownsResolverService,
-    departments: DepartmentsResolverService,
-    alertByID: AlertByIDResolverService,
-    categories: CategoriesResolverService
-    }  },
-  { path: 'home/admin-event-types'    , component: TypealertsComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    eventTypes: EventTypesResolverService,
-    } },
-  { path: 'home/admin-event-types/add-event-type'    , component: NewEditTypealertComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    categories: CategoriesResolverService
-    } },
-  { path: 'home/admin-event-types/edit-event-type/:id'    , component: NewEditTypealertComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    categories: CategoriesResolverService,
-    eventTypeByID: EventTypeByIDResolverService,
-    }
- },
- { path: 'home/admin-categories'    , component: CategoriesComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    categories: CategoriesResolverService
-    } },
-  { path: 'home/admin-categories/add-category'    , component: NewEditCategoryComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService
-    } },
-  { path: 'home/admin-categories/edit-category/:id'    , component: NewEditCategoryComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    categoryByID: CategoryByIDResolverService,
-    }
- },
- { path: 'home/admin-institutional-routes'    , component: InstitutionalRoutesComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    institutionalRoutes: InstitutionalRoutesResolverService
-    } },
-  { path: 'home/admin-institutional-routes/add-institutional-route'    , component: NewEditInstitutionalRouteComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService
-    } },
-  { path: 'home/admin-institutiona-routes/edit-institutional-route/:id'    , component: NewEditInstitutionalRouteComponent, canActivate: [ AuthGuard ],
-  resolve: {
-    user: UserResolverService,
-    institutionalRouteByID: InstitutionalRouteByIDResolverService
-    }
- },
+      users: UsersResolverService,
+      user: UserResolverService,
+      departments: DepartmentsResolverService,
+    },
+    data: {
+      permissions: {
+        only: ['crear_roles'],
+        redirectTo: '/login',
+      },
+    },
+  },
+
+  {
+    path: 'home/admin-users',
+    component: UserAdminComponent,
+    canActivate: [CustomAdminUsersGuard],
+    resolve: {
+      departments: DepartmentsResolverService,
+      users: UsersResolverService,
+      user: UserResolverService,
+      towns: TownsResolverService,
+    },
+    data: {
+      permissions: {
+        readUser: ['ver_usuarios'],
+        createUser: ['crear_usuarios'],
+        editUser: ['editar_usuarios'],
+        deleteUser: ['eliminar_usuarios'],
+      },
+    },
+  },
+
+  {
+    path: 'home/admin-users/add-user',
+    component: NewEditUserComponent,
+    canActivate: [CustomAddUserGuard],
+    resolve: {
+      departments: DepartmentsResolverService,
+      roles: RolesResolverService,
+      user: UserResolverService,
+      towns: TownsResolverService,
+    },
+    data: {
+      permissions: {
+        createUser: ['crear_usuarios'],
+      },
+    },
+  },
+
+  {
+    path: 'home/admin-users/edit-user/:id',
+    component: NewEditUserComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      users: UsersResolverService,
+      departments: DepartmentsResolverService,
+      roles: RolesResolverService,
+      user: UserResolverService,
+      userByID: UserByIDResolverService,
+      towns: TownsResolverService,
+    },
+    data: {
+      permissions: {
+        editUser: ['editar_usuarios'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-roles',
+    component: RolesPermissionsComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      permissions: PermissionsResolverService,
+      roles: RolesResolverService,
+      user: UserResolverService,
+    },
+    data: {
+      permissions: {
+        readRole: ['ver_roles'],
+        createRole: ['crear_roles'],
+        editRole: ['editar_roles'],
+        deleteRole: ['eliminar_roles'],
+        readPermission: ['ver_permisos'],
+        createPermission: ['crear_permisos'],
+        editPermission: ['editar_permisos'],
+        deletePermission: ['eliminar_permisos'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-roles/add-edit-rol',
+    component: NewEditRoleComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      roles: RolesResolverService,
+    },
+  },
+  {
+    path: 'home/admin-roles/add-edit-permission',
+    component: NewEditPermissionComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      permissions: PermissionsResolverService,
+    },
+  },
+  {
+    path: 'home/admin-institutions',
+    component: InstitutionsComponent,
+    canActivate: [CustomAdminInstitutionsGuard],
+    resolve: {
+      user: UserResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      institutions: InstitutionsResolverService,
+    },
+    data: {
+      permissions: {
+        readInstitution: ['ver_instituciones'],
+        createInstitution: ['crear_instituciones'],
+        editInstitution: ['editar_instituciones'],
+        deleteInstitution: ['eliminar_instituciones'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutions/add-institution',
+    component: NewEditInstitutionComponent,
+    canActivate: [CustomAddInstitutionGuard],
+    resolve: {
+      user: UserResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      eventTypes: EventTypesResolverService,
+    },
+    data: {
+      permissions: {
+        createInstitution: ['crear_instituciones'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutions/edit-institution/:id',
+    component: NewEditInstitutionComponent,
+    canActivate: [CustomEditInstitutionGuard],
+    resolve: {
+      user: UserResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      institutionByID: InstitutionByIDResolverService,
+      eventTypes: EventTypesResolverService,
+    },
+    data: {
+      permissions: {
+        editInstitution: ['editar_instituciones'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutions-info',
+    component: InstitutionsInfoComponent,
+    canActivate: [CustomAdminInstitutionsInfoGuard],
+    resolve: {
+      user: UserResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      institutionsinfo: InstitutionsInfoResolverService,
+    },
+    data: {
+      permissions: {
+        readInstitutionInfo: ['ver_instituciones_info'],
+        createInstitutionInfo: ['crear_instituciones_info'],
+        editInstitutionInfo: ['editar_instituciones_info'],
+        deleteInstitutionInfo: ['eliminar_instituciones_info'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutions-info/add-institution-info',
+    component: NewEditInstitutionInfoComponent,
+    canActivate: [CustomAddInstitutionInfoGuard],
+    resolve: {
+      user: UserResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+    },
+    data: {
+      permissions: {
+        createInstitutionInfo: ['crear_instituciones_info'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutions-info/edit-institution-info/:id',
+    component: NewEditInstitutionInfoComponent,
+    canActivate: [CustomEditInstitutionInfoGuard],
+    resolve: {
+      user: UserResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      institutionInfoByID: InstitutionInfoByIDResolverService,
+    },
+    data: {
+      permissions: {
+        editInstitutionInfo: ['editar_instituciones_info'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-alerts',
+    component: MyalertsComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      alerts: AlertsResolverService,
+      eventTypes: EventTypesResolverService,
+      affectRanges: AffectsRangeResolverService,
+      users: UsersResolverService,
+    },
+  },
+  {
+    path: 'home/admin-alerts/alert-detail/:id',
+    component: DetailAlertComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      eventTypes: EventTypesResolverService,
+      affectRanges: AffectsRangeResolverService,
+      alertByID: AlertByIDResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      categories: CategoriesResolverService,
+    },
+  },
+  {
+    path: 'view/alert/:token',
+    component: ViewAlertComponent,
+    resolve: {
+      alertByToken: AlertByTokenResolverService,
+    },
+  },
+  {
+    path: 'home/admin-alerts/add-alert',
+    component: NewEditAlertComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      eventTypes: EventTypesResolverService,
+      affectRanges: AffectsRangeResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      categories: CategoriesResolverService,
+    },
+  },
+  {
+    path: 'home/admin-alerts/edit-alert/:id',
+    component: NewEditAlertComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      eventTypes: EventTypesResolverService,
+      affectRanges: AffectsRangeResolverService,
+      towns: TownsResolverService,
+      departments: DepartmentsResolverService,
+      alertByID: AlertByIDResolverService,
+      categories: CategoriesResolverService,
+    },
+  },
+  {
+    path: 'home/admin-event-types',
+    component: TypealertsComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      eventTypes: EventTypesResolverService,
+    },
+    data: {
+      permissions: {
+        readTypeAlert: ['ver_tipos_alertas'],
+        createTypeAlert: ['crear_tipos_alertas'],
+        editTypeAlert: ['editar_tipos_alertas'],
+        deleteTypeAlert: ['eliminar_tipos_alertas'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-event-types/add-event-type',
+    component: NewEditTypealertComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      categories: CategoriesResolverService,
+    },
+    data: {
+      permissions: {
+        createTypeAlert: ['crear_tipos_alertas'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-event-types/edit-event-type/:id',
+    component: NewEditTypealertComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      categories: CategoriesResolverService,
+      eventTypeByID: EventTypeByIDResolverService,
+    },
+    data: {
+      permissions: {
+        editTypeAlert: ['editar_tipos_alertas'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-categories',
+    component: CategoriesComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      categories: CategoriesResolverService,
+    },
+    data: {
+      permissions: {
+        readCategory: ['ver_categorias'],
+        createCategory: ['crear_categorias'],
+        editCategory: ['editar_categorias'],
+        deleteCategory: ['eliminar_categorias'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-categories/add-category',
+    component: NewEditCategoryComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+    },
+    data: {
+      permissions: {
+        createCategory: ['crear_categorias'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-categories/edit-category/:id',
+    component: NewEditCategoryComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      categoryByID: CategoryByIDResolverService,
+    },
+    data: {
+      permissions: {
+        editCategory: ['editar_categorias'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutional-routes',
+    component: InstitutionalRoutesComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      institutionalRoutes: InstitutionalRoutesResolverService,
+    },
+    data: {
+      permissions: {
+        readInstitutionalRoute: ['ver_rutas_institucionales'],
+        createInstitutionalRoute: ['crear_rutas_institucionales'],
+        editInstitutionalRoute: ['editar_rutas_institucionales'],
+        deleteInstitutionalRoute: ['eliminar_rutas_institucionales'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutional-routes/add-institutional-route',
+    component: NewEditInstitutionalRouteComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+    },
+    data: {
+      permissions: {
+        createInstitutionalRoute: ['crear_rutas_institucionales'],
+      },
+    },
+  },
+  {
+    path: 'home/admin-institutiona-routes/edit-institutional-route/:id',
+    component: NewEditInstitutionalRouteComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      institutionalRouteByID: InstitutionalRouteByIDResolverService,
+    },
+    data: {
+      permissions: {
+        editInstitutionalRoute: ['editar_rutas_institucionales'],
+      },
+    },
+  },
+  { path: 'forbidden', component: ForbiddenComponent },
+  { path: 'terms-conditions', component: TermsConditionsComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'confirm/account/:token', component: ConfirmAccountComponent },
-  { path: 'login'   , component: LoginComponent },
-  { path: 'forgot'   , component: ForgotComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'forgot', component: ForgotComponent },
   { path: 'reset/password/:token', component: RecoveryPasswordComponent },
-  { path: '**', redirectTo: 'home' }
+  { path: '**', redirectTo: 'home' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [UsersResolverService, UserResolverService, DepartmentsResolverService,
-  PermissionsResolverService,RolesResolverService]
+  providers: [
+    UsersResolverService,
+    UserResolverService,
+    DepartmentsResolverService,
+    PermissionsResolverService,
+    RolesResolverService,
+  ],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

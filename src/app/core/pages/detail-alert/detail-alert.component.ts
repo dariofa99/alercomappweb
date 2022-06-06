@@ -20,6 +20,7 @@ import { map } from 'rxjs';
 import { AlertEditModel } from '../../models/alertEditModel';
 import { CategoryModel } from '../../models/categoryModel';
 import { GoogleMap } from '@angular/google-maps';
+import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
 
 @Component({
   selector: 'app-detail-alert',
@@ -67,7 +68,8 @@ export class DetailAlertComponent implements OnInit {
     private eventService: AlertsService,
     private auth: AuthService,
     private toastr: ToastrService,
-    private adapterAlert: AlertAdapter
+    private adapterAlert: AlertAdapter,
+    private markerGoogleMaps: MarkerGoogleMaps
   ) {
     this.user = this.route.snapshot.data['user'];
     this.alertByID = this.route.snapshot.data['alertByID'];
@@ -111,14 +113,16 @@ export class DetailAlertComponent implements OnInit {
             lat: this.center.lat,
             lng: this.center.lng,
           },
+          label: this.markerGoogleMaps.LABEL,
           title: 'Ubicación Alerta',
           options: {
             animation: google.maps.Animation.DROP,
             clickable: false,
-            draggable: true,
+            draggable: false,
+            icon: this.markerGoogleMaps.MARKERIMAGE,
           },
         });
-    
+
         this.options = {
           mapTypeId: 'roadmap',
           zoomControl: true,
@@ -323,125 +327,161 @@ export class DetailAlertComponent implements OnInit {
   }
 
   acceptEvent() {
-    this.eventFormToSend.controls['status_id'].setValue(13);
-    if (this.eventFormToSend.valid) {
-      this.eventService
-        .postUpdateEvent(
-          this.auth.readToken(),
-          this.alertByID.id,
-          this.eventFormToSend.value
-        )
-        .subscribe({
-          next: (data) => {
-            {
-              console.log(data);
-              if (
-                data['errors'] != undefined ? data['errors'].length != 0 : false
-              ) {
-                data['errors'].map((res) => {
-                  this.toastr.error(res);
-                });
-              } else {
-                this.alertByID = this.adapterAlert.adapt(data['event']);
-                this.statusBtn = false;
+    Swal({
+      title: 'Realmente deseas cambiar el estado?',
+      showCancelButton: true,
+      confirmButtonText: `Si`,
+      cancelButtonText: `No`,
+    }).then((result) => {
+      if (result.value) {
+        this.eventFormToSend.controls['status_id'].setValue(13);
+        if (this.eventFormToSend.valid) {
+          this.eventService
+            .postUpdateEvent(
+              this.auth.readToken(),
+              this.alertByID.id,
+              this.eventFormToSend.value
+            )
+            .subscribe({
+              next: (data) => {
+                {
+                  console.log(data);
+                  if (
+                    data['errors'] != undefined
+                      ? data['errors'].length != 0
+                      : false
+                  ) {
+                    data['errors'].map((res) => {
+                      this.toastr.error(res);
+                    });
+                  } else {
+                    this.alertByID = this.adapterAlert.adapt(data['event']);
+                    this.statusBtn = false;
+                    Swal({
+                      allowOutsideClick: false,
+                      type: 'success',
+                      text: 'Alerta aceptada con éxito',
+                    }).then((result) => {});
+                  }
+                }
+              },
+              error: (error) => {
                 Swal({
-                  allowOutsideClick: false,
-                  type: 'success',
-                  text: 'Alerta aceptada con éxito',
-                }).then((result) => {});
-              }
-            }
-          },
-          error: (error) => {
-            Swal({
-              text: 'Ha ocurrido un error contacta a soporte@alercom.org',
-              type: 'error',
+                  text: 'Ha ocurrido un error contacta a soporte@alercom.org',
+                  type: 'error',
+                });
+                console.log('There was an error', error);
+              },
             });
-            console.log('There was an error', error);
-          },
-        });
-    }
+        }
+      } else if (result) {
+      }
+    });
   }
 
   verifyEvent() {
-    this.eventFormToSend.controls['status_id'].setValue(23);
-    if (this.eventFormToSend.valid) {
-      this.eventService
-        .postUpdateEvent(
-          this.auth.readToken(),
-          this.alertByID.id,
-          this.eventFormToSend.value
-        )
-        .subscribe({
-          next: (data) => {
-            {
-              console.log(data);
-              if (
-                data['errors'] != undefined ? data['errors'].length != 0 : false
-              ) {
-                data['errors'].map((res) => {
-                  this.toastr.error(res);
-                });
-              } else {
-                this.alertByID = this.adapterAlert.adapt(data['event']);
-                this.statusBtn = false;
+    Swal({
+      title: 'Realmente deseas cambiar el estado?',
+      showCancelButton: true,
+      confirmButtonText: `Si`,
+      cancelButtonText: `No`,
+    }).then((result) => {
+      if (result.value) {
+        this.eventFormToSend.controls['status_id'].setValue(23);
+        if (this.eventFormToSend.valid) {
+          this.eventService
+            .postUpdateEvent(
+              this.auth.readToken(),
+              this.alertByID.id,
+              this.eventFormToSend.value
+            )
+            .subscribe({
+              next: (data) => {
+                {
+                  console.log(data);
+                  if (
+                    data['errors'] != undefined
+                      ? data['errors'].length != 0
+                      : false
+                  ) {
+                    data['errors'].map((res) => {
+                      this.toastr.error(res);
+                    });
+                  } else {
+                    this.alertByID = this.adapterAlert.adapt(data['event']);
+                    this.statusBtn = false;
+                    Swal({
+                      allowOutsideClick: false,
+                      type: 'success',
+                      text: 'Alerta verificada con éxito',
+                    }).then((result) => {});
+                  }
+                }
+              },
+              error: (error) => {
                 Swal({
-                  allowOutsideClick: false,
-                  type: 'success',
-                  text: 'Alerta verificada con éxito',
-                }).then((result) => {});
-              }
-            }
-          },
-          error: (error) => {
-            Swal({
-              text: 'Ha ocurrido un error contacta a soporte@alercom.org',
-              type: 'error',
+                  text: 'Ha ocurrido un error contacta a soporte@alercom.org',
+                  type: 'error',
+                });
+                console.log('There was an error', error);
+              },
             });
-            console.log('There was an error', error);
-          },
-        });
-    }
+        }
+      } else if (result) {
+      }
+    });
   }
 
   denyEvent() {
-    this.eventFormToSend.controls['status_id'].setValue(12);
-    if (this.eventFormToSend.valid) {
-      this.eventService
-        .postUpdateEvent(
-          this.auth.readToken(),
-          this.alertByID.id,
-          this.eventFormToSend.value
-        )
-        .subscribe({
-          next: (data) => {
-            {
-              if (
-                data['errors'] != undefined ? data['errors'].length != 0 : false
-              ) {
-                data['errors'].map((res) => {
-                  this.toastr.error(res);
-                });
-              } else {
-                this.alertByID = this.adapterAlert.adapt(data['event']);
-                this.statusBtn = false;
+    Swal({
+      title: 'Realmente deseas cambiar el estado?',
+      showCancelButton: true,
+      confirmButtonText: `Si`,
+      cancelButtonText: `No`,
+    }).then((result) => {
+      if (result.value) {
+        this.eventFormToSend.controls['status_id'].setValue(12);
+        if (this.eventFormToSend.valid) {
+          this.eventService
+            .postUpdateEvent(
+              this.auth.readToken(),
+              this.alertByID.id,
+              this.eventFormToSend.value
+            )
+            .subscribe({
+              next: (data) => {
+                {
+                  if (
+                    data['errors'] != undefined
+                      ? data['errors'].length != 0
+                      : false
+                  ) {
+                    data['errors'].map((res) => {
+                      this.toastr.error(res);
+                    });
+                  } else {
+                    this.alertByID = this.adapterAlert.adapt(data['event']);
+                    this.statusBtn = false;
+                    Swal({
+                      allowOutsideClick: false,
+                      type: 'success',
+                      text: 'Alerta denegada con éxito',
+                    }).then((result) => {});
+                  }
+                }
+              },
+              error: (error) => {
                 Swal({
-                  allowOutsideClick: false,
-                  type: 'success',
-                  text: 'Alerta denegada con éxito',
-                }).then((result) => {});
-              }
-            }
-          },
-          error: (error) => {
-            Swal({
-              text: 'Ha ocurrido un error contacta a soporte@alercom.org',
-              type: 'error',
+                  text: 'Ha ocurrido un error contacta a soporte@alercom.org',
+                  type: 'error',
+                });
+                console.log('There was an error', error);
+              },
             });
-            console.log('There was an error', error);
-          },
-        });
-    }
+        }
+      } else if (result) {
+      }
+    });
   }
 
   onDepartmentSelected(event: any) {

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -40,6 +40,31 @@ import { RecoveryPasswordComponent } from './core/pages/recovery-password/recove
 import { ViewAlertComponent } from './core/pages/view-alert/view-alert.component';
 import { NewEditInstitutionInfoComponent } from './core/pages/new-edit-institution-info/new-edit-institution-info.component';
 import { InstitutionsInfoComponent } from './core/pages/institutions-info/institutions-info.component';
+import { NgxPermissionsModule, NgxPermissionsService } from 'ngx-permissions';
+import { LoadPermissionsService } from './core/services/load-permissions.service';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { MarkerGoogleMaps } from './core/const/markerGoogleMaps';
+import { PermissionsList } from './core/const/permissionsList';
+import { ForbiddenComponent } from './core/pages/forbidden/forbidden.component';
+import { TermsConditionsComponent } from './core/pages/terms-conditions/terms-conditions.component';
+
+export function permissionsFactory(
+  loadPermissionsService: LoadPermissionsService,
+  ngxPermissionsService: NgxPermissionsService
+) {
+  return () => {
+    return loadPermissionsService
+      .loadPermissions()
+      .then((data: [string]) => {
+        console.log(data);
+        ngxPermissionsService.loadPermissions(data);
+        return true;
+      })
+      .catch((data) => {
+        console.log(data);
+      });
+  };
+}
 
 @NgModule({
   declarations: [
@@ -71,6 +96,8 @@ import { InstitutionsInfoComponent } from './core/pages/institutions-info/instit
     ViewAlertComponent,
     NewEditInstitutionInfoComponent,
     InstitutionsInfoComponent,
+    ForbiddenComponent,
+    TermsConditionsComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,9 +111,22 @@ import { InstitutionsInfoComponent } from './core/pages/institutions-info/instit
     ReactiveFormsModule,
     RouterModule,
     ToastrModule.forRoot(),
-    GoogleMapsModule
+    GoogleMapsModule,
+    NgxPermissionsModule.forRoot(),
   ],
-  providers: [RolesPermissionsComponent, KeyBoardService],
-  bootstrap: [AppComponent]
+  providers: [
+    RolesPermissionsComponent,
+    KeyBoardService,
+    PermissionsList,
+    MarkerGoogleMaps,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: permissionsFactory,
+      deps: [LoadPermissionsService, NgxPermissionsService],
+      multi: true,
+    },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

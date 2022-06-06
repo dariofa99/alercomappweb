@@ -3,7 +3,14 @@
 <div class="content-wrapper">
     <div class="card m-4">
         <div class="container p-4">
-            <button mat-button color="primary" (click)="addInstitution()">Añadir nueva Institución</button>
+            <div *ngxPermissionsOnly="createInstitutionInfoPermission; else elseBlockCreateInstitution; then thenBlockCreateInstitution">
+            </div>
+            <ng-template #elseBlockCreateInstitution>
+                <button disabled mat-button color="primary" (click)="addInstitution()">Añadir nueva Institución</button>
+            </ng-template>
+            <ng-template #thenBlockCreateInstitution>
+                <button mat-button color="primary" (click)="addInstitution()">Añadir nueva Institución</button>
+            </ng-template>
 
             <mat-form-field appearance="standard">
                 <mat-label>Filtro</mat-label>
@@ -17,8 +24,23 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> {{displayedColumnsSpanish[i]}} </th>
                         <td mat-cell *matCellDef="let row">{{row[displayedColumn]}}
                             <div *ngIf="last" class="example-button-row">
-                                <button mat-button color="primary" (click)="editInstitution(row)"><mat-icon>edit</mat-icon></button>
-                                <button mat-button color="primary" (click)="deleteInstitution(row.id)"><mat-icon>delete</mat-icon></button>
+                                <div *ngxPermissionsOnly="editInstitutionInfoPermission; else elseBlockEditInstitutionInfo; then thenBlockEditInstitutionInfo">
+                                </div>
+                                <ng-template #elseBlockEditInstitutionInfo>
+                                    <button disabled mat-button color="primary" (click)="editInstitution(row)"><mat-icon>edit</mat-icon></button>
+                                </ng-template>
+                                <ng-template #thenBlockEditInstitutionInfo>
+                                    <button mat-button color="primary" (click)="editInstitution(row)"><mat-icon>edit</mat-icon></button>
+                                </ng-template>
+
+                                <div *ngxPermissionsOnly="deleteInstitutionInfoPermission; else elseBlockDeleteInstitutionInfo; then thenBlockDeleteInstitutionInfo">
+                                </div>
+                                <ng-template #elseBlockDeleteInstitutionInfo>
+                                    <button disabled mat-button color="primary" (click)="deleteInstitution(row.id)"><mat-icon>delete</mat-icon></button>
+                                </ng-template>
+                                <ng-template #thenBlockDeleteInstitutionInfo>
+                                    <button mat-button color="primary" (click)="deleteInstitution(row.id)"><mat-icon>delete</mat-icon></button>
+                                </ng-template>
                             </div>
                         </td>
                     </ng-container>

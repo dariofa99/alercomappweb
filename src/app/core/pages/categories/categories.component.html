@@ -3,7 +3,15 @@
 <div class="content-wrapper">
     <div class="card m-4">
         <div class="container p-4">
-            <button mat-button color="primary" (click)="addCategory()">Añadir nuevo Tipo de Categoría</button>
+            <div *ngxPermissionsOnly="createCategoryPermission; else elseBlockCreateCategory; then thenBlockCreateCategory">
+            </div>
+            <ng-template #elseBlockCreateCategory>
+                <button disabled mat-button color="primary" (click)="addCategory()">Añadir nuevo Tipo de Categoría</button>
+            </ng-template>
+            <ng-template #thenBlockCreateCategory>
+                <button mat-button color="primary" (click)="addCategory()">Añadir nuevo Tipo de Categoría</button>
+            </ng-template>
+
 
             <mat-form-field appearance="standard">
                 <mat-label>Filtro</mat-label>
@@ -17,8 +25,23 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> {{displayedColumnsSpanish[i]}} </th>
                         <td mat-cell *matCellDef="let row">{{row[displayedColumn]}}
                             <div *ngIf="last" class="example-button-row">
-                                <button mat-button color="primary" (click)="editCategory(row)"><mat-icon>edit</mat-icon></button>
-                                <button mat-button color="primary" (click)="deleteCategory(row.id)"><mat-icon>delete</mat-icon></button>
+                                <div *ngxPermissionsOnly="editCategoryPermission; else elseBlockEditCategory; then thenBlockEditCategory">
+                                </div>
+                                <ng-template #elseBlockEditCategory>
+                                    <button disabled mat-button color="primary" (click)="editCategory(row)"><mat-icon>edit</mat-icon></button>
+                                </ng-template>
+                                <ng-template #thenBlockEditCategory>
+                                    <button mat-button color="primary" (click)="editCategory(row)"><mat-icon>edit</mat-icon></button>
+                                </ng-template>
+
+                                <div *ngxPermissionsOnly="deleteCategoryPermission; else elseBlockDeleteCategory; then thenBlockDeleteCategory">
+                                </div>
+                                <ng-template #elseBlockDeleteCategory>
+                                    <button disabled mat-button color="primary" (click)="deleteCategory(row.id)"><mat-icon>delete</mat-icon></button>
+                                </ng-template>
+                                <ng-template #thenBlockDeleteCategory>
+                                    <button mat-button color="primary" (click)="deleteCategory(row.id)"><mat-icon>delete</mat-icon></button>
+                                </ng-template>
                             </div>
                         </td>
                     </ng-container>

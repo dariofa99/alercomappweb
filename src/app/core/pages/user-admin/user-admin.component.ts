@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,8 +12,11 @@ import Swal from 'sweetalert2';
 import { ReferencesService } from '../../services/references.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { LoadPermissionsService } from '../../services/load-permissions.service';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { PermissionsList } from '../../const/permissionsList';
 
-export class UserToDisplay{
+export class UserToDisplay {
   constructor(
     public id?: number,
     public name?: string,
@@ -22,20 +25,38 @@ export class UserToDisplay{
     public email?: string,
     public phone_number?: string,
     public town?: string,
-    public status?: string,
-  ){}
+    public status?: string
+  ) {}
 }
 
 @Component({
   selector: 'app-user-admin',
   templateUrl: './user-admin.component.html',
-  styles: [
-  ]
+  styles: [],
 })
-
 export class UserAdminComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'lastname', 'username','email','phone_number','town','status','action'];
-  displayedColumnsSpanish: string[] = ['ID', 'Nombre', 'Apellido', 'Nombre de Usuario','Email','Número Teléfono','Municipio','Estado','Acción'];
+  displayedColumns: string[] = [
+    'id',
+    'name',
+    'lastname',
+    'username',
+    'email',
+    'phone_number',
+    'town',
+    'status',
+    'action',
+  ];
+  displayedColumnsSpanish: string[] = [
+    'ID',
+    'Nombre',
+    'Apellido',
+    'Nombre de Usuario',
+    'Email',
+    'Número Teléfono',
+    'Municipio',
+    'Estado',
+    'Acción',
+  ];
   dataSource: MatTableDataSource<UserToDisplay>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -47,21 +68,50 @@ export class UserAdminComponent implements OnInit {
   roles: RoleModel[];
   departments: DepartmentModel[];
   towns: Array<TownModel[]> = [];
+  readUserPermission;
+  createUserPermission;
+  editUserPermission;
+  deleteUserPermission;
 
-  constructor(private userService: UserService, private auth: AuthService,
-    private references: ReferencesService, private route: ActivatedRoute, public router: Router,
-    private toastr: ToastrService) {
-      this.user = this.route.snapshot.data['user'];
-      this.users = this.route.snapshot.data['users'];
-      this.departments = this.route.snapshot.data['departments'];
-      this.towns = this.route.snapshot.data['towns'];
-     }
+  constructor(
+    private userService: UserService,
+    private auth: AuthService,
+    private references: ReferencesService,
+    private route: ActivatedRoute,
+    public router: Router,
+    private toastr: ToastrService,
+    private loadPermissionsService: LoadPermissionsService,
+    private ngxPermissionsService: NgxPermissionsService,
+    private permissionsList: PermissionsList
+  ) {
+    this.loadPermissionsService.loadPermissions().then((data: [string]) => {
+      this.ngxPermissionsService.loadPermissions(data);
+    });
+    this.readUserPermission = this.permissionsList.VER_USUARIOS;
+    this.createUserPermission = this.permissionsList.CREAR_USUARIOS;
+    this.editUserPermission = this.permissionsList.EDITAR_USUARIOS;
+    this.deleteUserPermission = this.permissionsList.ELIMINAR_USUARIOS;
+
+    this.user = this.route.snapshot.data['user'];
+    this.users = this.route.snapshot.data['users'];
+    this.departments = this.route.snapshot.data['departments'];
+    this.towns = this.route.snapshot.data['towns'];
+  }
 
   ngOnInit(): void {
-    this.users.forEach(element => {
-      this.usersToDisplay.push(new UserToDisplay(element.id,element.name,
-        element.lastname,element.username,element.email,element.phone_number,
-        element.town.town_name, element.status.reference_name))
+    this.users.forEach((element) => {
+      this.usersToDisplay.push(
+        new UserToDisplay(
+          element.id,
+          element.name,
+          element.lastname,
+          element.username,
+          element.email,
+          element.phone_number,
+          element.town.town_name,
+          element.status.reference_name
+        )
+      );
     });
 
     this.dataSource = new MatTableDataSource(this.usersToDisplay);
@@ -69,8 +119,7 @@ export class UserAdminComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -81,49 +130,52 @@ export class UserAdminComponent implements OnInit {
     }
   }
 
-  addUser(){
-    this.router.navigate(["/home/admin-users/add-user"]);
+  addUser() {
+    this.router.navigate(['/home/admin-users/add-user']);
   }
 
-  editUser(user: any){
-    this.router.navigate(["/home/admin-users/edit-user/"+user.id]);
+  editUser(user: any) {
+    this.router.navigate(['/home/admin-users/edit-user/' + user.id]);
   }
 
-  deleteUser(id:number){
-    Swal({  
-      title: 'Realmente deseas eliminar este usuario?',  
-      showCancelButton: true,  
-      confirmButtonText: `Si`,  
+  deleteUser(id: number) {
+    Swal({
+      title: 'Realmente deseas eliminar este usuario?',
+      showCancelButton: true,
+      confirmButtonText: `Si`,
       cancelButtonText: `No`,
-    }).then((result) => {  
-        if (result.value) {    
-          this.userService.deleteUser(this.auth.readToken(),id).subscribe({
-            next: data => {
-              if(data['errors']!=undefined?data['errors'].length!=0:false){
-                data['errors'].map(res => {
-                  this.toastr.error(res);
-                })
-              }
-              else{
-                Swal({
-                  allowOutsideClick: false,
-                  type: 'success',
-                  text: 'Usuario eliminado con éxito'
-                });
-                this.usersToDisplay = this.usersToDisplay.filter(item=>item.id!=id)
-                this.dataSource = new MatTableDataSource(this.usersToDisplay);
-              }
-            },
-            error: error => {
-              Swal({text:'Ha ocurrido un error contacta a soporte@alercom.org', type:'error'})  
-              console.log('There was an error',error)
+    }).then((result) => {
+      if (result.value) {
+        this.userService.deleteUser(this.auth.readToken(), id).subscribe({
+          next: (data) => {
+            if (
+              data['errors'] != undefined ? data['errors'].length != 0 : false
+            ) {
+              data['errors'].map((res) => {
+                this.toastr.error(res);
+              });
+            } else {
+              Swal({
+                allowOutsideClick: false,
+                type: 'success',
+                text: 'Usuario eliminado con éxito',
+              });
+              this.usersToDisplay = this.usersToDisplay.filter(
+                (item) => item.id != id
+              );
+              this.dataSource = new MatTableDataSource(this.usersToDisplay);
             }
-          });
-        } else if (result) {    
-       }
+          },
+          error: (error) => {
+            Swal({
+              text: 'Ha ocurrido un error contacta a soporte@alercom.org',
+              type: 'error',
+            });
+            console.log('There was an error', error);
+          },
+        });
+      } else if (result) {
+      }
     });
-
-    
   }
-
 }
