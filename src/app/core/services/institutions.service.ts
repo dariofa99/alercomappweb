@@ -28,7 +28,6 @@ export class InstitutionsService {
       `${ this.url }/institutions/`+id+`/edit`,{headers: headers}
     ).pipe(
       map((item) => {
-        //console.log(item['institution'])
         return this.adapterEditInstitution.adapt(item)
       })
     )
@@ -44,7 +43,6 @@ export class InstitutionsService {
       `${ this.url }/institutions/information/`+id+`/edit`,{headers: headers}
     ).pipe(
       map((item) => {
-        //console.log(item['institution'])
         return this.adapterEditInstitutionInfo.adapt(item)
       })
     )
@@ -60,7 +58,6 @@ export class InstitutionsService {
       `${ this.url }/institutions`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['institutions'].map((item) => {
-        //console.log(data)
         return this.adapterInstitution.adapt(item)
       })) 
     );

@@ -28,6 +28,8 @@ export class SidebarComponent implements OnInit {
   status_my_alerts: boolean = false;
   status_categories: boolean = false;
   status_institutional_routes: boolean = false;
+  status_alerts: boolean = false;
+  permissionsChangeStateEvent = "";
   permissionsUsers = [];
   permissionsRoles = [];
   permissionsInstitutions = [];
@@ -86,6 +88,8 @@ export class SidebarComponent implements OnInit {
     this.permissionsInstitutionalRoutes.push(this.permissionsList.EDITAR_RUTAS_INSTITUCIONALES);
     this.permissionsInstitutionalRoutes.push(this.permissionsList.ELIMINAR_RUTAS_INSTITUCIONALES);
 
+    this.permissionsChangeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
+
     this.permissionsRoles.forEach(element => {
       this.permissionsGroupUsers.push(element);
     });
@@ -104,10 +108,10 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //console.log(this.item);
   }
 
   alertShowingEvent() {
+    this.status_alerts = false;
     this.status_alert = true;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -119,6 +123,7 @@ export class SidebarComponent implements OnInit {
   }
 
   userShowingEvent() {
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -130,7 +135,7 @@ export class SidebarComponent implements OnInit {
   }
 
   rolespermissionsShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = true;
     this.status_users_admin = false;
@@ -142,7 +147,7 @@ export class SidebarComponent implements OnInit {
   }
 
   usersadminShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -154,7 +159,7 @@ export class SidebarComponent implements OnInit {
   }
 
   institutionsShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -166,7 +171,7 @@ export class SidebarComponent implements OnInit {
   }
 
   institutionsInfoShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -178,7 +183,7 @@ export class SidebarComponent implements OnInit {
   }
 
   eventTypesShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -190,7 +195,7 @@ export class SidebarComponent implements OnInit {
   }
 
   categoriesShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -202,7 +207,7 @@ export class SidebarComponent implements OnInit {
   }
 
   myalertsShowingEvent() {
-    console.log('Click');
+    this.status_alerts = false;
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;
@@ -210,11 +215,22 @@ export class SidebarComponent implements OnInit {
     this.status_my_alerts = true;
     this.status_institutional_routes = false;
     this.status_institutions_info = false;
+    this.router.navigate(['/home/admin-my-alerts']);
+  }
+
+  alertsShowingEvent() {
+    this.status_alert = false;
+    this.status_roles_permissions = false;
+    this.status_users_admin = false;
+    this.status_institutions = false;
+    this.status_my_alerts = false;
+    this.status_institutional_routes = false;
+    this.status_institutions_info = false;
+    this.status_alerts = true;
     this.router.navigate(['/home/admin-alerts']);
   }
 
   institutionalRoutesShowingEvent() {
-    console.log('Click');
     this.status_alert = false;
     this.status_roles_permissions = false;
     this.status_users_admin = false;

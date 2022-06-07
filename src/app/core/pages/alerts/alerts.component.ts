@@ -23,11 +23,12 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { PermissionsList } from '../../const/permissionsList';
 
 @Component({
-  selector: 'app-myalerts',
-  templateUrl: './myalerts.component.html',
-  styles: [],
+  selector: 'app-alerts',
+  templateUrl: './alerts.component.html',
+  styles: [
+  ]
 })
-export class MyalertsComponent implements OnInit {
+export class AlertsComponent implements OnInit {
   user: UserModel;
   users: UserModel[];
   alerts: AlertModel[] = [];
@@ -111,7 +112,11 @@ export class MyalertsComponent implements OnInit {
       Authorization: `Bearer ${this.auth.readToken()}`,
     });
     var urlToSend;
-    urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
+    if (this.hasChangeStateEvent) {
+      urlToSend = `${this.url}/events?page=${this.pageData}`;
+    } else {
+      urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
+    }
     this.http
       .get(urlToSend, {
         headers: headers,
@@ -138,7 +143,7 @@ export class MyalertsComponent implements OnInit {
       });
   
       var urlToSend;
-      urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
+      urlToSend = `${this.url}/events?page=${this.pageData}`;
   
       this.http.get(urlToSend, { headers: headers }).subscribe((data: any) => {
         this.alertsData = data.data;
@@ -164,7 +169,7 @@ export class MyalertsComponent implements OnInit {
     });
 
     var urlToSend;
-    urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
+    urlToSend = `${this.url}/events?page=${this.pageData}`;
     this.http
       .get(urlToSend, {
         headers: headers,
@@ -261,7 +266,7 @@ export class MyalertsComponent implements OnInit {
         //Remover filtro de fecha y aplicar filtro de estado
         this.isOnDateFilter = false;
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&status_id=${this.statusFilterValue}&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?status_id=${this.statusFilterValue}&page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -273,7 +278,7 @@ export class MyalertsComponent implements OnInit {
       } else {
         //Aplicar filtro de fecha y aplicar filtro de estado
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&date_start=${formattedInitDate}&date_end=${formattedEndDate}&status_id=${this.statusFilterValue}&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?date_start=${formattedInitDate}&date_end=${formattedEndDate}&status_id=${this.statusFilterValue}&page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -288,7 +293,7 @@ export class MyalertsComponent implements OnInit {
         //Remover filtro de fecha y remover filtro de estado
         this.isOnDateFilter = false;
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -300,7 +305,7 @@ export class MyalertsComponent implements OnInit {
       } else {
         //Aplicar filtro de fecha y remover filtro de estado
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&date_start=${formattedInitDate}&date_end=${formattedEndDate}&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?date_start=${formattedInitDate}&date_end=${formattedEndDate}&page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -339,7 +344,7 @@ export class MyalertsComponent implements OnInit {
         this.isOnStatusFilter = false;
         this.statusFilterValue = undefined;
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&date_start=${formattedInitDate}&date_end=${formattedEndDate}&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?date_start=${formattedInitDate}&date_end=${formattedEndDate}&page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -351,7 +356,7 @@ export class MyalertsComponent implements OnInit {
       } else {
         //Petición con filtro de estado incluido fecha
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&date_start=${formattedInitDate}&date_end=${formattedEndDate}&status_id=${this.statusFilterValue}&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?date_start=${formattedInitDate}&date_end=${formattedEndDate}&status_id=${this.statusFilterValue}&page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -367,7 +372,7 @@ export class MyalertsComponent implements OnInit {
         this.isOnStatusFilter = false;
         this.statusFilterValue = undefined;
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -379,7 +384,7 @@ export class MyalertsComponent implements OnInit {
       } else {
         //Petición con filtro de estado sin incluir fecha
         var urlToSend;
-        urlToSend = `${this.url}/events?data=my&status_id=${this.statusFilterValue}&page=${this.pageData}`;
+        urlToSend = `${this.url}/events?status_id=${this.statusFilterValue}&page=${this.pageData}`;
         this.http
           .get(urlToSend, {
             headers: headers,
@@ -395,4 +400,5 @@ export class MyalertsComponent implements OnInit {
   editEvent(event: any) {
     this.router.navigate(['/home/admin-alerts/edit-alert/' + event.id]);
   }
+
 }

@@ -26,7 +26,6 @@ export class RolesPermissionsService {
       `${ this.url }/admin/roles`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['roles'].map((item) => {
-        //console.log(data)
         return this.adapterRole.adapt(item)
       })) 
     );
@@ -75,7 +74,6 @@ export class RolesPermissionsService {
       `${ this.url }/admin/roles`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['permissions'].map((item) => {
-        //console.log(data)
         return this.adapterPermission.adapt(item)
       })) 
     );

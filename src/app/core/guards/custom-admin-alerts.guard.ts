@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CustomEditUserGuard implements CanActivate {
+export class CustomAdminAlertsGuard implements CanActivate {
   constructor(
     private ngxPermissionsGuard: NgxPermissionsGuard,
     private router: Router
@@ -15,23 +15,23 @@ export class CustomEditUserGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      const editUserData = route.data['permissions'].editUser;
+      const changeStateEventData = route.data['permissions'].changeStateEvent;
 
-      const editUserRequestData: any = {
+      const changeStateEventRequestData: any = {
         ...route,
         data: {
           permissions: {
-            only: editUserData,
+            only: changeStateEventData,
           },
         },
       };
 
-      const editUserGuard = this.ngxPermissionsGuard.canActivate(
-        editUserRequestData,
+      const changeStateGuard = this.ngxPermissionsGuard.canActivate(
+        changeStateEventRequestData,
         state
       ) as Promise<boolean>;
 
-      return editUserGuard
+      return changeStateGuard
       .then((data) => {
         if (!data) {
           this.router.navigate(['forbidden']);
@@ -39,7 +39,6 @@ export class CustomEditUserGuard implements CanActivate {
         }
         return true;
       });
-      
   }
   
 }

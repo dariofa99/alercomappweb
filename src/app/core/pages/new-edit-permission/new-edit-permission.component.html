@@ -15,7 +15,15 @@
                                         <input formControlName="name" matInput placeholder="Nombre *">
                                     </mat-form-field>
                                 </form>
-                                <button mat-button color="primary" (click)="actionBtn=='Guardar'?addPermission():updatePermission()">{{actionBtn}}</button>
+
+                                <div *ngxPermissionsOnly="createEditPermissionPermission; else elseBlockCreateEdit; then thenBlockCreateEdit">
+                                </div>
+                                <ng-template #elseBlockCreateEdit>
+                                    <button disabled [disabled]="isDisabledBtnSaveEdit" mat-button color="primary" (click)="actionBtn=='Guardar'?addPermission():updatePermission()">{{actionBtn}}</button>
+                                </ng-template>
+                                <ng-template #thenBlockCreateEdit>
+                                    <button [disabled]="isDisabledBtnSaveEdit" mat-button color="primary" (click)="actionBtn=='Guardar'?addPermission():updatePermission()">{{actionBtn}}</button>
+                                </ng-template>
                             </div>
                         </div>
                     </div>
@@ -32,8 +40,23 @@
                                                 {{permission.name}}
                                             </div>
                                             <div class="col-md-4">
-                                                <button mat-button color="primary" (click)="editPermission(permission)"><mat-icon>edit</mat-icon></button>
-                                                <button mat-button color="primary" (click)="deletePermission(permission.id)"><mat-icon>delete</mat-icon></button>
+                                                <div *ngxPermissionsOnly="editPermissionPermission; else elseBlockEdit; then thenBlockEdit">
+                                                </div>
+                                                <ng-template #elseBlockEdit>
+                                                    <button disabled mat-button color="primary" (click)="editPermission(permission)"><mat-icon>edit</mat-icon></button>
+                                                </ng-template>
+                                                <ng-template #thenBlockEdit>
+                                                    <button mat-button color="primary" (click)="editPermission(permission)"><mat-icon>edit</mat-icon></button>
+                                                </ng-template>
+
+                                                <div *ngxPermissionsOnly="deletePermissionPermission; else elseBlockDelete; then thenBlockDelete">
+                                                </div>
+                                                <ng-template #elseBlockDelete>
+                                                    <button disabled mat-button color="primary" (click)="deletePermission(permission.id)"><mat-icon>delete</mat-icon></button>
+                                                </ng-template>
+                                                <ng-template #thenBlockDelete>
+                                                    <button mat-button color="primary" (click)="deletePermission(permission.id)"><mat-icon>delete</mat-icon></button>
+                                                </ng-template>
                                             </div>
                                         </div>
                                     </div>

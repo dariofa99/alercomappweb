@@ -18,7 +18,7 @@ export class ChangeStatusDialogComponent implements OnInit {
   statusSelected: number;
 
   constructor(public dialogRef: MatDialogRef<ChangeStatusDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: StatusData,) { }
+    @Inject(MAT_DIALOG_DATA) public data: StatusData) { }
 
   ngOnInit(): void {
   }

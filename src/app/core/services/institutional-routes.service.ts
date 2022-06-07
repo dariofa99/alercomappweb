@@ -23,7 +23,6 @@ export class InstitutionalRoutesService {
       `${ this.url }/institutional/routes/`+id+`/edit`,{headers: headers}
     ).pipe(
       map((item) => {
-        //console.log(item['institution'])
         return this.adapterInstitutionalRoutes.adapt(item['institutional_route'])
       })
     )
@@ -39,7 +38,6 @@ export class InstitutionalRoutesService {
       `${ this.url }/institutional/routes`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['institutional_routes'].map((item) => {
-        //console.log(data)
         return this.adapterInstitutionalRoutes.adapt(item)
       })) 
     );

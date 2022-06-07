@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
         error: (error) => {
           localStorage.removeItem('access_token');
           localStorage.removeItem('permissions');
-          //Swal({text:error.error.error, type:'error'})
+          Swal({text:error, type:'error'})
           console.log('There was an error', error);
         },
       });

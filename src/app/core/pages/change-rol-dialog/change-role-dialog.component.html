@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Cambiar Rol</h1>
+<div mat-dialog-content>
+    <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select (selectionChange)="onRoleSelected($event)" [(value)]="data.selectedRole">
+            <mat-option *ngFor="let element of data.roles" [value]="element.id">{{element.name}}</mat-option>
+        </mat-select>
+        <mat-hint align="end">Selecciona un rol</mat-hint>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+    <button mat-button [mat-dialog-close]="roleSelected" cdkFocusInitial>Aceptar</button>
+</div>
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

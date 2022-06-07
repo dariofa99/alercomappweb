@@ -27,7 +27,6 @@ export class ReferencesService {
       `${ this.url }/references/towns/`+`${ deparment_id }`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['towns'].map((item) => {
-        //console.log(data)
         return this.adapterTown.adapt(item)
       })) 
     );
@@ -58,7 +57,6 @@ export class ReferencesService {
       `${ this.url }/references/departments`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['references'].map((item) => {
-        //console.log(data)
         return this.adapterDepartment.adapt(item)
       })) 
     );
@@ -74,7 +72,6 @@ export class ReferencesService {
       `${ this.url }/references/affects/range`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['references'].map((item) => {
-        //console.log(data)
         return this.adapterAffectRange.adapt(item)
       })) 
     );

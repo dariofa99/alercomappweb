@@ -83,7 +83,6 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
     this.townsArray.push(townsAux);
   });
   this.institutionByID = this.route.snapshot.data['institutionByID'];
-  //console.log(this.institutionByID);
   }
 
   ngOnInit(): void {
@@ -308,10 +307,8 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
   addInstitution(){
     this.institutionForm.controls['category_id'].setValue('24');
     if(this.institutionForm.valid){
-      console.log(this.eventTypes)
       this.institutionsService.postInstitution(this.auth.readToken(),this.institutionForm.value).subscribe({
         next: data => {{
-          console.log(data);
           if(data['errors']!=undefined?data['errors'].length!=0:false){
             data['errors'].map(res => {
               this.toastr.error(res);

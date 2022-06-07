@@ -171,11 +171,7 @@ export class RolesPermissionsComponent implements OnInit, AfterViewInit {
                 this.toastr.error(res);
               });
             } else {
-              Swal({
-                allowOutsideClick: false,
-                type: 'success',
-                text: 'Permiso asociado con éxito',
-              });
+              this.toastr.success('Permiso asociado con éxito');
             }
           },
           error: (error) => {
@@ -203,11 +199,7 @@ export class RolesPermissionsComponent implements OnInit, AfterViewInit {
                 this.toastr.error(res);
               });
             } else {
-              Swal({
-                allowOutsideClick: false,
-                type: 'success',
-                text: 'Permiso eliminado con éxito',
-              });
+              this.toastr.success('Permiso eliminado con éxito');
             }
           },
           error: (error) => {
@@ -227,44 +219,5 @@ export class RolesPermissionsComponent implements OnInit, AfterViewInit {
 
   addRole() {
     this.router.navigate(['home/admin-roles/add-edit-rol']);
-  }
-
-  deleteRole(id: number) {
-    Swal({
-      title: 'Realmente deseas eliminar este rol?',
-      showCancelButton: true,
-      confirmButtonText: `Si`,
-      cancelButtonText: `No`,
-    }).then((result) => {
-      if (result.value) {
-        this.rolesPermissionsService
-          .deleteRole(this.auth.readToken(), id)
-          .subscribe({
-            next: (data) => {
-              if (
-                data['errors'] != undefined ? data['errors'].length != 0 : false
-              ) {
-                data['errors'].map((res) => {
-                  this.toastr.error(res);
-                });
-              } else {
-                Swal({
-                  allowOutsideClick: false,
-                  type: 'success',
-                  text: 'Rol eliminado con éxito',
-                });
-              }
-            },
-            error: (error) => {
-              Swal({
-                text: 'Ha ocurrido un error contacta a soporte@alercom.org',
-                type: 'error',
-              });
-              console.log('There was an error', error);
-            },
-          });
-      } else if (result) {
-      }
-    });
   }
 }

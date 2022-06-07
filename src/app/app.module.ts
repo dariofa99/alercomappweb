@@ -48,7 +48,8 @@ import { PermissionsList } from './core/const/permissionsList';
 import { ForbiddenComponent } from './core/pages/forbidden/forbidden.component';
 import { TermsConditionsComponent } from './core/pages/terms-conditions/terms-conditions.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { ChangeRolDialogComponent } from './core/pages/change-rol-dialog/change-rol-dialog.component';
+import { ChangeRoleDialogComponent } from './core/pages/change-rol-dialog/change-role-dialog.component';
+import { AlertsComponent } from './core/pages/alerts/alerts.component';
 
 export function permissionsFactory(
   loadPermissionsService: LoadPermissionsService,
@@ -58,12 +59,10 @@ export function permissionsFactory(
     return loadPermissionsService
       .loadPermissions()
       .then((data: [string]) => {
-        console.log(data);
         ngxPermissionsService.loadPermissions(data);
         return true;
       })
       .catch((data) => {
-        console.log(data);
       });
   };
 }
@@ -100,7 +99,8 @@ export function permissionsFactory(
     InstitutionsInfoComponent,
     ForbiddenComponent,
     TermsConditionsComponent,
-    ChangeRolDialogComponent,
+    ChangeRoleDialogComponent,
+    AlertsComponent,
   ],
   imports: [
     BrowserModule,
@@ -129,7 +129,6 @@ export function permissionsFactory(
       deps: [LoadPermissionsService, NgxPermissionsService],
       multi: true,
     },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })

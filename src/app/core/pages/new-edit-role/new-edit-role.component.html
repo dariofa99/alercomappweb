@@ -18,10 +18,10 @@
                                 <div *ngxPermissionsOnly="createEditRolePermission; else elseBlockCreateEdit; then thenBlockCreateEdit">
                                 </div>
                                 <ng-template #elseBlockCreateEdit>
-                                    <button disabled mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
+                                    <button disabled [disabled]="isDisabledBtnSaveEdit" mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
                                 </ng-template>
                                 <ng-template #thenBlockCreateEdit>
-                                    <button mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
+                                    <button [disabled]="isDisabledBtnSaveEdit" mat-button color="primary" (click)="actionBtn=='Guardar'?addRole():updateRole()">{{actionBtn}}</button>
                                 </ng-template>
 
                             </div>

@@ -121,7 +121,6 @@ export class NewEditInstitutionInfoComponent implements OnInit, AfterViewInit {
         .subscribe({
           next: (data) => {
             {
-              console.log(data);
               if (
                 data['errors'] != undefined ? data['errors'].length != 0 : false
               ) {
@@ -151,7 +150,6 @@ export class NewEditInstitutionInfoComponent implements OnInit, AfterViewInit {
   }
 
   updateInstitution() {
-    console.log(this.institutionForm.value);
     if (this.institutionForm.valid) {
       this.institutionsService
         .putInstitution(

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -23,18 +23,18 @@ export class NewEditRoleComponent implements OnInit {
   roleForm!: FormGroup;
   actionBtn: string = 'Guardar';
   idToUpdate: number;
-  readRolePermission;
-
-  createRolePermission;
-  editRolePermission;
+  
 
   createEditRolePermission = [];
-
+  readRolePermission;
+  createRolePermission;
+  editRolePermission;
   deleteRolePermission;
-  readPermissionPermission;
-  createPermissionPermission;
-  editPermissionPermission;
-  deletePermissionPermission;
+
+  haseditRolePermission = false;
+  hascreateRolePermission = false;
+
+  isDisabledBtnSaveEdit = false;
 
   constructor(
     private auth: AuthService,
@@ -51,21 +51,25 @@ export class NewEditRoleComponent implements OnInit {
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
     });
-    this.readRolePermission = this.permissionsList.VER_ROLES;
-
+    
     this.createEditRolePermission.push(this.permissionsList.CREAR_ROLES,this.permissionsList.EDITAR_ROLES);
+    this.readRolePermission = this.permissionsList.VER_ROLES;
     this.createRolePermission = this.permissionsList.CREAR_ROLES;
     this.editRolePermission = this.permissionsList.EDITAR_ROLES;
-
     this.deleteRolePermission = this.permissionsList.ELIMINAR_ROLES;
-
-    this.readPermissionPermission = this.permissionsList.VER_PERMISOS;
-
-    this.createPermissionPermission = this.permissionsList.CREAR_PERMISOS;
-    this.editPermissionPermission = this.permissionsList.EDITAR_PERMISOS ;
-
-    this.deletePermissionPermission = this.permissionsList.ELIMINAR_PERMISOS;
     
+    this.ngxPermissionsService
+    .hasPermission(this.editRolePermission)
+    .then((result) => {
+      this.haseditRolePermission = result;
+    });
+
+    this.ngxPermissionsService
+    .hasPermission(this.createRolePermission)
+    .then((result) => {
+      this.hascreateRolePermission = result;
+    });
+
     this.roles = this.route.snapshot.data['roles'];
     this.user = this.route.snapshot.data['user'];
     this.roleForm = this.formBuilder.group({
@@ -73,10 +77,14 @@ export class NewEditRoleComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(this.haseditRolePermission && !this.hascreateRolePermission){
+      this.isDisabledBtnSaveEdit = true;
+      this.roleForm.controls['name'].disable();
+    }
+  }
 
   addRole() {
-    console.log(this.roleForm.value);
     if (this.roleForm.valid) {
       this.rolesPermissionsService
         .postRole(this.auth.readToken(), this.roleForm.value)
@@ -135,6 +143,10 @@ export class NewEditRoleComponent implements OnInit {
                   type: 'success',
                   text: 'Rol actualizado con éxito',
                 });
+                if(this.haseditRolePermission && !this.hascreateRolePermission){
+                  this.isDisabledBtnSaveEdit = true;
+                  this.roleForm.controls['name'].disable();
+                }
                 this.roleForm.reset();
                 this.idToUpdate = -1;
               }
@@ -156,6 +168,10 @@ export class NewEditRoleComponent implements OnInit {
 
   editRole(role: any) {
     this.actionBtn = 'Actualizar';
+    if(this.haseditRolePermission && !this.hascreateRolePermission){
+      this.isDisabledBtnSaveEdit = false;
+      this.roleForm.controls['name'].enable();
+    }
     this.roleForm.controls['name'].setValue(role.name);
     this.idToUpdate = role.id;
   }

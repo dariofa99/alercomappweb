@@ -21,6 +21,9 @@ import { AlertEditModel } from '../../models/alertEditModel';
 import { CategoryModel } from '../../models/categoryModel';
 import { GoogleMap } from '@angular/google-maps';
 import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
+import { LoadPermissionsService } from '../../services/load-permissions.service';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { PermissionsList } from '../../const/permissionsList';
 
 @Component({
   selector: 'app-detail-alert',
@@ -60,6 +63,9 @@ export class DetailAlertComponent implements OnInit {
   isOnGoogleMap = false;
   imageEvent: string = '';
   imageEventAltName: string = '';
+  
+  changeStateEvent;
+  hasChangeStateEvent = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,8 +75,22 @@ export class DetailAlertComponent implements OnInit {
     private auth: AuthService,
     private toastr: ToastrService,
     private adapterAlert: AlertAdapter,
-    private markerGoogleMaps: MarkerGoogleMaps
+    private markerGoogleMaps: MarkerGoogleMaps,
+    private loadPermissionsService: LoadPermissionsService,
+    private ngxPermissionsService: NgxPermissionsService,
+    private permissionsList: PermissionsList
   ) {
+    this.loadPermissionsService.loadPermissions().then((data: [string]) => {
+      this.ngxPermissionsService.loadPermissions(data);
+    });
+    this.changeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
+
+    this.ngxPermissionsService
+      .hasPermission(this.changeStateEvent)
+      .then((result) => {
+        this.hasChangeStateEvent = result;
+      });
+
     this.user = this.route.snapshot.data['user'];
     this.alertByID = this.route.snapshot.data['alertByID'];
     this.eventTypes = this.route.snapshot.data['eventTypes'];
@@ -345,7 +365,6 @@ export class DetailAlertComponent implements OnInit {
             .subscribe({
               next: (data) => {
                 {
-                  console.log(data);
                   if (
                     data['errors'] != undefined
                       ? data['errors'].length != 0
@@ -398,7 +417,6 @@ export class DetailAlertComponent implements OnInit {
             .subscribe({
               next: (data) => {
                 {
-                  console.log(data);
                   if (
                     data['errors'] != undefined
                       ? data['errors'].length != 0

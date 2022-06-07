@@ -154,13 +154,10 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     this.eventForm.controls['longitude'].setValue(
       event.latLng.lng().toFixed(6)
     );
-    console.log(event.latLng.lng().toFixed(6));
-    console.log(event.latLng.lat().toFixed(6));
   }
 
   ngOnInit(): void {
     if (this.alertByID != undefined) {
-      //console.log(this.alertByID);
       this.actionBtn = 'Actualizar';
       this.eventForm.controls['event_description'].setValue(
         this.alertByID.event_description
@@ -322,7 +319,6 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
           new ImageFiles(reader.result as string, inputNode.files[0])
         );
         this.fillEventForm(this.eventForm, this.imagesEvent);
-        //console.log(this.eventForm.value);
       };
       reader.readAsDataURL(inputNode.files[0]);
     }
@@ -335,7 +331,6 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     if (indexImagesEvent > -1) {
       this.imagesEvent.splice(indexImagesEvent, 1);
       this.fillEventForm(this.eventForm, this.imagesEvent);
-      //console.log(this.eventForm.value);
     }
   }
 
@@ -511,9 +506,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     }
   }
   updateEvent() {
-    //console.log(this.eventForm.value);
     let form = new FormData();
-    if (this.eventForm.controls['image_event'].value != '') {
+    if (this.eventForm.controls['image_event'].value != null) {
       //For Many Files
       //form.append('image_event[]', this.eventForm.get('image_event').value);
       form.append('image_event', this.eventForm.get('image_event').value[0]);

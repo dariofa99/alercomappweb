@@ -24,7 +24,6 @@ export class UserService {
       `${ this.url }/user/me`,{headers: headers}
     ).pipe(
       map((item) => {
-        //console.log(item['user'])
         return this.adapterUser.adapt(item['user'])
       })
     )
@@ -40,7 +39,6 @@ export class UserService {
       `${ this.url }/users/`+id+`/edit`,{headers: headers}
     ).pipe(
       map((item) => {
-        //console.log(item['user'])
         return this.adapterUser.adapt(item['user'])
       })
     )
@@ -56,7 +54,6 @@ export class UserService {
       `${ this.url }/users`,{headers: headers}
     ).pipe(
       map((data: any[])=> data['user'].map((item) => {
-        //console.log(data)
         return this.adapterUser.adapt(item)
       })) 
     );

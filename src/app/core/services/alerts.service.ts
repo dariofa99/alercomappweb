@@ -27,7 +27,6 @@ export class AlertsService {
       `${ this.url }/events/`+id+`/edit`,{headers: headers}
     ).pipe(
       map((item) => {
-        console.log(item);
         return this.adapterEditAlert.adapt(item['event'])
       })
     )
@@ -42,7 +41,6 @@ export class AlertsService {
       `${ this.url }/events/verify/`+token,{headers: headers}
     ).pipe(
       map((item) => {
-        console.log(item);
         return this.adapterEditViewAlert.adapt(item['institution'])
       })
     )
@@ -76,7 +74,6 @@ export class AlertsService {
       `${ this.url }/events`,{headers: headers,params: params}
     ).pipe(
       map((data: any[])=> data['events'].map((item) => {
-        console.log(data)
         return this.adapterAlert.adapt(item)
       })) 
     );

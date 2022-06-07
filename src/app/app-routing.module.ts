@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthGuard } from './core/guards/auth.guard';
 import { CustomAddCategoryGuard } from './core/guards/custom-add-category.guard';
+import { CustomAddEditPermissionGuard } from './core/guards/custom-add-edit-permission.guard';
+import { CustomAddEditRoleGuard } from './core/guards/custom-add-edit-role.guard';
 import { CustomAddInstitutionInfoGuard } from './core/guards/custom-add-institution-info.guard';
 import { CustomAddInstitutionGuard } from './core/guards/custom-add-institution.guard';
 import { CustomAddInstitutionalRouteGuard } from './core/guards/custom-add-institutional-route.guard';
@@ -12,6 +14,7 @@ import { CustomAdminCategoriesGuard } from './core/guards/custom-admin-categorie
 import { CustomAdminInstitutionalRoutesGuard } from './core/guards/custom-admin-institutional-routes.guard';
 import { CustomAdminInstitutionsInfoGuard } from './core/guards/custom-admin-institutions-info.guard';
 import { CustomAdminInstitutionsGuard } from './core/guards/custom-admin-institutions.guard';
+import { CustomAdminRolesGuard } from './core/guards/custom-admin-roles.guard';
 import { CustomAdminTypeAlertsGuard } from './core/guards/custom-admin-type-alerts.guard';
 import { CustomAdminUsersGuard } from './core/guards/custom-admin-users.guard';
 import { CustomEditCategoryGuard } from './core/guards/custom-edit-category.guard';
@@ -20,6 +23,7 @@ import { CustomEditInstitutionGuard } from './core/guards/custom-edit-institutio
 import { CustomEditInstitutionalRouteGuard } from './core/guards/custom-edit-institutional-route.guard';
 import { CustomEditTypeAlertGuard } from './core/guards/custom-edit-type-alert.guard';
 import { CustomEditUserGuard } from './core/guards/custom-edit-user.guard';
+import { AlertsComponent } from './core/pages/alerts/alerts.component';
 import { CategoriesComponent } from './core/pages/categories/categories.component';
 import { ConfirmAccountComponent } from './core/pages/confirm-account/confirm-account.component';
 import { DetailAlertComponent } from './core/pages/detail-alert/detail-alert.component';
@@ -77,13 +81,6 @@ const routes: Routes = [
     resolve: {
       users: UsersResolverService,
       user: UserResolverService,
-      departments: DepartmentsResolverService,
-    },
-    data: {
-      permissions: {
-        only: ['crear_roles'],
-        redirectTo: '/login',
-      },
     },
   },
 
@@ -113,7 +110,6 @@ const routes: Routes = [
     canActivate: [CustomAddUserGuard],
     resolve: {
       departments: DepartmentsResolverService,
-      roles: RolesResolverService,
       user: UserResolverService,
       towns: TownsResolverService,
     },
@@ -127,11 +123,10 @@ const routes: Routes = [
   {
     path: 'home/admin-users/edit-user/:id',
     component: NewEditUserComponent,
-    canActivate: [CustomEditUserGuard],
+    canActivate: [AuthGuard],
     resolve: {
       users: UsersResolverService,
       departments: DepartmentsResolverService,
-      roles: RolesResolverService,
       user: UserResolverService,
       userByID: UserByIDResolverService,
       towns: TownsResolverService,
@@ -167,19 +162,35 @@ const routes: Routes = [
   {
     path: 'home/admin-roles/add-edit-rol',
     component: NewEditRoleComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAddEditRoleGuard],
     resolve: {
       user: UserResolverService,
       roles: RolesResolverService,
+    },
+    data: {
+      permissions: {
+        readRole: ['ver_roles'],
+        createRole: ['crear_roles'],
+        editRole: ['editar_roles'],
+        deleteRole: ['eliminar_roles'],
+      },
     },
   },
   {
     path: 'home/admin-roles/add-edit-permission',
     component: NewEditPermissionComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAddEditPermissionGuard],
     resolve: {
       user: UserResolverService,
       permissions: PermissionsResolverService,
+    },
+    data: {
+      permissions: {
+        readPermission: ['ver_permisos'],
+        createPermission: ['crear_permisos'],
+        editPermission: ['editar_permisos'],
+        deletePermission: ['eliminar_permisos'],
+      },
     },
   },
   {
@@ -285,16 +296,31 @@ const routes: Routes = [
     },
   },
   {
-    path: 'home/admin-alerts',
+    path: 'home/admin-my-alerts',
     component: MyalertsComponent,
     canActivate: [AuthGuard],
     resolve: {
       user: UserResolverService,
-      //alerts: AlertsResolverService,
       eventTypes: EventTypesResolverService,
       affectRanges: AffectsRangeResolverService,
       users: UsersResolverService,
     },
+  },
+  {
+    path: 'home/admin-alerts',
+    component: AlertsComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      user: UserResolverService,
+      eventTypes: EventTypesResolverService,
+      affectRanges: AffectsRangeResolverService,
+      users: UsersResolverService,
+    },
+    data: {
+      permissions: {
+        changeStateEvent: ['cambiar_estado_alerta'],
+      },
+    }
   },
   {
     path: 'home/admin-alerts/alert-detail/:id',

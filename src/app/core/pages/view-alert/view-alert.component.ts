@@ -66,7 +66,6 @@ export class ViewAlertComponent implements OnInit {
     private markerGoogleMaps: MarkerGoogleMaps
   ) {
     this.alertByToken = this.route.snapshot.data['alertByToken'];
-    console.log(this.alertByToken);
 
     this.affectRanges.push(this.alertByToken.affectation_range);
     this.eventTypesToDisplay.push(this.alertByToken.event_type);
@@ -300,7 +299,6 @@ export class ViewAlertComponent implements OnInit {
             .subscribe({
               next: (data) => {
                 {
-                  console.log(data);
                   if (
                     data['errors'] != undefined
                       ? data['errors'].length != 0
@@ -353,7 +351,6 @@ export class ViewAlertComponent implements OnInit {
             .subscribe({
               next: (data) => {
                 {
-                  console.log(data);
                   if (
                     data['errors'] != undefined
                       ? data['errors'].length != 0

@@ -78,10 +78,12 @@
                     </div>
                 </fieldset>
 
-                <button mat-button color="primary" (click)="backToList()">Regresar</button>
-                <button mat-button color="primary" *ngIf="statusBtn" (click)="verifyEvent()">Verificar</button>
-                <button mat-button color="primary" *ngIf="statusBtn" (click)="denyEvent()">Denegar</button>
-                <button mat-button color="primary" *ngIf="statusBtn" (click)="acceptEvent()">Aceptar</button>
+                <div class="row">
+                    <button mat-button color="primary" (click)="backToList()">Regresar</button>
+                    <div *ngxPermissionsOnly="changeStateEvent"><button mat-button color="primary" *ngIf="statusBtn" (click)="verifyEvent()">Verificar</button></div>
+                    <div *ngxPermissionsOnly="changeStateEvent"><button mat-button color="primary" *ngIf="statusBtn" (click)="denyEvent()">Denegar</button></div>
+                    <div *ngxPermissionsOnly="changeStateEvent"><button mat-button color="primary" *ngIf="statusBtn" (click)="acceptEvent()">Aceptar</button></div>
+                </div>
             </form>
         </div>
     </div>
