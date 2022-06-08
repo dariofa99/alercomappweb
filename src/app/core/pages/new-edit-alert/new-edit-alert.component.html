@@ -3,109 +3,131 @@
 <div class="content-wrapper">
     <div class="card m-4">
         <div class="container p-4">
-            <h1>{{actionBtn}} Alerta</h1>
+            <h1>{{ actionBtn }} Alerta</h1>
             <form [formGroup]="eventForm">
                 <mat-form-field appearance="outline">
                     <mat-label>Descripción *</mat-label>
-                    <input formControlName="event_description" matInput placeholder="Descripción *">
+                    <input formControlName="event_description" matInput placeholder="Descripción *" />
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Escoge una fecha *</mat-label>
-                    <input matInput [(ngModel)]="event_date" [matDatepickerFilter]="dateFilter" [min]="minDate" [max]="maxDate" [ngModelOptions]="{standalone: true}" (dateChange)="dateChanged($event)" [matDatepicker]="picker" disabled>
+                    <input matInput [(ngModel)]="event_date" [matDatepickerFilter]="dateFilter" [min]="minDate" [max]="maxDate" [ngModelOptions]="{ standalone: true }" (dateChange)="dateChanged($event)" [matDatepicker]="picker" disabled />
                     <mat-hint align="end">MM/DD/YYYY</mat-hint>
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker disabled="false"></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Lugar del evento *</mat-label>
-                    <input formControlName="event_place" matInput placeholder="Lugar del evento *">
+                    <input #addresstext formControlName="event_place" matInput placeholder="Lugar del evento *" />
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Información adicional</mat-label>
-                    <input formControlName="event_aditional_information" matInput placeholder="Información adicional">
+                    <input formControlName="event_aditional_information" matInput placeholder="Información adicional" />
                 </mat-form-field>
                 <google-map #GoogleMap *ngIf="isOnGoogleMap" height="400px" width="100%" [zoom]="zoom" [center]="center" [options]="options">
-                    <map-marker (mapDragend)="googleMapDragEnd($event,'mapDragend')" *ngFor="let marker of markers" [position]="marker.position" [label]="marker.label" [title]="marker.title" [options]="marker.options">
+                    <map-marker (mapDragend)="googleMapDragEnd($event, 'mapDragend')" *ngFor="let marker of markers" [position]="marker.position" [label]="marker.label" [title]="marker.title" [options]="marker.options">
                     </map-marker>
                 </google-map>
-                <mat-checkbox formControlName="affected_people" class="mt-2" [checked]="actionBtn=='Actualizar' ? alertByID.affected_people : false" (change)="checkboxChanged($event.checked)">
+                <mat-checkbox formControlName="affected_people" class="mt-2" [checked]="
+            actionBtn == 'Actualizar' ? alertByID.affected_people : false
+          " (change)="checkboxChanged($event.checked)">
                     Afectó a las Personas
                 </mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="affected_family" class="example-margin" [checked]="actionBtn=='Actualizar' ? alertByID.affected_family : false" (change)="checkboxChanged($event.checked)">
+                <br />
+                <mat-checkbox formControlName="affected_family" class="example-margin" [checked]="
+            actionBtn == 'Actualizar' ? alertByID.affected_family : false
+          " (change)="checkboxChanged($event.checked)">
                     Afectó a la Familia
                 </mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="affected_animals" class="example-margin" [checked]="actionBtn=='Actualizar' ? alertByID.affected_animals : false" (change)="checkboxChanged($event.checked)">
+                <br />
+                <mat-checkbox formControlName="affected_animals" class="example-margin" [checked]="
+            actionBtn == 'Actualizar' ? alertByID.affected_animals : false
+          " (change)="checkboxChanged($event.checked)">
                     Afectó a los Animales
                 </mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="affected_infrastructure" class="example-margin" [checked]="actionBtn=='Actualizar' ? alertByID.affected_infrastructure : false" (change)="checkboxChanged($event.checked)">
+                <br />
+                <mat-checkbox formControlName="affected_infrastructure" class="example-margin" [checked]="
+            actionBtn == 'Actualizar'
+              ? alertByID.affected_infrastructure
+              : false
+          " (change)="checkboxChanged($event.checked)">
                     Afectó a la Infraestructura
                 </mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="affected_livelihoods" class="example-margin" [checked]="actionBtn=='Actualizar' ? alertByID.affected_livelihoods : false" (change)="checkboxChanged($event.checked)">
+                <br />
+                <mat-checkbox formControlName="affected_livelihoods" class="example-margin" [checked]="
+            actionBtn == 'Actualizar' ? alertByID.affected_livelihoods : false
+          " (change)="checkboxChanged($event.checked)">
                     Afectó a los Medios de Subsistencia
                 </mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="affected_environment" class="example-margin" [checked]="actionBtn=='Actualizar' ? alertByID.affected_environment : false" (change)="checkboxChanged($event.checked)">
+                <br />
+                <mat-checkbox formControlName="affected_environment" class="example-margin" [checked]="
+            actionBtn == 'Actualizar' ? alertByID.affected_environment : false
+          " (change)="checkboxChanged($event.checked)">
                     Afectó al Medio
                 </mat-checkbox>
                 <mat-form-field appearance="outline">
                     <mat-label>Categorías</mat-label>
                     <mat-select (selectionChange)="onEventCategoryTypeSelected($event)" [(value)]="selectedCategory">
-                        <mat-option *ngFor="let element of categories" [value]="element.id">{{element.reference_name}}</mat-option>
+                        <mat-option *ngFor="let element of categories" [value]="element.id">{{ element.reference_name }}</mat-option>
                     </mat-select>
                     <mat-hint align="end ">Seleccione un tipo de categoría</mat-hint>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Tipo de Alerta</mat-label>
                     <mat-select formControlName="event_type_id" (change)="onEventTypeSelected($event)">
-                        <mat-option *ngFor="let element of eventTypesToDisplay " [value]="element.id">{{element.event_type_name}}</mat-option>
+                        <mat-option *ngFor="let element of eventTypesToDisplay" [value]="element.id">{{ element.event_type_name }}</mat-option>
                     </mat-select>
                     <mat-hint align="end ">Seleccione un tipo de alerta</mat-hint>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Departamento</mat-label>
-                    <mat-select (selectionChange)="onDepartmentSelected($event) " [(value)]="selectedDepartment ">
-                        <mat-option *ngFor="let department of departments" [value]="department.id ">{{department.reference_name}}</mat-option>
+                    <mat-select (selectionChange)="onDepartmentSelected($event)" [(value)]="selectedDepartment">
+                        <mat-option *ngFor="let department of departments" [value]="department.id">{{ department.reference_name }}</mat-option>
                     </mat-select>
                     <mat-hint align="end">Selecciona un departamento</mat-hint>
                 </mat-form-field>
                 <mat-form-field *ngIf="isOnDepartment" appearance="outline">
                     <mat-label>Municipio</mat-label>
                     <mat-select formControlName="town_id" [(value)]="selectedTown">
-                        <mat-option *ngFor="let town of townsToDisplay" [value]="town.id">{{town.town_name}}</mat-option>
+                        <mat-option *ngFor="let town of townsToDisplay" [value]="town.id">{{ town.town_name }}
+                        </mat-option>
                     </mat-select>
                     <mat-hint align="end ">Selecciona un municipio</mat-hint>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Rango de Afectación</mat-label>
-                    <mat-select formControlName="afectations_range_id" (change)="onAffectRangeSelected($event) ">
-                        <mat-option *ngFor="let element of affectRanges" [value]="element.id ">{{element.reference_name}}</mat-option>
+                    <mat-select formControlName="afectations_range_id" (change)="onAffectRangeSelected($event)">
+                        <mat-option *ngFor="let element of affectRanges" [value]="element.id">{{ element.reference_name }}</mat-option>
                     </mat-select>
                     <mat-hint align="end ">Seleccione un rango de afectación</mat-hint>
                 </mat-form-field>
 
-                <mat-list *ngIf='imagesEvent.length == 0?false:true' class="pt-0 mb-3 ">
-                    <mat-list-item *ngFor="let element of imagesEvent;" style="height: auto;" class="mb-2">
-                        <img width="40% " [src]="element.filePath" [alt]="element.file.name">
+                <mat-list *ngIf="imagesEvent.length == 0 ? false : true" class="pt-0 mb-3">
+                    <mat-list-item *ngFor="let element of imagesEvent" style="height: auto" class="mb-2">
+                        <img width="40% " [src]="element.filePath" [alt]="element.file.name" />
                         <mat-icon (click)="deleteLocalFile(element)" style="cursor: hand">clear</mat-icon>
                     </mat-list-item>
                 </mat-list>
 
                 <div class="form-group mt-2">
-                    <button [disabled]='imagesEvent.length > 0?true:false' type="button" mat-raised-button (click)="onFileInputClick()">Escoger Archivo</button>
-                    <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file">
+                    <button [disabled]="imagesEvent.length > 0 ? true : false" type="button" mat-raised-button (click)="onFileInputClick()">
+            Escoger Archivo
+          </button>
+                    <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file" />
                 </div>
 
-                <button mat-button color="primary" (click)="actionBtn=='Guardar' ?addEvent():updateEvent()">{{actionBtn}}</button>
-                <button mat-button color="primary" [routerLink]="[ '/home/admin-alerts']">Regresar</button>
+                <button mat-button color="primary" (click)="actionBtn == 'Guardar' ? addEvent() : updateEvent()">
+          {{ actionBtn }}
+        </button>
+                <button mat-button color="primary" [routerLink]="['/home/admin-alerts']">
+          Regresar
+        </button>
             </form>
         </div>
     </div>
 </div>
 <app-footer></app-footer>
+
 <style>
     mat-form-field {
         width: 100%;

@@ -88,7 +88,7 @@ export class RegisterComponent implements OnInit {
 
   openTermsConditions() {
     const url = this.router.serializeUrl(
-      this.router.createUrlTree([`/terms-conditions`])
+      this.router.createUrlTree([`/terms/conditions`])
     );
   
     window.open(url, '_blank');

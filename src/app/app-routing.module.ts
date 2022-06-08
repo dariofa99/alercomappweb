@@ -505,7 +505,7 @@ const routes: Routes = [
     },
   },
   { path: 'forbidden', component: ForbiddenComponent },
-  { path: 'terms-conditions', component: TermsConditionsComponent },
+  { path: 'terms/conditions', component: TermsConditionsComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'confirm/account/:token', component: ConfirmAccountComponent },
   { path: 'login', component: LoginComponent },

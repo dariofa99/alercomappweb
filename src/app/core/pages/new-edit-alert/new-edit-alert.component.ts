@@ -26,6 +26,7 @@ import { AlertEditModel } from '../../models/alertEditModel';
 import { CategoryModel } from '../../models/categoryModel';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
+import { GoogleAddressServiceService } from '../../services/google-address-service.service';
 
 export class ImageFiles {
   constructor(public filePath?: string, public file?: File) {}
@@ -36,14 +37,22 @@ export const DEFAULT_MARKER_OPTIONS = {
   position: { lat: 1.2146697051829685, lng: -77.27854949154947 },
 };
 
-
 @Component({
   selector: 'app--new-edit-alert',
   templateUrl: './new-edit-alert.component.html',
   styles: [],
 })
 export class NewEditAlertComponent implements OnInit, AfterViewInit {
-  @ViewChild('GoogleMap', { static: false }) map: GoogleMap;
+  @Input() addressType: string = 'establishment';
+  place!: google.maps.places.PlaceResult;
+  @ViewChild('addresstext') addresstext: any;
+
+  establishmentAddress: Object;
+
+  formattedAddress: string;
+  formattedEstablishmentAddress: string;
+
+  @ViewChild('GoogleMap', { static: false }) map: google.maps.Map;
 
   zoom = 15;
   markers = [];
@@ -85,7 +94,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     private toastr: ToastrService,
     private eventService: AlertsService,
     private http: HttpClient,
-    private markerGoogleMaps: MarkerGoogleMaps
+    private markerGoogleMaps: MarkerGoogleMaps,
+    private googleAddressService: GoogleAddressServiceService
   ) {
     this.user = this.route.snapshot.data['user'];
     this.eventTypes = this.route.snapshot.data['eventTypes'];
@@ -149,11 +159,66 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private getPlaceAutocomplete() {
+    const autocomplete = new google.maps.places.Autocomplete(
+      this.addresstext.nativeElement,
+      {
+        types: [this.addressType], // 'establishment' / 'address' / 'geocode' // we are checking all types
+      }
+    );
+    google.maps.event.addListener(autocomplete, 'place_changed', () => {
+      this.place = autocomplete.getPlace();
+
+      this.markers = [];
+
+      this.center = {
+        lat: this.toFloat(this.place.geometry.location.lat()),
+        lng: this.toFloat(this.place.geometry.location.lng()),
+      };
+
+      this.markers.push({
+        position: {
+          lat: this.center.lat,
+          lng: this.center.lng,
+        },
+        label: this.markerGoogleMaps.LABEL,
+        title: 'Ubicación Alerta',
+        options: {
+          animation: google.maps.Animation.DROP,
+          clickable: false,
+          draggable: true,
+          icon: this.markerGoogleMaps.MARKERIMAGE,
+        },
+      });
+
+      this.eventForm.controls['latitude'].setValue(this.center.lat);
+      this.eventForm.controls['longitude'].setValue(this.center.lng);
+
+      this.map.panTo(this.center);
+
+      this.formattedAddress = this.googleAddressService.getFormattedAddress(
+        this.place
+      );
+      this.eventForm.controls['event_place'].setValue(this.formattedAddress);
+    });
+  }
+
   googleMapDragEnd(event: any) {
     this.eventForm.controls['latitude'].setValue(event.latLng.lat().toFixed(6));
     this.eventForm.controls['longitude'].setValue(
       event.latLng.lng().toFixed(6)
     );
+    var latlng = new google.maps.LatLng(
+      event.latLng.lat().toFixed(6),
+      event.latLng.lng().toFixed(6)
+    );
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status == google.maps.GeocoderStatus.OK) {
+        var address = results[0].formatted_address;
+        this.eventForm.controls['event_place'].setValue(address);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -212,71 +277,9 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
             this.imagesEvent.push(new ImageFiles(element.real_path, b));
           });
       });
-      this.center = {
-        lat: this.toFloat(this.alertByID.latitude),
-        lng: this.toFloat(this.alertByID.longitude),
-      };
-
       this.isOnDepartment = true;
       this.isOnCategory = true;
-
-      this.markers.push({
-        position: {
-          lat: this.center.lat,
-          lng: this.center.lng,
-        },
-        label: this.markerGoogleMaps.LABEL,
-        title: 'Ubicación Alerta',
-        options: {
-          animation: google.maps.Animation.DROP,
-          clickable: false,
-          draggable: true,
-          icon: this.markerGoogleMaps.MARKERIMAGE,
-        },
-      });
     } else {
-      this.center = {
-        lat: this.toFloat(DEFAULT_MARKER_OPTIONS.position.lat),
-        lng: this.toFloat(DEFAULT_MARKER_OPTIONS.position.lng),
-      };
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position: GeolocationPosition) => {
-            const pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-
-            this.center = {
-              lat: this.toFloat(pos.lat),
-              lng: this.toFloat(pos.lng),
-            };
-          },
-          () => {
-            //Error getting CurrentPosition
-          }
-        );
-      } else {
-        // Browser doesn't support Geolocation
-      }
-      this.eventForm.controls['latitude'].setValue(this.center.lat);
-      this.eventForm.controls['longitude'].setValue(this.center.lng);
-
-      this.markers.push({
-        position: {
-          lat: this.center.lat,
-          lng: this.center.lng,
-        },
-        label: this.markerGoogleMaps.LABEL,
-        title: 'Ubicación Alerta',
-        options: {
-          animation: google.maps.Animation.DROP,
-          clickable: false,
-          draggable: true,
-          icon: this.markerGoogleMaps.MARKERIMAGE,
-        },
-      });
     }
     this.options = {
       mapTypeId: 'roadmap',
@@ -378,8 +381,214 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
           }
         });
       });
+
+      this.center = {
+        lat: this.toFloat(this.alertByID.latitude),
+        lng: this.toFloat(this.alertByID.longitude),
+      };
+
+      this.markers.push({
+        position: {
+          lat: this.center.lat,
+          lng: this.center.lng,
+        },
+        label: this.markerGoogleMaps.LABEL,
+        title: 'Ubicación Alerta',
+        options: {
+          animation: google.maps.Animation.DROP,
+          clickable: false,
+          draggable: true,
+          icon: this.markerGoogleMaps.MARKERIMAGE,
+        },
+      });
+    } else {
+      this.center = {
+        lat: this.toFloat(DEFAULT_MARKER_OPTIONS.position.lat),
+        lng: this.toFloat(DEFAULT_MARKER_OPTIONS.position.lng),
+      };
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position: GeolocationPosition) => {
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+            this.center = {
+              lat: this.toFloat(pos.lat),
+              lng: this.toFloat(pos.lng),
+            };
+
+            this.markers.push({
+              position: {
+                lat: this.center.lat,
+                lng: this.center.lng,
+              },
+              label: this.markerGoogleMaps.LABEL,
+              title: 'Ubicación Alerta',
+              options: {
+                animation: google.maps.Animation.DROP,
+                clickable: false,
+                draggable: true,
+                icon: this.markerGoogleMaps.MARKERIMAGE,
+              },
+            });
+
+            this.eventForm.controls['latitude'].setValue(this.center.lat);
+            this.eventForm.controls['longitude'].setValue(this.center.lng);
+
+            var latlng = new google.maps.LatLng(
+              this.center.lat,
+              this.center.lng
+            );
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: latlng }, (results, status) => {
+              if (status == google.maps.GeocoderStatus.OK) {
+                var address = results[0].formatted_address;
+                this.eventForm.controls['event_place'].setValue(address);
+              }
+            });
+
+            this.map.panTo(this.center);
+          },
+          () => {
+            //Error getting CurrentPosition
+            this.markers.push({
+              position: {
+                lat: this.center.lat,
+                lng: this.center.lng,
+              },
+              label: this.markerGoogleMaps.LABEL,
+              title: 'Ubicación Alerta',
+              options: {
+                animation: google.maps.Animation.DROP,
+                clickable: false,
+                draggable: true,
+                icon: this.markerGoogleMaps.MARKERIMAGE,
+              },
+            });
+
+            this.eventForm.controls['latitude'].setValue(this.center.lat);
+            this.eventForm.controls['longitude'].setValue(this.center.lng);
+
+            var latlng = new google.maps.LatLng(
+              this.center.lat,
+              this.center.lng
+            );
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: latlng }, (results, status) => {
+              if (status == google.maps.GeocoderStatus.OK) {
+                var address = results[0].formatted_address;
+                this.eventForm.controls['event_place'].setValue(address);
+              }
+            });
+
+            this.map.panTo(this.center);
+          }
+        );
+      } else {
+        // Browser doesn't support Geolocation
+        this.markers.push({
+          position: {
+            lat: this.center.lat,
+            lng: this.center.lng,
+          },
+          label: this.markerGoogleMaps.LABEL,
+          title: 'Ubicación Alerta',
+          options: {
+            animation: google.maps.Animation.DROP,
+            clickable: false,
+            draggable: true,
+            icon: this.markerGoogleMaps.MARKERIMAGE,
+          },
+        });
+
+        this.eventForm.controls['latitude'].setValue(this.center.lat);
+        this.eventForm.controls['longitude'].setValue(this.center.lng);
+
+        var latlng = new google.maps.LatLng(
+          this.center.lat,
+          this.center.lng
+        );
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ location: latlng }, (results, status) => {
+          if (status == google.maps.GeocoderStatus.OK) {
+            var address = results[0].formatted_address;
+            this.eventForm.controls['event_place'].setValue(address);
+          }
+        });
+
+        this.map.panTo(this.center);
+      }
     }
-    this.map.panTo(this.center);
+
+    this.getPlaceAutocomplete();
+
+    const locationButton = document.createElement('button');
+
+    locationButton.textContent = 'Mi ubicación';
+    locationButton.classList.add('custom-map-control-button');
+
+    this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
+      locationButton
+    );
+
+    locationButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position: GeolocationPosition) => {
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            this.center = {
+              lat: this.toFloat(pos.lat),
+              lng: this.toFloat(pos.lng),
+            };
+            this.markers = [];
+            this.markers.push({
+              position: {
+                lat: this.center.lat,
+                lng: this.center.lng,
+              },
+              label: this.markerGoogleMaps.LABEL,
+              title: 'Ubicación Alerta',
+              options: {
+                animation: google.maps.Animation.DROP,
+                clickable: false,
+                draggable: true,
+                icon: this.markerGoogleMaps.MARKERIMAGE,
+              },
+            });
+
+            this.eventForm.controls['latitude'].setValue(this.center.lat);
+            this.eventForm.controls['longitude'].setValue(this.center.lng);
+
+            var latlng = new google.maps.LatLng(
+              this.center.lat,
+              this.center.lng
+            );
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: latlng }, (results, status) => {
+              if (status == google.maps.GeocoderStatus.OK) {
+                var address = results[0].formatted_address;
+                this.eventForm.controls['event_place'].setValue(address);
+              }
+            });
+
+            this.map.panTo(this.center);
+          },
+          (error) => {
+            //Error getting CurrentPosition
+            this.toastr.error(error.message);
+          }
+        );
+      } else {
+        // Browser doesn't support Geolocation
+      }
+    });
   }
 
   onDepartmentSelected(event: any) {
