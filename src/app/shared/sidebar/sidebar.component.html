@@ -61,7 +61,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-item menu-is-opening menu-open">
+                <li class="nav-item menu-is-opening menu-open" *ngxPermissionsOnly="permissionsGroupEvents">
                     <a class="nav-link">
                         <i class="nav-icon fa fa-bell"></i>
                         <p>
@@ -70,39 +70,39 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item" *ngxPermissionsOnly="permissionEvents">
                             <a (click)="myalertsShowingEvent()" class="nav-link" [ngClass]="status_my_alerts ? 'active' : ''">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Mis Alertas</p>
                             </a>
                         </li>
-                        <li class="nav-item" *ngxPermissionsOnly="permissionsChangeStateEvent">
-                            <a (click)="alertsShowingEvent()" class="nav-link" [ngClass]="status_alerts ? 'active' : ''">
-                                <i class="far fa-circle nav-icon"></i>
+                        <li class=" nav-item " *ngxPermissionsOnly="permissionEvents">
+                            <a *ngIf="hasChangeStateEvent" (click)="alertsShowingEvent() " class="nav-link " [ngClass]="status_alerts ? 'active' : '' ">
+                                <i class="far fa-circle nav-icon "></i>
                                 <p>Alertas</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a (click)="alertShowingEvent()" class="nav-link" [ngClass]="status_alert ? 'active' : ''">
-                                <i class="far fa-circle nav-icon"></i>
+                        <li class="nav-item " *ngxPermissionsOnly="permissionCreateEvent ">
+                            <a (click)="alertShowingEvent() " class="nav-link " [ngClass]="status_alert ? 'active' : '' ">
+                                <i class="far fa-circle nav-icon "></i>
                                 <p>Crear Alerta</p>
                             </a>
                         </li>
-                        <li class="nav-item" *ngxPermissionsOnly="permissionsEventTypes">
-                            <a (click)="eventTypesShowingEvent()" class="nav-link" [ngClass]="status_eventTypes ? 'active' : ''">
-                                <i class="far fa-circle nav-icon"></i>
+                        <li class="nav-item " *ngxPermissionsOnly="permissionsEventTypes ">
+                            <a (click)="eventTypesShowingEvent() " class="nav-link " [ngClass]="status_eventTypes ? 'active' : '' ">
+                                <i class="far fa-circle nav-icon "></i>
                                 <p>Tipos de Alertas</p>
                             </a>
                         </li>
-                        <li class="nav-item" *ngxPermissionsOnly="permissionsCategories">
-                            <a (click)="categoriesShowingEvent()" class="nav-link" [ngClass]="status_categories ? 'active' : ''">
-                                <i class="far fa-circle nav-icon"></i>
+                        <li class="nav-item " *ngxPermissionsOnly="permissionsCategories ">
+                            <a (click)="categoriesShowingEvent() " class="nav-link " [ngClass]="status_categories ? 'active' : '' ">
+                                <i class="far fa-circle nav-icon "></i>
                                 <p>Categorías</p>
                             </a>
                         </li>
-                        <li class="nav-item" *ngxPermissionsOnly="permissionsInstitutionalRoutes">
-                            <a (click)="institutionalRoutesShowingEvent()" class="nav-link" [ngClass]="status_institutional_routes ? 'active' : ''">
-                                <i class="far fa-circle nav-icon"></i>
+                        <li class="nav-item " *ngxPermissionsOnly="permissionsInstitutionalRoutes ">
+                            <a (click)="institutionalRoutesShowingEvent() " class="nav-link " [ngClass]="status_institutional_routes ? 'active' : '' ">
+                                <i class="far fa-circle nav-icon "></i>
                                 <p>Rutas Institucionales</p>
                             </a>
                         </li>

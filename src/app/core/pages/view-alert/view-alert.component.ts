@@ -24,7 +24,7 @@ import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
   styles: [],
 })
 export class ViewAlertComponent implements OnInit {
-  zoom = 15;
+  zoom = 18;
   markers = [];
   center: google.maps.LatLngLiteral;
   options: google.maps.MapOptions;
@@ -151,7 +151,7 @@ export class ViewAlertComponent implements OnInit {
       zoomControl: true,
       scrollwheel: true,
       disableDoubleClickZoom: true,
-      maxZoom: 15,
+      maxZoom: 18,
       minZoom: 8,
     };
   }

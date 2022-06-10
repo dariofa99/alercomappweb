@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthGuard } from './core/guards/auth.guard';
+import { CustomAddAlertGuard } from './core/guards/custom-add-alert.guard';
 import { CustomAddCategoryGuard } from './core/guards/custom-add-category.guard';
 import { CustomAddEditPermissionGuard } from './core/guards/custom-add-edit-permission.guard';
 import { CustomAddEditRoleGuard } from './core/guards/custom-add-edit-role.guard';
@@ -10,6 +11,7 @@ import { CustomAddInstitutionGuard } from './core/guards/custom-add-institution.
 import { CustomAddInstitutionalRouteGuard } from './core/guards/custom-add-institutional-route.guard';
 import { CustomAddTypeAlertGuard } from './core/guards/custom-add-type-alert.guard';
 import { CustomAddUserGuard } from './core/guards/custom-add-user.guard';
+import { CustomAdminAlertsGuard } from './core/guards/custom-admin-alerts.guard';
 import { CustomAdminCategoriesGuard } from './core/guards/custom-admin-categories.guard';
 import { CustomAdminInstitutionalRoutesGuard } from './core/guards/custom-admin-institutional-routes.guard';
 import { CustomAdminInstitutionsInfoGuard } from './core/guards/custom-admin-institutions-info.guard';
@@ -17,6 +19,7 @@ import { CustomAdminInstitutionsGuard } from './core/guards/custom-admin-institu
 import { CustomAdminRolesGuard } from './core/guards/custom-admin-roles.guard';
 import { CustomAdminTypeAlertsGuard } from './core/guards/custom-admin-type-alerts.guard';
 import { CustomAdminUsersGuard } from './core/guards/custom-admin-users.guard';
+import { CustomEditAlertGuard } from './core/guards/custom-edit-alert.guard';
 import { CustomEditCategoryGuard } from './core/guards/custom-edit-category.guard';
 import { CustomEditInstitutionInfoGuard } from './core/guards/custom-edit-institution-info.guard';
 import { CustomEditInstitutionGuard } from './core/guards/custom-edit-institution.guard';
@@ -50,6 +53,7 @@ import { RolesPermissionsComponent } from './core/pages/roles-permissions/roles-
 import { TermsConditionsComponent } from './core/pages/terms-conditions/terms-conditions.component';
 import { TypealertsComponent } from './core/pages/typealerts/typealerts.component';
 import { UserAdminComponent } from './core/pages/user-admin/user-admin.component';
+import { UserProfileComponent } from './core/pages/user-profile/user-profile.component';
 import { ViewAlertComponent } from './core/pages/view-alert/view-alert.component';
 import { AffectsRangeResolverService } from './core/resolvers/affectsRanges-resolver.service';
 import { AlertByIDResolverService } from './core/resolvers/alert-byid-resolver.service';
@@ -123,7 +127,7 @@ const routes: Routes = [
   {
     path: 'home/admin-users/edit-user/:id',
     component: NewEditUserComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomEditUserGuard],
     resolve: {
       users: UsersResolverService,
       departments: DepartmentsResolverService,
@@ -138,9 +142,21 @@ const routes: Routes = [
     },
   },
   {
+    path: 'home/user-profile/:id',
+    component: UserProfileComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      users: UsersResolverService,
+      departments: DepartmentsResolverService,
+      user: UserResolverService,
+      userByID: UserByIDResolverService,
+      towns: TownsResolverService,
+    },
+  },
+  {
     path: 'home/admin-roles',
     component: RolesPermissionsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAdminRolesGuard],
     resolve: {
       permissions: PermissionsResolverService,
       roles: RolesResolverService,
@@ -298,18 +314,7 @@ const routes: Routes = [
   {
     path: 'home/admin-my-alerts',
     component: MyalertsComponent,
-    canActivate: [AuthGuard],
-    resolve: {
-      user: UserResolverService,
-      eventTypes: EventTypesResolverService,
-      affectRanges: AffectsRangeResolverService,
-      users: UsersResolverService,
-    },
-  },
-  {
-    path: 'home/admin-alerts',
-    component: AlertsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAdminAlertsGuard],
     resolve: {
       user: UserResolverService,
       eventTypes: EventTypesResolverService,
@@ -318,14 +323,38 @@ const routes: Routes = [
     },
     data: {
       permissions: {
+        readEvent: ['ver_alertas'],
+        createEvent: ['crear_alertas'],
+        editEvent: ['editar_alertas'],
+        deleteEvent: ['eliminar_alertas'],
         changeStateEvent: ['cambiar_estado_alerta'],
       },
-    }
+    },
+  },
+  {
+    path: 'home/admin-alerts',
+    component: AlertsComponent,
+    canActivate: [CustomAdminAlertsGuard],
+    resolve: {
+      user: UserResolverService,
+      eventTypes: EventTypesResolverService,
+      affectRanges: AffectsRangeResolverService,
+      users: UsersResolverService,
+    },
+    data: {
+      permissions: {
+        readEvent: ['ver_alertas'],
+        createEvent: ['crear_alertas'],
+        editEvent: ['editar_alertas'],
+        deleteEvent: ['eliminar_alertas'],
+        changeStateEvent: ['cambiar_estado_alerta'],
+      },
+    },
   },
   {
     path: 'home/admin-alerts/alert-detail/:id',
     component: DetailAlertComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAdminAlertsGuard],
     resolve: {
       user: UserResolverService,
       eventTypes: EventTypesResolverService,
@@ -334,6 +363,15 @@ const routes: Routes = [
       towns: TownsResolverService,
       departments: DepartmentsResolverService,
       categories: CategoriesResolverService,
+    },
+    data: {
+      permissions: {
+        readEvent: ['ver_alertas'],
+        createEvent: ['crear_alertas'],
+        editEvent: ['editar_alertas'],
+        deleteEvent: ['eliminar_alertas'],
+        changeStateEvent: ['cambiar_estado_alerta'],
+      },
     },
   },
   {
@@ -346,7 +384,7 @@ const routes: Routes = [
   {
     path: 'home/admin-alerts/add-alert',
     component: NewEditAlertComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomAddAlertGuard],
     resolve: {
       user: UserResolverService,
       eventTypes: EventTypesResolverService,
@@ -355,11 +393,16 @@ const routes: Routes = [
       departments: DepartmentsResolverService,
       categories: CategoriesResolverService,
     },
+    data: {
+      permissions: {
+        createEvent: ['crear_alertas'],
+      },
+    },
   },
   {
     path: 'home/admin-alerts/edit-alert/:id',
     component: NewEditAlertComponent,
-    canActivate: [AuthGuard],
+    canActivate: [CustomEditAlertGuard],
     resolve: {
       user: UserResolverService,
       eventTypes: EventTypesResolverService,
@@ -368,6 +411,11 @@ const routes: Routes = [
       departments: DepartmentsResolverService,
       alertByID: AlertByIDResolverService,
       categories: CategoriesResolverService,
+    },
+    data: {
+      permissions: {
+        editEvent: ['editar_alertas'],
+      },
     },
   },
   {

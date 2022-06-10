@@ -54,7 +54,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
 
   @ViewChild('GoogleMap', { static: false }) map: google.maps.Map;
 
-  zoom = 15;
+  zoom = 18;
   markers = [];
   center: google.maps.LatLngLiteral;
   options: google.maps.MapOptions;
@@ -85,6 +85,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
   selectedTown: number;
   event_date;
   imagesEvent: ImageFiles[] = [];
+  loadingAmatai = false;
 
   constructor(
     private auth: AuthService,
@@ -231,6 +232,9 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       this.eventForm.controls['event_place'].setValue(
         this.alertByID.event_place
       );
+      this.eventForm.controls['event_aditional_information'].setValue(
+        this.alertByID.event_aditional_information
+      );
       this.eventForm.controls['latitude'].setValue(this.alertByID.latitude);
       this.eventForm.controls['longitude'].setValue(this.alertByID.longitude);
       this.eventForm.controls['affected_people'].setValue(
@@ -286,7 +290,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       zoomControl: true,
       scrollwheel: true,
       disableDoubleClickZoom: true,
-      maxZoom: 15,
+      maxZoom: 18,
       minZoom: 8,
     };
     this.isOnGoogleMap = true;
@@ -315,7 +319,6 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
   onFileSelected(event: Event) {
     if (this.imagesEvent.length == 0) {
       const inputNode: any = document.querySelector('#file');
-
       const reader = new FileReader();
       reader.onload = () => {
         this.imagesEvent.push(
@@ -633,6 +636,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
   }
 
   addEvent() {
+    this.loadingAmatai = true;
     let form = new FormData();
     if (this.eventForm.controls['image_event'].value != null) {
       //For Many Files
@@ -694,6 +698,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
                 this.toastr.error(res);
               });
             } else {
+              this.loadingAmatai = false;
               Swal({
                 allowOutsideClick: false,
                 type: 'success',
@@ -713,8 +718,12 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
         },
       });
     }
+    else{
+      this.toastr.error("Diligencia todos los campos obligatorios");
+    }
   }
   updateEvent() {
+    this.loadingAmatai = true;
     let form = new FormData();
     if (this.eventForm.controls['image_event'].value != null) {
       //For Many Files
@@ -783,6 +792,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
                   this.toastr.error(res);
                 });
               } else {
+                this.loadingAmatai = false;
                 Swal({
                   allowOutsideClick: false,
                   type: 'success',
@@ -801,6 +811,9 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
             console.log('There was an error', error);
           },
         });
+    }
+    else{
+      this.toastr.error("Diligencia todos los campos obligatorios");
     }
   }
 

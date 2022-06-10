@@ -33,7 +33,7 @@ import { PermissionsList } from '../../const/permissionsList';
 export class DetailAlertComponent implements OnInit {
   @ViewChild('GoogleMap', { static: false }) map: GoogleMap;
 
-  zoom = 15;
+  zoom = 18;
   markers = [];
   center: google.maps.LatLngLiteral;
   options: google.maps.MapOptions;
@@ -148,7 +148,7 @@ export class DetailAlertComponent implements OnInit {
           zoomControl: true,
           scrollwheel: true,
           disableDoubleClickZoom: true,
-          maxZoom: 15,
+          maxZoom: 18,
           minZoom: 8,
         };
         this.isOnGoogleMap = true;

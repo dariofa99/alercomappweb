@@ -1,0 +1,82 @@
+<app-header></app-header>
+<app-sidebar [item]="user"></app-sidebar>
+<div class="content-wrapper">
+    <div class="card m-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-12" *ngIf='actionBtn == "Guardar"? false:true'>
+                    <!-- Widget: user widget style 1 -->
+                    <div class="card card-widget widget-user mt-3">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-info ">
+                            <h3 class="widget-user-username ">{{userByID.name + " "+ userByID.lastname}}</h3>
+                            <h5 class="widget-user-desc ">{{roleName}}</h5>
+                        </div>
+                        <div class="widget-user-image">
+                            <img class="img-circle elevation-2 " src="./assets/dist/img/myAvatar.png" alt="User Avatar">
+                        </div>
+                        <div class="card-footer ">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-12" [ngClass]='actionBtn == "Guardar"? "col-md-12":"col-md-8"'>
+                    <mat-tab-group animationDuration="0ms" class="mt-3">
+                        <mat-tab label="Información">
+                            <div class="container p-4">
+                                <form [formGroup]="userForm">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Nombre *</mat-label>
+                                        <input formControlName="name" matInput placeholder="Nombre *">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Apellido *</mat-label>
+                                        <input formControlName="lastname" matInput placeholder="Apellido *">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Nombre de Usuario *</mat-label>
+                                        <input formControlName="username" matInput placeholder="Nombre de Usuario *">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Correo *</mat-label>
+                                        <input formControlName="email" matInput placeholder="Correo *">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Teléfono *</mat-label>
+                                        <input formControlName="phone_number" matInput placeholder="Teléfono *">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Departamento</mat-label>
+                                        <mat-select formControlName="department" (selectionChange)="onDepartmentSelected($event)" [(value)]="selectedDepartment">
+                                            <mat-option *ngFor="let department of departments" [value]="department.id">{{department.reference_name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="isOnDepartment" appearance="outline">
+                                        <mat-label>Municipio</mat-label>
+                                        <mat-select formControlName="town_id" [(value)]="selectedTown">
+                                            <mat-option *ngFor="let town of townsToDisplay" [value]="town.id">{{town.town_name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Dirección *</mat-label>
+                                        <input formControlName="address" matInput placeholder="Dirección *">
+                                    </mat-form-field>
+                                </form>
+                                <button mat-button color="primary" [routerLink]="['/home/admin-alerts']">Regresar</button>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<app-footer></app-footer>
+
+
+<style>
+    mat-form-field {
+        width: 100%;
+    }
+</style>

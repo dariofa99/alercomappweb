@@ -29,8 +29,9 @@ export class SidebarComponent implements OnInit {
   status_categories: boolean = false;
   status_institutional_routes: boolean = false;
   status_alerts: boolean = false;
-  permissionsChangeStateEvent = "";
+  permissionCreateEvent = "";
   permissionsUsers = [];
+  permissionEvents = [];
   permissionsRoles = [];
   permissionsInstitutions = [];
   permissionsInstitutionsInfo = [];
@@ -39,6 +40,9 @@ export class SidebarComponent implements OnInit {
   permissionsCategories = [];
   permissionsInstitutionalRoutes = [];
   permissionsGroupUsers = [];
+  permissionsGroupEvents = [];
+  changeStateEvent;
+  hasChangeStateEvent = false;
 
   constructor(
     public router: Router,
@@ -88,7 +92,12 @@ export class SidebarComponent implements OnInit {
     this.permissionsInstitutionalRoutes.push(this.permissionsList.EDITAR_RUTAS_INSTITUCIONALES);
     this.permissionsInstitutionalRoutes.push(this.permissionsList.ELIMINAR_RUTAS_INSTITUCIONALES);
 
-    this.permissionsChangeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
+    this.permissionEvents.push(this.permissionsList.VER_ALERTAS);
+    this.permissionEvents.push(this.permissionsList.EDITAR_ALERTAS);
+    this.permissionEvents.push(this.permissionsList.ELIMINAR_ALERTAS);
+    this.permissionEvents.push(this.permissionsList.CAMBIAR_ESTADO_ALERTA);
+    this.permissionCreateEvent = this.permissionsList.CREAR_ALERTAS;
+    this.changeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
 
     this.permissionsRoles.forEach(element => {
       this.permissionsGroupUsers.push(element);
@@ -105,6 +114,30 @@ export class SidebarComponent implements OnInit {
     this.permissionsInstitutionsInfo.forEach(element => {
       this.permissionsGroupUsers.push(element);
     });
+
+    this.permissionsCategories.forEach(element => {
+      this.permissionsGroupEvents.push(element);
+    });
+
+    this.permissionsEventTypes.forEach(element => {
+      this.permissionsGroupEvents.push(element);
+    });
+
+    this.permissionsInstitutionalRoutes.forEach(element => {
+      this.permissionsGroupEvents.push(element);
+    });
+
+    this.permissionEvents.forEach(element => {
+      this.permissionsGroupEvents.push(element);
+    });
+
+    this.permissionsGroupEvents.push(this.permissionCreateEvent);
+
+    this.ngxPermissionsService
+      .hasPermission(this.changeStateEvent)
+      .then((result) => {
+        this.hasChangeStateEvent = result;
+      });
   }
 
   ngOnInit(): void {

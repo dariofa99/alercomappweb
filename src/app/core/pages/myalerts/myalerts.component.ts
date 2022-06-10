@@ -45,6 +45,10 @@ export class MyalertsComponent implements OnInit {
   end_date = '';
   statusFilterValue;
 
+  readEventPermission;
+  createEventPermission;
+  editEventPermission;
+  deleteEventPermission;
   changeStateEvent;
   hasChangeStateEvent = false;
 
@@ -52,6 +56,8 @@ export class MyalertsComponent implements OnInit {
   alertsData: any;
   itemsPerPage = 6;
   totalItems: any;
+
+  loadingAmatai = false;
 
   private url = environment.apiUrl;
 
@@ -78,6 +84,10 @@ export class MyalertsComponent implements OnInit {
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
     });
+    this.readEventPermission = this.permissionsList.VER_ALERTAS;
+    this.createEventPermission = this.permissionsList.CREAR_ALERTAS;
+    this.editEventPermission = this.permissionsList.EDITAR_ALERTAS;
+    this.deleteEventPermission = this.permissionsList.ELIMINAR_ALERTAS;
     this.changeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
 
     this.ngxPermissionsService
@@ -105,6 +115,7 @@ export class MyalertsComponent implements OnInit {
   }
 
   getAllData() {
+    this.loadingAmatai = true;
     var headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -117,12 +128,14 @@ export class MyalertsComponent implements OnInit {
         headers: headers,
       })
       .subscribe((data: any) => {
+        this.loadingAmatai = false;
         this.alertsData = data.data;
         this.totalItems = data.total;
       });
   }
 
   gty(page: any) {
+    this.loadingAmatai = true;
     this.pageData = page;
     if(this.isOnStatusFilter){
       this.statusFilter(this.statusFilterValue);
@@ -141,6 +154,7 @@ export class MyalertsComponent implements OnInit {
       urlToSend = `${this.url}/events?data=my&page=${this.pageData}`;
   
       this.http.get(urlToSend, { headers: headers }).subscribe((data: any) => {
+        this.loadingAmatai = false;
         this.alertsData = data.data;
         this.totalItems = data.total;
       });
@@ -148,6 +162,7 @@ export class MyalertsComponent implements OnInit {
   }
 
   resetFilters() {
+    this.loadingAmatai = true;
     this.init_date = undefined;
     this.end_date = undefined;
     this.selectedStatus = 'Todos';
@@ -170,6 +185,7 @@ export class MyalertsComponent implements OnInit {
         headers: headers,
       })
       .subscribe((data: any) => {
+        this.loadingAmatai = false;
         this.alertsData = data.data;
         this.totalItems = data.total;
       });
@@ -194,6 +210,7 @@ export class MyalertsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result) => {
           if (result != undefined) {
+            this.loadingAmatai = true;
             event.status_id = result;
             this.alertService
               .postUpdateEvent(this.auth.readToken(), event.id, event)
@@ -213,6 +230,7 @@ export class MyalertsComponent implements OnInit {
                       type: 'success',
                       text: 'Estado del evento cambiado con éxito',
                     });
+                    this.loadingAmatai = false;
                     this.getAllData();
                   }
                 },
@@ -245,6 +263,7 @@ export class MyalertsComponent implements OnInit {
   }
 
   dateFilter(init_date, end_date){
+    this.loadingAmatai = true;
     var headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -267,6 +286,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -279,6 +299,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -294,6 +315,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -306,6 +328,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -319,6 +342,7 @@ export class MyalertsComponent implements OnInit {
   }
 
   statusFilter(value) {
+    this.loadingAmatai = true;
     var headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -345,6 +369,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -357,6 +382,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -373,6 +399,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -385,6 +412,7 @@ export class MyalertsComponent implements OnInit {
             headers: headers,
           })
           .subscribe((data: any) => {
+            this.loadingAmatai = false;
             this.alertsData = data.data;
             this.totalItems = data.total;
           });
@@ -394,5 +422,43 @@ export class MyalertsComponent implements OnInit {
 
   editEvent(event: any) {
     this.router.navigate(['/home/admin-alerts/edit-alert/' + event.id]);
+  }
+
+  deleteEvent(id: number) {
+    Swal({
+      title: 'Realmente deseas eliminar esta alerta?',
+      showCancelButton: true,
+      confirmButtonText: `Si`,
+      cancelButtonText: `No`,
+    }).then((result) => {
+      if (result.value) {
+        this.alertService.deleteEvent(this.auth.readToken(), id).subscribe({
+          next: (data) => {
+            if (
+              data['errors'] != undefined ? data['errors'].length != 0 : false
+            ) {
+              data['errors'].map((res) => {
+                this.toastr.error(res);
+              });
+            } else {
+              this.toastr.success("Alerta eliminada con éxito");
+              this.getAllData();
+            }
+          },
+          error: (error) => {
+            Swal({
+              text: 'Ha ocurrido un error contacta a soporte@alercom.org',
+              type: 'error',
+            });
+            console.log('There was an error', error);
+          },
+        });
+      } else if (result) {
+      }
+    });
+  }
+
+  showProfile(pID){
+    this.router.navigate(['/home/user-profile/' + pID]);
   }
 }

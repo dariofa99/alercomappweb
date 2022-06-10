@@ -15,18 +15,12 @@ export class AuthGuard implements CanActivate {
                private router: Router/* , private loadPermissionsService: LoadPermissionsService, private ngxPermissionsService: NgxPermissionsService */) {}
 
   canActivate(route: ActivatedRouteSnapshot)  {
-    /* return this.loadPermissionsService.loadPermissions().then((data: [string])=>{
-      this.ngxPermissionsService.loadPermissions(data)
-      return true;
-    }); */
-
     if ( this.auth.isAuthenticated() ) {
       return true;
     } else {
       this.router.navigateByUrl('/login');
       return false;
     }
- 
   }
 
 }

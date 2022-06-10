@@ -26,9 +26,9 @@
         </div>
         <mat-card *ngFor="let alert of alertsData | paginate : { itemsPerPage: itemsPerPage, currentPage: pageData, totalItems: totalItems }" class="example-card mb-3">
             <mat-card-title class="pb-2">Estado: {{alert.status.reference_name}}</mat-card-title>
-            <mat-card-subtitle>Fecha de Creación: {{alert.event_date}}</mat-card-subtitle>
+            <mat-card-subtitle>Fecha del Evento: {{alert.event_date}}</mat-card-subtitle>
             <mat-card-subtitle>
-                <p class="font-weight-bold">{{alert.user.name + " " + alert.user.lastname}} <a class="font-weight-ligth"><small>Ver perfil</small></a></p>
+                <p class="font-weight-bold">{{alert.user.name + " " + alert.user.lastname}} <a class="font-weight-ligth" (click)="showProfile(alert.user.id)"><small>Ver perfil</small></a></p>
             </mat-card-subtitle>
             <mat-card-content class="mb-2">
                 <p>{{alert.event_description}}</p>
@@ -37,8 +37,9 @@
             </mat-card-content>
             <mat-divider inset class="pb-3"></mat-divider>
             <mat-card-actions class="d-flex justify-content-end">
-                <button (click)="editEvent(alert)" mat-button><label class="mb-0" for="edit"><a>Editar</a></label></button>
-                <button (click)="onSeeDetails(alert)" mat-button><label class="mb-0" for="seeDetails"><a>Ver</a></label></button>
+                <button *ngxPermissionsOnly="deleteEventPermission" (click)="deleteEvent(alert.id)" mat-button><label class="mb-0" for="edit"><a>Eliminar</a></label></button>
+                <button *ngxPermissionsOnly="editEventPermission" (click)="editEvent(alert)" mat-button><label class="mb-0" for="edit"><a>Editar</a></label></button>
+                <button *ngxPermissionsOnly="readEventPermission" (click)="onSeeDetails(alert)" mat-button><label class="mb-0" for="seeDetails"><a>Ver</a></label></button>
                 <button *ngxPermissionsOnly="changeStateEvent" (click)="changeStatusDialog(alert)" mat-button><label class="mb-0" for="changeStatus"><a>Cambiar estado</a></label></button>
             </mat-card-actions>
             <mat-card-footer>
@@ -49,9 +50,27 @@
     </div>
 </div>
 <app-footer></app-footer>
+
+<div *ngIf='loadingAmatai'>
+    <div id="loadingSpinnerBackground">
+    </div>
+</div>
+
 <style>
     .pagi {
         text-align: center;
         font-size: medium;
+    }
+    
+    #loadingSpinnerBackground {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        cursor: not-allowed;
+        opacity: 0.5;
+        background: #fff url('./assets/logos/loaderAmatai.gif') center no-repeat;
+        z-index: 99;
     }
 </style>

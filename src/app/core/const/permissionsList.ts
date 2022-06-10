@@ -41,6 +41,11 @@ export class PermissionsList {
     EDITAR_RUTAS_INSTITUCIONALES = 'editar_rutas_institucionales';
     ELIMINAR_RUTAS_INSTITUCIONALES = 'eliminar_rutas_institucionales';
     
+    VER_ALERTAS = 'ver_alertas';
+    CREAR_ALERTAS = 'crear_alertas';
+    EDITAR_ALERTAS = 'editar_alertas';
+    ELIMINAR_ALERTAS = 'eliminar_alertas';
+
     CAMBIAR_ESTADO_USUARIO = 'cambiar_estado_usuario';
     CAMBIAR_ESTADO_ALERTA = 'cambiar_estado_alerta';
 }

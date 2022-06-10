@@ -114,4 +114,13 @@ export class AlertsService {
     )
   }
 
+  deleteEvent(auth_token,id){
+    var headers = new HttpHeaders({
+      'Authorization': `Bearer ${auth_token}`
+    });
+    return this.http.delete(
+      `${ this.url }/events/`+id,{headers: headers}
+    );
+  }
+
 }

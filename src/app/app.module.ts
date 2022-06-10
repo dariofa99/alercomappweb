@@ -50,6 +50,7 @@ import { TermsConditionsComponent } from './core/pages/terms-conditions/terms-co
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ChangeRoleDialogComponent } from './core/pages/change-rol-dialog/change-role-dialog.component';
 import { AlertsComponent } from './core/pages/alerts/alerts.component';
+import { UserProfileComponent } from './core/pages/user-profile/user-profile.component';
 
 export function permissionsFactory(
   loadPermissionsService: LoadPermissionsService,
@@ -101,6 +102,7 @@ export function permissionsFactory(
     TermsConditionsComponent,
     ChangeRoleDialogComponent,
     AlertsComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,
