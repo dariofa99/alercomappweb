@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GoogleAddressServiceService } from './google-address-service.service';
+import { GoogleAddressService } from './google-address.service';
 
 describe('GoogleAdressServiceService', () => {
-  let service: GoogleAddressServiceService;
+  let service: GoogleAddressService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GoogleAddressServiceService);
+    service = TestBed.inject(GoogleAddressService);
   });
 
   it('should be created', () => {

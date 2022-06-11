@@ -26,7 +26,11 @@ import { AlertEditModel } from '../../models/alertEditModel';
 import { CategoryModel } from '../../models/categoryModel';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
-import { GoogleAddressServiceService } from '../../services/google-address-service.service';
+import { GoogleAddressService } from '../../services/google-address.service';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { PermissionsList } from '../../const/permissionsList';
+import { LoadPermissionsService } from '../../services/load-permissions.service';
+import { PreviousRouteService } from '../../services/previous-route.service';
 
 export class ImageFiles {
   constructor(public filePath?: string, public file?: File) {}
@@ -86,6 +90,9 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
   event_date;
   imagesEvent: ImageFiles[] = [];
   loadingAmatai = false;
+  hasChangeStateEvent = false;
+  changeStateEvent;
+  previousUrl;
 
   constructor(
     private auth: AuthService,
@@ -96,8 +103,22 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     private eventService: AlertsService,
     private http: HttpClient,
     private markerGoogleMaps: MarkerGoogleMaps,
-    private googleAddressService: GoogleAddressServiceService
+    private googleAddressService: GoogleAddressService,
+    private loadPermissionsService: LoadPermissionsService,
+    private ngxPermissionsService: NgxPermissionsService,
+    private permissionsList: PermissionsList,
+    private urlService: PreviousRouteService
   ) {
+    this.loadPermissionsService.loadPermissions().then((data: [string]) => {
+      this.ngxPermissionsService.loadPermissions(data);
+    });
+    this.changeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
+    this.ngxPermissionsService
+      .hasPermission(this.changeStateEvent)
+      .then((result) => {
+        this.hasChangeStateEvent = result;
+      });
+
     this.user = this.route.snapshot.data['user'];
     this.eventTypes = this.route.snapshot.data['eventTypes'];
     this.affectRanges = this.route.snapshot.data['affectRanges'];
@@ -158,6 +179,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       this.minDate = new Date(this.event_date - DAYS_IN_MILISECONDS);
       this.maxDate = this.event_date;
     }
+    
   }
 
   private getPlaceAutocomplete() {
@@ -223,6 +245,10 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$
+    .subscribe((previousUrl: string) => {
+        this.previousUrl = previousUrl
+    });
     if (this.alertByID != undefined) {
       this.actionBtn = 'Actualizar';
       this.eventForm.controls['event_description'].setValue(
@@ -819,5 +845,19 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
 
   toFloat(value: any) {
     return parseFloat(value);
+  }
+
+  backToList() {
+    if(this.hasChangeStateEvent){
+      if(this.previousUrl == "/home/admin-alerts"){
+        this.router.navigate(['/home/admin-alerts']);
+      }
+      else if(this.previousUrl == "/home/admin-my-alerts"){
+        this.router.navigate(['/home/admin-my-alerts']);
+      }
+    }
+    else{
+      this.router.navigate(['/home/admin-my-alerts']);
+    }
   }
 }
