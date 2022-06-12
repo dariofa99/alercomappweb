@@ -12,7 +12,7 @@ import { TownModel } from '../../models/townModel';
 import { UserModel } from '../../models/userModel';
 import { AuthService } from '../../services/auth.service';
 import { LoadPermissionsService } from '../../services/load-permissions.service';
-import { PreviousRouteServiceService } from '../../services/previous-route-service.service';
+import { PreviousRouteService } from '../../services/previous-route.service';
 import { ReferencesService } from '../../services/references.service';
 import { RolesPermissionsService } from '../../services/roles-permissions.service';
 import { UserService } from '../../services/user.service';
@@ -48,6 +48,9 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
   previousUrl;
   currentUrl;
 
+  hasChangeStateEvent = false;
+  changeStateEvent;
+
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
@@ -61,17 +64,17 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
     private loadPermissionsService: LoadPermissionsService,
     private ngxPermissionsService: NgxPermissionsService,
     private permissionsList: PermissionsList,
-    private previousRouteService: PreviousRouteServiceService
+    private urlService: PreviousRouteService
   ) {
-    console.log(this.previousRouteService.getPreviousUrl());
-
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
     });
-    this.assignRole = this.permissionsList.ASIGNAR_ROL;
-    this.ngxPermissionsService.hasPermission(this.assignRole).then((result) => {
-      this.hasAssignRole = result;
-    });
+    this.changeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
+    this.ngxPermissionsService
+      .hasPermission(this.changeStateEvent)
+      .then((result) => {
+        this.hasChangeStateEvent = result;
+      });
 
     this.userForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -105,6 +108,10 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$
+        .subscribe((previousUrl: string) => {
+            this.previousUrl = previousUrl
+        });
     if (this.userByID != undefined) {
       this.actionBtn = 'Actualizar';
       this.userForm.removeControl('password');
@@ -162,6 +169,20 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
         }
       });
     });
+  }
+
+  backToList() {
+    if(this.hasChangeStateEvent){
+      if(this.previousUrl == "/home/admin-alerts"){
+        this.router.navigate(['/home/admin-alerts']);
+      }
+      else if(this.previousUrl == "/home/admin-my-alerts"){
+        this.router.navigate(['/home/admin-my-alerts']);
+      }
+    }
+    else{
+      this.router.navigate(['/home/admin-my-alerts']);
+    }
   }
 
 }

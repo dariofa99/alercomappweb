@@ -119,7 +119,7 @@
                 <button mat-button color="primary" (click)="actionBtn == 'Guardar' ? addEvent() : updateEvent()">
           {{ actionBtn }}
         </button>
-                <button mat-button color="primary" [routerLink]="['/home/admin-alerts']">
+                <button mat-button color="primary" (click)="backToList()">
           Regresar
         </button>
             </form>

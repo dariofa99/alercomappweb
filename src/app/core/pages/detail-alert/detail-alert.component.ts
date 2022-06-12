@@ -24,6 +24,7 @@ import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
 import { LoadPermissionsService } from '../../services/load-permissions.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { PermissionsList } from '../../const/permissionsList';
+import { PreviousRouteService } from '../../services/previous-route.service';
 
 @Component({
   selector: 'app-detail-alert',
@@ -67,6 +68,9 @@ export class DetailAlertComponent implements OnInit {
   changeStateEvent;
   hasChangeStateEvent = false;
 
+  previousUrl;
+  currentUrl;
+
   constructor(
     private route: ActivatedRoute,
     public router: Router,
@@ -78,7 +82,8 @@ export class DetailAlertComponent implements OnInit {
     private markerGoogleMaps: MarkerGoogleMaps,
     private loadPermissionsService: LoadPermissionsService,
     private ngxPermissionsService: NgxPermissionsService,
-    private permissionsList: PermissionsList
+    private permissionsList: PermissionsList,
+    private urlService: PreviousRouteService
   ) {
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
@@ -203,6 +208,10 @@ export class DetailAlertComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$
+    .subscribe((previousUrl: string) => {
+        this.previousUrl = previousUrl
+    });
     if (this.alertByID != undefined) {
       this.eventForm.controls['event_description'].setValue(
         this.alertByID.event_description
@@ -333,7 +342,17 @@ export class DetailAlertComponent implements OnInit {
   }
 
   backToList() {
-    this.router.navigate(['/home/admin-alerts']);
+    if(this.hasChangeStateEvent){
+      if(this.previousUrl == "/home/admin-alerts"){
+        this.router.navigate(['/home/admin-alerts']);
+      }
+      else if(this.previousUrl == "/home/admin-my-alerts"){
+        this.router.navigate(['/home/admin-my-alerts']);
+      }
+    }
+    else{
+      this.router.navigate(['/home/admin-my-alerts']);
+    }
   }
 
   onEventTypeSelected(event: any) {}

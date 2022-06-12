@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, filter, map } from 'rxjs/operators';
 import { AffectRangeModel } from '../../models/affectRangeModel';
 import { AlertModel } from '../../models/alertModel';
 import { EventTypeModel } from '../../models/eventTypeModel';
@@ -21,6 +21,7 @@ import { environment } from 'src/environments/environment';
 import { LoadPermissionsService } from '../../services/load-permissions.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { PermissionsList } from '../../const/permissionsList';
+import { PreviousRouteService } from '../../services/previous-route.service';
 
 @Component({
   selector: 'app-alerts',
@@ -73,15 +74,9 @@ export class AlertsComponent implements OnInit {
     private http: HttpClient,
     private loadPermissionsService: LoadPermissionsService,
     private ngxPermissionsService: NgxPermissionsService,
-    private permissionsList: PermissionsList
+    private permissionsList: PermissionsList,
+    private urlService: PreviousRouteService
   ) {
-    this.router.events.subscribe((event) => {
-      if (!(event instanceof NavigationEnd)) {
-        return;
-      }
-      window.scrollTo(0, 0);
-    });
-
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
     });
