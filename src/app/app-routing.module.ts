@@ -72,6 +72,7 @@ import { InstitutionsResolverService } from './core/resolvers/institutions-resol
 import { InstitutionsInfoResolverService } from './core/resolvers/institutionsinfo-resolver.service';
 import { PermissionsResolverService } from './core/resolvers/permissions-resolver.service';
 import { RolesResolverService } from './core/resolvers/roles-resolver.service';
+import { StatusResolverService } from './core/resolvers/status-resolver.service';
 import { TownsResolverService } from './core/resolvers/towns-resolver.service';
 import { UserByIDResolverService } from './core/resolvers/user-byid-resolver.service';
 import { UserResolverService } from './core/resolvers/user-resolver.service';
@@ -320,6 +321,7 @@ const routes: Routes = [
       eventTypes: EventTypesResolverService,
       affectRanges: AffectsRangeResolverService,
       users: UsersResolverService,
+      status: StatusResolverService
     },
     data: {
       permissions: {
@@ -340,6 +342,7 @@ const routes: Routes = [
       eventTypes: EventTypesResolverService,
       affectRanges: AffectsRangeResolverService,
       users: UsersResolverService,
+      status: StatusResolverService
     },
     data: {
       permissions: {
@@ -379,6 +382,15 @@ const routes: Routes = [
     component: ViewAlertComponent,
     resolve: {
       alertByToken: AlertByTokenResolverService,
+    },
+    data: {
+      permissions: {
+        readEvent: ['ver_alertas'],
+        createEvent: ['crear_alertas'],
+        editEvent: ['editar_alertas'],
+        deleteEvent: ['eliminar_alertas'],
+        changeStateEvent: ['cambiar_estado_alerta'],
+      },
     },
   },
   {

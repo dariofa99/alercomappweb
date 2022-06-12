@@ -22,7 +22,7 @@ export class AlertEditModel {
         public affected_infrastructure?: number,
         public affected_livelihoods?: number,
         public affected_animals?: number,
-        public affected_environment?: number,
+        public affected_enviroment?: number,
         public event_type?: EventTypeModel,
         public event_type_id?: number,
         public town_id?: number,

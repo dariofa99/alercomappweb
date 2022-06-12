@@ -25,6 +25,8 @@ import { LoadPermissionsService } from '../../services/load-permissions.service'
 import { NgxPermissionsService } from 'ngx-permissions';
 import { PermissionsList } from '../../const/permissionsList';
 import { PreviousRouteService } from '../../services/previous-route.service';
+import { StatusList } from '../../const/statusList';
+import { GoogleMaps } from '../../const/googleMaps';
 
 @Component({
   selector: 'app-detail-alert',
@@ -34,7 +36,6 @@ import { PreviousRouteService } from '../../services/previous-route.service';
 export class DetailAlertComponent implements OnInit {
   @ViewChild('GoogleMap', { static: false }) map: GoogleMap;
 
-  zoom = 18;
   markers = [];
   center: google.maps.LatLngLiteral;
   options: google.maps.MapOptions;
@@ -83,7 +84,9 @@ export class DetailAlertComponent implements OnInit {
     private loadPermissionsService: LoadPermissionsService,
     private ngxPermissionsService: NgxPermissionsService,
     private permissionsList: PermissionsList,
-    private urlService: PreviousRouteService
+    private urlService: PreviousRouteService,
+    private statusList: StatusList,
+    private googleMaps: GoogleMaps
   ) {
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
@@ -153,8 +156,8 @@ export class DetailAlertComponent implements OnInit {
           zoomControl: true,
           scrollwheel: true,
           disableDoubleClickZoom: true,
-          maxZoom: 18,
-          minZoom: 8,
+          maxZoom: this.googleMaps.MAXZOOM,
+          minZoom: this.googleMaps.MINZOOM,
         };
         this.isOnGoogleMap = true;
       }
@@ -171,7 +174,7 @@ export class DetailAlertComponent implements OnInit {
       affected_animals: [false],
       affected_infrastructure: [false],
       affected_livelihoods: [false],
-      affected_environment: [false],
+      affected_enviroment: [false],
       user_id: ['', Validators.required],
       event_type_id: ['', Validators.required],
       town_id: ['', Validators.required],
@@ -194,7 +197,7 @@ export class DetailAlertComponent implements OnInit {
       affected_animals: [false],
       affected_infrastructure: [false],
       affected_livelihoods: [false],
-      affected_environment: [false],
+      affected_enviroment: [false],
       user_id: ['', Validators.required],
       event_type_id: ['', Validators.required],
       town_id: ['', Validators.required],
@@ -202,7 +205,7 @@ export class DetailAlertComponent implements OnInit {
       afectations_range_id: ['', Validators.required],
     });
 
-    if (this.alertByID.status.id == 11) {
+    if (this.alertByID.status.id == this.statusList.ALERTADO) {
       this.statusBtn = true;
     }
   }
@@ -237,8 +240,8 @@ export class DetailAlertComponent implements OnInit {
       this.eventForm.controls['affected_livelihoods'].setValue(
         this.alertByID.affected_livelihoods == 0 ? false : true
       );
-      this.eventForm.controls['affected_environment'].setValue(
-        this.alertByID.affected_environment == 0 ? false : true
+      this.eventForm.controls['affected_enviroment'].setValue(
+        this.alertByID.affected_enviroment == 0 ? false : true
       );
       this.eventForm.controls['user_id'].setValue(this.alertByID.user_id);
       this.eventForm.controls['event_type_id'].setValue(
@@ -280,8 +283,8 @@ export class DetailAlertComponent implements OnInit {
       this.eventFormToSend.controls['affected_livelihoods'].setValue(
         this.alertByID.affected_livelihoods == 0 ? false : true
       );
-      this.eventFormToSend.controls['affected_environment'].setValue(
-        this.alertByID.affected_environment == 0 ? false : true
+      this.eventFormToSend.controls['affected_enviroment'].setValue(
+        this.alertByID.affected_enviroment == 0 ? false : true
       );
       this.eventFormToSend.controls['user_id'].setValue(this.alertByID.user_id);
       this.eventFormToSend.controls['event_type_id'].setValue(
@@ -373,7 +376,7 @@ export class DetailAlertComponent implements OnInit {
       cancelButtonText: `No`,
     }).then((result) => {
       if (result.value) {
-        this.eventFormToSend.controls['status_id'].setValue(13);
+        this.eventFormToSend.controls['status_id'].setValue(this.statusList.VALIDADO);
         if (this.eventFormToSend.valid) {
           this.eventService
             .postUpdateEvent(
@@ -425,7 +428,7 @@ export class DetailAlertComponent implements OnInit {
       cancelButtonText: `No`,
     }).then((result) => {
       if (result.value) {
-        this.eventFormToSend.controls['status_id'].setValue(23);
+        this.eventFormToSend.controls['status_id'].setValue(this.statusList.VERIFICADO);
         if (this.eventFormToSend.valid) {
           this.eventService
             .postUpdateEvent(
@@ -477,7 +480,7 @@ export class DetailAlertComponent implements OnInit {
       cancelButtonText: `No`,
     }).then((result) => {
       if (result.value) {
-        this.eventFormToSend.controls['status_id'].setValue(12);
+        this.eventFormToSend.controls['status_id'].setValue(this.statusList.RECHAZADO);
         if (this.eventFormToSend.valid) {
           this.eventService
             .postUpdateEvent(

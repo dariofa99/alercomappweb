@@ -102,12 +102,7 @@ export class MyalertsComponent implements OnInit {
     this.eventTypes = this.route.snapshot.data['eventTypes'];
     this.affectRanges = this.route.snapshot.data['affectRanges'];
     this.alertsOriginal = this.alerts;
-    this.status = [
-      new StatusModel(11, 'Alertado', 'status_type', null, 1),
-      new StatusModel(12, 'Denegado', 'status_type', null, 1),
-      new StatusModel(13, 'Aceptado', 'status_type', null, 1),
-      new StatusModel(23, 'Verificado', 'status_type', null, 1),
-    ];
+    this.status = this.route.snapshot.data['status'];
   }
 
   ngOnInit(): void {

@@ -47,7 +47,7 @@
                                 Afectó a los Medios de Subsistencia
                             </mat-checkbox>
                             <br />
-                            <mat-checkbox formControlName="affected_environment" class="example-margin" [checked]="alertByToken.affected_environment" [color]="" (change)="checkboxChanged($event.checked)">
+                            <mat-checkbox formControlName="affected_enviroment" class="example-margin" [checked]="alertByToken.affected_enviroment" [color]="" (change)="checkboxChanged($event.checked)">
                                 Afectó al Medio
                             </mat-checkbox>
                             <br />
@@ -94,15 +94,9 @@
                         <button mat-button color="primary" (click)="backToList()">
                             Regresar
                         </button>
-                        <button mat-button color="primary" *ngIf="statusBtn" (click)="verifyEvent()">
-                            Verificar
-                        </button>
-                        <button mat-button color="primary" *ngIf="statusBtn" (click)="denyEvent()">
-                            Denegar
-                        </button>
-                        <button mat-button color="primary" *ngIf="statusBtn" (click)="acceptEvent()">
-                            Aceptar
-                        </button>
+                        <div *ngxPermissionsOnly="changeStateEvent"><button mat-button color="primary" *ngIf="statusBtn" (click)="verifyEvent()">Verificar</button></div>
+                        <div *ngxPermissionsOnly="changeStateEvent"><button mat-button color="primary" *ngIf="statusBtn" (click)="denyEvent()">Denegar</button></div>
+                        <div *ngxPermissionsOnly="changeStateEvent"><button mat-button color="primary" *ngIf="statusBtn" (click)="acceptEvent()">Aceptar</button></div>
                     </form>
                 </div>
             </div>

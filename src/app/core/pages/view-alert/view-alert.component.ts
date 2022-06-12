@@ -17,6 +17,12 @@ import {
   AlertEditViewModel,
 } from '../../models/alertEditViewModel';
 import { MarkerGoogleMaps } from '../../const/markerGoogleMaps';
+import { StatusList } from '../../const/statusList';
+import { LoadPermissionsService } from '../../services/load-permissions.service';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { PermissionsList } from '../../const/permissionsList';
+import { PreviousRouteService } from '../../services/previous-route.service';
+import { GoogleMaps } from '../../const/googleMaps';
 
 @Component({
   selector: 'app-view-alert',
@@ -54,6 +60,9 @@ export class ViewAlertComponent implements OnInit {
   isOnGoogleMap = false;
   imageEvent: string = '';
   imageEventAltName: string = '';
+  changeStateEvent;
+  hasChangeStateEvent = false;
+  previousUrl;
 
   constructor(
     private route: ActivatedRoute,
@@ -63,8 +72,25 @@ export class ViewAlertComponent implements OnInit {
     private auth: AuthService,
     private toastr: ToastrService,
     private adapterViewAlert: AlertEditViewAdapter,
-    private markerGoogleMaps: MarkerGoogleMaps
+    private markerGoogleMaps: MarkerGoogleMaps,
+    private statusList: StatusList,
+    private loadPermissionsService: LoadPermissionsService,
+    private ngxPermissionsService: NgxPermissionsService,
+    private permissionsList: PermissionsList,
+    private urlService: PreviousRouteService,
+    private googleMaps: GoogleMaps
   ) {
+    this.loadPermissionsService.loadPermissions().then((data: [string]) => {
+      this.ngxPermissionsService.loadPermissions(data);
+    });
+    this.changeStateEvent = this.permissionsList.CAMBIAR_ESTADO_ALERTA;
+
+    this.ngxPermissionsService
+      .hasPermission(this.changeStateEvent)
+      .then((result) => {
+        this.hasChangeStateEvent = result;
+      });
+
     this.alertByToken = this.route.snapshot.data['alertByToken'];
 
     this.affectRanges.push(this.alertByToken.affectation_range);
@@ -85,8 +111,32 @@ export class ViewAlertComponent implements OnInit {
           lat: this.toFloat(this.alertByToken.latitude),
           lng: this.toFloat(this.alertByToken.longitude),
         };
+        this.markers.push({
+          position: {
+            lat: this.center.lat,
+            lng: this.center.lng,
+          },
+          label: this.markerGoogleMaps.LABEL,
+          title: 'Ubicación Alerta',
+          options: {
+            animation: google.maps.Animation.DROP,
+            clickable: false,
+            draggable: false,
+            icon: this.markerGoogleMaps.MARKERIMAGE
+          },
+        });
+    
+        this.options = {
+          mapTypeId: 'roadmap',
+          zoomControl: true,
+          scrollwheel: true,
+          disableDoubleClickZoom: true,
+          maxZoom: this.googleMaps.MAXZOOM,
+          minZoom: this.googleMaps.MINZOOM,
+        };
+        this.isOnGoogleMap = true;
       }
-      this.isOnGoogleMap = true;
+      
     }
     this.eventForm = this.formBuilder.group({
       event_description: ['', Validators.required],
@@ -98,7 +148,7 @@ export class ViewAlertComponent implements OnInit {
       affected_animals: [false],
       affected_infrastructure: [false],
       affected_livelihoods: [false],
-      affected_environment: [false],
+      affected_enviroment: [false],
       user_id: ['', Validators.required],
       event_type_id: ['', Validators.required],
       town_id: ['', Validators.required],
@@ -119,7 +169,7 @@ export class ViewAlertComponent implements OnInit {
       affected_animals: [false],
       affected_infrastructure: [false],
       affected_livelihoods: [false],
-      affected_environment: [false],
+      affected_enviroment: [false],
       user_id: ['', Validators.required],
       event_type_id: ['', Validators.required],
       town_id: ['', Validators.required],
@@ -127,36 +177,17 @@ export class ViewAlertComponent implements OnInit {
       afectations_range_id: ['', Validators.required],
     });
 
-    if (this.alertByToken.status.id == 11) {
+    if (this.alertByToken.status.id == this.statusList.ALERTADO) {
       this.statusBtn = true;
     }
 
-    this.markers.push({
-      position: {
-        lat: this.center.lat,
-        lng: this.center.lng,
-      },
-      label: this.markerGoogleMaps.LABEL,
-      title: 'Ubicación Alerta',
-      options: {
-        animation: google.maps.Animation.DROP,
-        clickable: false,
-        draggable: false,
-        icon: this.markerGoogleMaps.MARKERIMAGE
-      },
-    });
-
-    this.options = {
-      mapTypeId: 'roadmap',
-      zoomControl: true,
-      scrollwheel: true,
-      disableDoubleClickZoom: true,
-      maxZoom: 18,
-      minZoom: 8,
-    };
   }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$
+    .subscribe((previousUrl: string) => {
+        this.previousUrl = previousUrl
+    });
     if (this.alertByToken != undefined) {
       this.eventForm.controls['event_description'].setValue(
         this.alertByToken.event_description
@@ -182,8 +213,8 @@ export class ViewAlertComponent implements OnInit {
       this.eventForm.controls['affected_livelihoods'].setValue(
         this.alertByToken.affected_livelihoods == 0 ? false : true
       );
-      this.eventForm.controls['affected_environment'].setValue(
-        this.alertByToken.affected_environment == 0 ? false : true
+      this.eventForm.controls['affected_enviroment'].setValue(
+        this.alertByToken.affected_enviroment == 0 ? false : true
       );
       this.eventForm.controls['user_id'].setValue(this.alertByToken.user_id);
       this.eventForm.controls['event_type_id'].setValue(
@@ -221,8 +252,8 @@ export class ViewAlertComponent implements OnInit {
       this.eventFormToSend.controls['affected_livelihoods'].setValue(
         this.alertByToken.affected_livelihoods == 0 ? false : true
       );
-      this.eventFormToSend.controls['affected_environment'].setValue(
-        this.alertByToken.affected_environment == 0 ? false : true
+      this.eventFormToSend.controls['affected_enviroment'].setValue(
+        this.alertByToken.affected_enviroment == 0 ? false : true
       );
       this.eventFormToSend.controls['user_id'].setValue(
         this.alertByToken.user_id
@@ -268,7 +299,17 @@ export class ViewAlertComponent implements OnInit {
   }
 
   backToList() {
-    this.router.navigate(['/home/admin-alerts']);
+    if(this.hasChangeStateEvent){
+      if(this.previousUrl == "/home/admin-alerts"){
+        this.router.navigate(['/home/admin-alerts']);
+      }
+      else if(this.previousUrl == "/home/admin-my-alerts"){
+        this.router.navigate(['/home/admin-my-alerts']);
+      }
+    }
+    else{
+      this.router.navigate(['/home/admin-my-alerts']);
+    }
   }
 
   onEventTypeSelected(event: any) {}
@@ -289,7 +330,7 @@ export class ViewAlertComponent implements OnInit {
       cancelButtonText: `No`,
     }).then((result) => {
       if (result.value) {
-        this.eventFormToSend.controls['status_id'].setValue(13);
+        this.eventFormToSend.controls['status_id'].setValue(this.statusList.VALIDADO);
         if (this.eventFormToSend.valid) {
           this.eventService
             .postUpdateByToken(
@@ -341,7 +382,7 @@ export class ViewAlertComponent implements OnInit {
       cancelButtonText: `No`,
     }).then((result) => {
       if (result.value) {
-        this.eventFormToSend.controls['status_id'].setValue(23);
+        this.eventFormToSend.controls['status_id'].setValue(this.statusList.VERIFICADO);
         if (this.eventFormToSend.valid) {
           this.eventService
             .postUpdateByToken(
@@ -393,7 +434,7 @@ export class ViewAlertComponent implements OnInit {
       cancelButtonText: `No`,
     }).then((result) => {
       if (result.value) {
-        this.eventFormToSend.controls['status_id'].setValue(12);
+        this.eventFormToSend.controls['status_id'].setValue(this.statusList.RECHAZADO);
         if (this.eventFormToSend.valid) {
           this.eventService
             .postUpdateByToken(

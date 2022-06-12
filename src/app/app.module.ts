@@ -51,6 +51,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ChangeRoleDialogComponent } from './core/pages/change-rol-dialog/change-role-dialog.component';
 import { AlertsComponent } from './core/pages/alerts/alerts.component';
 import { UserProfileComponent } from './core/pages/user-profile/user-profile.component';
+import { StatusList } from './core/const/statusList';
+import { GoogleMaps } from './core/const/googleMaps';
 
 export function permissionsFactory(
   loadPermissionsService: LoadPermissionsService,
@@ -124,6 +126,8 @@ export function permissionsFactory(
     RolesPermissionsComponent,
     KeyBoardService,
     PermissionsList,
+    StatusList,
+    GoogleMaps,
     MarkerGoogleMaps,
     {
       provide: APP_INITIALIZER,

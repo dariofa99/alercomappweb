@@ -31,6 +31,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { PermissionsList } from '../../const/permissionsList';
 import { LoadPermissionsService } from '../../services/load-permissions.service';
 import { PreviousRouteService } from '../../services/previous-route.service';
+import { GoogleMaps } from '../../const/googleMaps';
 
 export class ImageFiles {
   constructor(public filePath?: string, public file?: File) {}
@@ -58,7 +59,6 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
 
   @ViewChild('GoogleMap', { static: false }) map: google.maps.Map;
 
-  zoom = 18;
   markers = [];
   center: google.maps.LatLngLiteral;
   options: google.maps.MapOptions;
@@ -107,7 +107,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
     private loadPermissionsService: LoadPermissionsService,
     private ngxPermissionsService: NgxPermissionsService,
     private permissionsList: PermissionsList,
-    private urlService: PreviousRouteService
+    private urlService: PreviousRouteService,
+    private googleMaps: GoogleMaps
   ) {
     this.loadPermissionsService.loadPermissions().then((data: [string]) => {
       this.ngxPermissionsService.loadPermissions(data);
@@ -138,7 +139,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       affected_animals: [false],
       affected_infrastructure: [false],
       affected_livelihoods: [false],
-      affected_environment: [false],
+      affected_enviroment: [false],
       user_id: ['', Validators.required],
       event_type_id: ['', Validators.required],
       town_id: ['', Validators.required],
@@ -278,8 +279,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       this.eventForm.controls['affected_livelihoods'].setValue(
         this.alertByID.affected_livelihoods == 0 ? false : true
       );
-      this.eventForm.controls['affected_environment'].setValue(
-        this.alertByID.affected_environment == 0 ? false : true
+      this.eventForm.controls['affected_enviroment'].setValue(
+        this.alertByID.affected_enviroment == 0 ? false : true
       );
       this.eventForm.controls['user_id'].setValue(this.alertByID.user_id);
       this.eventForm.controls['event_type_id'].setValue(
@@ -316,8 +317,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       zoomControl: true,
       scrollwheel: true,
       disableDoubleClickZoom: true,
-      maxZoom: 18,
-      minZoom: 8,
+      maxZoom: this.googleMaps.MAXZOOM,
+      minZoom: this.googleMaps.MINZOOM,
     };
     this.isOnGoogleMap = true;
   }
@@ -702,8 +703,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       this.eventForm.get('affected_livelihoods').value == false ? '0' : '1'
     );
     form.append(
-      'affected_environment',
-      this.eventForm.get('affected_environment').value == false ? '0' : '1'
+      'affected_enviroment',
+      this.eventForm.get('affected_enviroment').value == false ? '0' : '1'
     );
     form.append('user_id', this.eventForm.get('user_id').value);
     form.append('event_type_id', this.eventForm.get('event_type_id').value);
@@ -795,8 +796,8 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       this.eventForm.get('affected_livelihoods').value == false ? '0' : '1'
     );
     form.append(
-      'affected_environment',
-      this.eventForm.get('affected_environment').value == false ? '0' : '1'
+      'affected_enviroment',
+      this.eventForm.get('affected_enviroment').value == false ? '0' : '1'
     );
     form.append('user_id', this.eventForm.get('user_id').value);
     form.append('event_type_id', this.eventForm.get('event_type_id').value);
