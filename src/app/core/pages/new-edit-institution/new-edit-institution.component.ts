@@ -305,6 +305,7 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
   }
 
   addInstitution(){
+   
     this.institutionForm.controls['category_id'].setValue('24');
     if(this.institutionForm.valid){
       this.institutionsService.postInstitution(this.auth.readToken(),this.institutionForm.value).subscribe({
@@ -329,7 +330,11 @@ export class NewEditInstitutionComponent implements OnInit, AfterViewInit {
           console.log('There was an error',error)
         }
       })
+    }else{ 
+      this.toastr.error("Diligencia todos los campos obligatorios");
     }
+    console.log(this.institutionForm.controls['institution_name'].errors);
+    
   }
 
   updateInstitution(){

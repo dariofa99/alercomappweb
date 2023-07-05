@@ -3,15 +3,16 @@
 <div class="content-wrapper">
     <div class="card m-4">
         <div class="container p-4">
-            <h1>{{actionBtn}} Institución</h1>
+            <h1>{{actionBtn}} Institución</h1> 
             <form [formGroup]="institutionForm">
                 <mat-form-field appearance="outline">
                     <mat-label>Nombre Institución *</mat-label>
-                    <input formControlName="institution_name" matInput placeholder="Nombre Institución *">
+                    <input required formControlName="institution_name" matInput placeholder="Nombre Institución *">
+                    <mat-hint align="end">ingresa un nombre</mat-hint>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Dirección *</mat-label>
-                    <input formControlName="institution_address" matInput placeholder="Dirección *">
+                    <input required formControlName="institution_address" matInput placeholder="Dirección *">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Teléfono *</mat-label>

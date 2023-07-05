@@ -48,15 +48,24 @@ export class LoginComponent implements OnInit {
             data['errors'].map((res) => {
               this.toastr.error(res);
             });
+            
             localStorage.removeItem('access_token');
             localStorage.removeItem('permissions');
           } else {
             if (this.rememberme) {
-              localStorage.setItem('username', data['user'].username);
+              this.auth.saveItemLS('username',data['user'].username);              
             }
-            localStorage.setItem('userID', data['user'].id);
-            localStorage.setItem('token', data['access_token']);
+            let now = new Date();
+            now.setSeconds( 3600 );
+            this.auth.saveItemLS('userID',data['user'].id);
+            this.auth.saveItemLS('token',data['access_token']);
+            this.auth.readToken();
+            this.auth.saveItemLS('expire',now.getTime().toString());
+            this.auth.savePermissions(data['permissions']);
             this.router.navigateByUrl('/home');
+            //console.log(this.auth.readToken());
+            
+
           }
         },
         error: (error) => {
@@ -68,4 +77,5 @@ export class LoginComponent implements OnInit {
       });
     }
   }
+
 }

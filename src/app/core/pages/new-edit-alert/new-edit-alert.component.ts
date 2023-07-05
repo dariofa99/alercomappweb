@@ -133,7 +133,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       event_place: ['', Validators.required],
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
-      event_aditional_information: [''],
+      event_aditional_information: ['',Validators.required],
       affected_people: [false],
       affected_family: [false],
       affected_animals: [false],
@@ -142,6 +142,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
       affected_enviroment: [false],
       user_id: ['', Validators.required],
       event_type_id: ['', Validators.required],
+      departments: ['', Validators.required],
       town_id: ['', Validators.required],
       status_id: ['', Validators.required],
       afectations_range_id: ['', Validators.required],
@@ -581,7 +582,7 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
             this.markers.push({
               position: {
                 lat: this.center.lat,
-                lng: this.center.lng,
+                lng: this.center.lng, 
               },
               label: this.markerGoogleMaps.LABEL,
               title: 'Ubicación Alerta',
@@ -742,11 +743,13 @@ export class NewEditAlertComponent implements OnInit, AfterViewInit {
             type: 'error',
           });
           console.log('There was an error', error);
+          this.loadingAmatai = false;
         },
       });
     }
     else{
       this.toastr.error("Diligencia todos los campos obligatorios");
+      this.loadingAmatai = false;
     }
   }
   updateEvent() {

@@ -41,8 +41,8 @@ export class AuthService {
       authData,{headers: headers}
     ).pipe(
       map( resp => {
-        this.saveToken( resp['access_token'] );
-        this.savePermissions(resp['permissions']);
+        /* this.saveToken( resp['access_token'] );
+        this.savePermissions(resp['permissions']); */
         return resp;
       })
     );
@@ -50,7 +50,6 @@ export class AuthService {
   }
 
   newUser( userData ) {
-
     const authData = {
       ...userData,
       returnSecureToken: true
@@ -73,14 +72,27 @@ export class AuthService {
     localStorage.setItem('token', access_token);
 
     let now = new Date();
-    now.setSeconds( 3600 );
+    now.setSeconds( 36000 );
 
     localStorage.setItem('expire', now.getTime().toString() );
 
 
   }
 
-  private savePermissions( permissions: [] ) {
+  saveItemLS( item: string , value: string) {
+
+    //this.userToken = access_token;
+    localStorage.setItem(item, value);
+
+    //let now = new Date();
+    /* now.setSeconds( 36000 );
+
+    localStorage.setItem('expire', now.getTime().toString() ); */
+
+
+  }
+
+  savePermissions( permissions: [] ) {
     localStorage.setItem('permissions', JSON.stringify(permissions));
 
   }

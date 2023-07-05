@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://18.220.203.127/api/v1'
+  apiUrl: 'http://alercom.local/api/v1'
 };
 
 /*

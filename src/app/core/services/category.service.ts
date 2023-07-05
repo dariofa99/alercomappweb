@@ -20,7 +20,8 @@ export class CategoryService {
     });
     
     return this.http.get(
-      `${ this.url }/references/event/categories/`+id+`/edit`,{headers: headers}
+      `${ this.url }/references/event/categories/`+id+`/edit`,
+      {headers: headers}
     ).pipe(
       map((item) => {
         return this.adapterCategory.adapt(item['reference'])
